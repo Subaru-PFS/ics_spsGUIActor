@@ -7,7 +7,37 @@ import argparse
 
 from PyQt5.QtWidgets import QApplication
 
-from mainwindow import SpsClient
+from PyQt5.QtWidgets import QMainWindow
+
+from protocol import EchoClientFactory
+from mainwindow import SpsWidget
+
+
+class SpsClient(QMainWindow):
+    def __init__(self, d_width, d_height, addr, port, cmdrName, systemPath):
+        QMainWindow.__init__(self)
+        self.display = d_width, d_height
+        self.setName("%s.%s" % ("spsClient", cmdrName))
+        self.systemPath = systemPath
+
+        self.connectClient(addr, port)
+
+        self.spsWidget = SpsWidget(self)
+        self.setCentralWidget(self.spsWidget)
+
+        self.show()
+
+    def setName(self, name):
+        self.cmdrName = name
+        self.setWindowTitle(name)
+
+    def connectClient(self, addr, port):
+        self.client = EchoClientFactory(self)
+        reactor.connectTCP(addr, port, self.client)
+
+    def closeEvent(self, QCloseEvent):
+        reactor.callFromThread(reactor.stop)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -23,6 +53,10 @@ if __name__ == "__main__":
 
     systemPath = '%s/%s' % (os.getcwd(), sys.argv[0].split('main.py')[0])
     geometry = app.desktop().screenGeometry()
+    import qt5reactor
+
+    qt5reactor.install()
+    from twisted.internet import reactor
 
     ex = SpsClient(geometry.width() * args.stretch,
                    geometry.height() * args.stretch,
@@ -30,3 +64,5 @@ if __name__ == "__main__":
                    args.port,
                    args.name,
                    systemPath)
+
+    reactor.run()
