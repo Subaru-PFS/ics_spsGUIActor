@@ -55,7 +55,7 @@ def main():
 
     import miniActor
 
-    actor = miniActor.connectActor()
+    actor = miniActor.connectActor(['xcu_r1'])
 
     ex = SpsClient(reactor,
                    actor,
@@ -68,7 +68,6 @@ def main():
 
     reactor.run()
     actor.disconnectActor()
-
 
 
 if __name__ == "__main__":
