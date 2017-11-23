@@ -23,7 +23,7 @@ class Specmodule(QGroupBox):
 
     @property
     def devices(self):
-        return [self.enu, self.rcu, self.bcu, self.ncu]
+        return [self.rcu, self.bcu, self.ncu]
 
     def populateLayout(self):
         for i, device in enumerate(self.devices):
