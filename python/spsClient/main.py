@@ -55,12 +55,16 @@ def main():
 
     actor = miniActor.connectActor(['hub', 'xcu_r1', 'ccd_r1'])
 
-    ex = SpsClient(reactor,
+    try:
+        ex = SpsClient(reactor,
                    actor,
                    geometry.width() * args.stretch,
                    geometry.height() * args.stretch,
                    args.name,
                    systemPath)
+    except:
+        actor.disconnectActor()
+        raise
 
     reactor.run()
     actor.disconnectActor()
