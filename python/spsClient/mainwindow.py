@@ -2,47 +2,30 @@ __author__ = 'alefur'
 
 from functools import partial
 
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QLabel, QHBoxLayout
+from PyQt5.QtWidgets import QGridLayout, QWidget, QLabel, QHBoxLayout
+
+from spsClient.specmodule import Specmodule
 
 
 class SpsWidget(QWidget):
     def __init__(self, spsClient):
         QWidget.__init__(self)
         self.spsClient = spsClient
-        self.mainLayout = QVBoxLayout()
-        self.mainLayout.addLayout(self.addLabels('xcu_r1', 'pressure'))
-        self.mainLayout.addLayout(self.addLabels('xcu_r1', 'coolerTemps'))
-        self.mainLayout.addLayout(self.addLabels('xcu_r1', 'temps'))
-        self.mainLayout.addLayout(self.addLabels('xcu_r1', 'roughPressure1'))
-        self.mainLayout.addLayout(self.addLabels('xcu_r1', 'turboSpeed'))
+        self.mainLayout = QGridLayout()
 
+        #self.mainLayout.addWidget(QLabel('Mode'), 0, 1)
+        #self.mainLayout.addWidget(QLabel('Status'), 0, 2)
+        #self.mainLayout.addWidget(QLabel('State'), 0, 3)
+
+
+        self.mainLayout.addWidget(Specmodule(self, 1), 0, 0)
+
+        #self.devices = {'r1': Viscu(self, smId=1, arm='r'), }
+
+        #for name, device in self.devices.iteritems():
+        #    self.mainLayout.addLayout(device, 0, 0)
         self.setLayout(self.mainLayout)
 
     @property
     def actor(self):
         return self.spsClient.actor
-
-    def addLabels(self, actorName, key):
-        model = self.actor.models[actorName]
-        keyvar = model.keyVarDict[key]
-        hbox = QHBoxLayout()
-        hbox.addWidget(QLabel('%s : ' % key))
-        labels = []
-
-        for i in range(keyvar.key.typedValues.maxVals):
-            label = QLabel('nan')
-            hbox.addWidget(label)
-            labels.append(label)
-
-        keyvar.addCallback(partial(self.updateVals, labels))
-
-        return hbox
-
-    def updateVals(self, labels, keyvar):
-        values = keyvar.getValue(doRaise=False)
-        values = [values] if len(labels) == 1 else values
-
-        for i, label in enumerate(labels):
-            value = values[i]
-            strValue = 'nan' if value is None else '%g' % value
-            label.setText(strValue)
