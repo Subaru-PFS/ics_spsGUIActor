@@ -16,13 +16,11 @@ class SpsWidget(QWidget):
         self.logLayout = QGridLayout()
 
         self.commandLine = QLineEdit()
-        self.commandButton = QPushButton('Send Command')
-        self.commandButton.clicked.connect(self.sendCmdLine)
+        self.commandLine.returnPressed.connect(self.sendCmdLine)
 
         self.logArea = LogArea()
-        self.logLayout.addWidget(self.logArea, 0, 0, 10, 5)
-        self.logLayout.addWidget(self.commandLine, 10, 0, 1, 4)
-        self.logLayout.addWidget(self.commandButton, 10, 4, 1, 1)
+        self.logLayout.addWidget(self.logArea, 0, 0, 10, 1)
+        self.logLayout.addWidget(self.commandLine, 10, 0, 1, 1)
 
         self.deviceLayout.addWidget(Specmodule(self, smId=1), 0, 0)
 
