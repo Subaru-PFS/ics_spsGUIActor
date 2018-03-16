@@ -18,18 +18,17 @@ class Cryostat(Device):
 
 
 class Ccd(Device):
-    def __init__(self, viscu):
-        self.viscu = viscu
+    def __init__(self, specModule, actor):
+        Device.__init__(self, specModule, actor)
 
-        Device.__init__(self, viscu.sm, self.viscu.ccdActor)
-
-        self.state = self.getValueGB('', self.viscu.ccdActor, 'exposureState', 0, '{:s}')
-        self.temperature = self.getValueGB('Temperature(K)', self.viscu.xcuActor, 'temps', 0, '{:g}')
+        self.state = self.getValueGB('', self.actor, 'exposureState', 0, '{:s}')
+        self.temperature = self.getValueGB('Temperature(K)', self.actor, 'ccdTemps', 1, '{:g}')
 
         setattr(self.state, 'pimpMe', partial(self.exposureState, self.state))
 
-    def getStatus(self, keyvar):
-        self.viscu.getStatus(keyvar)
+    @property
+    def arm(self):
+        return self.actor.split('_')[1][0]
 
     def exposureState(self, state):
         label = state.value
@@ -38,6 +37,8 @@ class Ccd(Device):
         background, police = state.colors[stateLabel]
         state.setColor(background, police)
 
+    def getWidgets(self):
+        return [QLabel(('%scu' % self.arm).upper()), self.mode, self.status, self.state, self.temperature]
 
 class Viscu(Device):
     def __init__(self, sm, arm):

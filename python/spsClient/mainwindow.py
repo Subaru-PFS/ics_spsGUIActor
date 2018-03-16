@@ -2,30 +2,54 @@ __author__ = 'alefur'
 
 from functools import partial
 
-from PyQt5.QtWidgets import QGridLayout, QWidget, QLabel, QHBoxLayout
+from PyQt5.QtWidgets import QGridLayout, QWidget, QLabel, QHBoxLayout, QLineEdit, QPushButton
 
 from spsClient.specmodule import Specmodule
-
+from spsClient.widgets import LogArea
 
 class SpsWidget(QWidget):
     def __init__(self, spsClient):
         QWidget.__init__(self)
         self.spsClient = spsClient
-        self.mainLayout = QGridLayout()
+        self.deviceLayout = QGridLayout()
+        self.mainLayout = QHBoxLayout()
+        self.logLayout = QGridLayout()
 
-        #self.mainLayout.addWidget(QLabel('Mode'), 0, 1)
-        #self.mainLayout.addWidget(QLabel('Status'), 0, 2)
-        #self.mainLayout.addWidget(QLabel('State'), 0, 3)
+        self.commandLine = QLineEdit()
+        self.commandButton = QPushButton('Send Command')
+        self.commandButton.clicked.connect(self.sendCmdLine)
 
+        self.logArea = LogArea()
+        self.logLayout.addWidget(self.logArea, 0, 0, 10, 5)
+        self.logLayout.addWidget(self.commandLine, 10, 0, 1, 4)
+        self.logLayout.addWidget(self.commandButton, 10, 4, 1, 1)
 
-        self.mainLayout.addWidget(Specmodule(self, 1), 0, 0)
+        self.deviceLayout.addWidget(Specmodule(self, smId=1), 0, 0)
 
-        #self.devices = {'r1': Viscu(self, smId=1, arm='r'), }
+        self.mainLayout.addLayout(self.deviceLayout)
+        self.mainLayout.addLayout(self.logLayout)
 
-        #for name, device in self.devices.iteritems():
-        #    self.mainLayout.addLayout(device, 0, 0)
         self.setLayout(self.mainLayout)
 
     @property
     def actor(self):
         return self.spsClient.actor
+
+
+    def sendCmdLine(self):
+        self.sendCommand(self.commandLine.text())
+
+    def sendCommand(self, fullCmd):
+        import opscore.actor.keyvar as keyvar
+        [actor, cmdStr] = fullCmd.split(' ', 1)
+        self.logArea.newLine('cmdIn=%s %s' % (actor, cmdStr))
+        self.actor.cmdr.bgCall(**dict(actor=actor,
+                                      cmdStr=cmdStr,
+                                      timeLim=600,
+                                      callFunc=self.returnFunc,
+                                      callCodes=keyvar.AllCodes))
+
+    def returnFunc(self, cmdVar):
+        self.logArea.newLine('cmdOut=%s' % cmdVar.replyList[0].canonical())
+        for i in range(len(cmdVar.replyList) - 1):
+            self.logArea.newLine(cmdVar.replyList[i + 1].canonical())

@@ -1,12 +1,14 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QGridLayout, QGroupBox, QLabel
-
+from PyQt5.QtGui import QFont, QTextCursor
+from PyQt5.QtWidgets import QGridLayout, QGroupBox, QPlainTextEdit, QLabel
+from datetime import datetime as dt
 
 class ValueGB(QGroupBox):
     colors = {"WIPING": ('blue', 'white'),
               "INTEGRATING": ('yellow', 'black'),
               "READING": ('orange', 'white'),
               "IDLE": ('green', 'white'),
+              "BUSY": ('orange', 'white'),
               "NAN": ('red', 'white'),
               }
 
@@ -52,3 +54,22 @@ class ValueGB(QGroupBox):
 
     def pimpMe(self):
         pass
+
+
+class LogArea(QPlainTextEdit):
+    def __init__(self):
+        QPlainTextEdit.__init__(self)
+        self.logArea = QPlainTextEdit()
+        self.setMaximumBlockCount(10000)
+        self.setReadOnly(True)
+
+        self.setStyleSheet("background-color: black;color:white;")
+        self.setFont(QFont("Monospace", 8))
+
+    def newLine(self, line):
+        self.insertPlainText("\n%s  %s" % (dt.now().strftime("%H:%M:%S.%f"), line))
+        self.moveCursor(QTextCursor.End)
+        self.ensureCursorVisible()
+
+    def trick(self, qlineedit):
+        self.newLine(qlineedit.text())

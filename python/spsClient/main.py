@@ -12,13 +12,12 @@ from mainwindow import SpsWidget
 
 
 class SpsClient(QMainWindow):
-    def __init__(self, reactor, actor, d_width, d_height, cmdrName, systemPath):
+    def __init__(self, reactor, actor, d_width, d_height, cmdrName):
         QMainWindow.__init__(self)
         self.reactor = reactor
         self.actor = actor
         self.display = d_width, d_height
         self.setName("%s.%s" % ("spsClient", cmdrName))
-        self.systemPath = systemPath
 
         self.spsWidget = SpsWidget(self)
         self.setCentralWidget(self.spsWidget)
@@ -44,7 +43,6 @@ def main():
 
     args = parser.parse_args()
 
-    systemPath = '%s/%s' % (os.getcwd(), sys.argv[0].split('main.py')[0])
     geometry = app.desktop().screenGeometry()
     import qt5reactor
 
@@ -53,15 +51,14 @@ def main():
 
     import miniActor
 
-    actor = miniActor.connectActor(['hub', 'xcu_r1', 'ccd_r1'])
+    actor = miniActor.connectActor(['hub', 'ccd_r1', 'ccd_b1'])
 
     try:
         ex = SpsClient(reactor,
-                   actor,
-                   geometry.width() * args.stretch,
-                   geometry.height() * args.stretch,
-                   args.name,
-                   systemPath)
+                       actor,
+                       geometry.width() * args.stretch,
+                       geometry.height() * args.stretch,
+                       args.name)
     except:
         actor.disconnectActor()
         raise

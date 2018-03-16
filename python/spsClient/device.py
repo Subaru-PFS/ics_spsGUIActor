@@ -5,9 +5,9 @@ from spsClient.widgets import ValueGB
 
 
 class Device(object):
-    def __init__(self, sm, actor):
+    def __init__(self, specModule, actor):
         object.__init__(self)
-        self.sm = sm
+        self.specModule = specModule
         self.actor = actor
         self.mode = ValueGB('')
         self.status = ValueGB('')
@@ -16,13 +16,13 @@ class Device(object):
         for gb in [self.mode, self.status, self.state]:
             gb.setText('UNDEF')
 
-        self.setMode('Operation')
+        self.setMode('Simulation')
 
         self.models['hub'].keyVarDict['actors'].addCallback(self.getStatus)
 
     @property
     def mwindow(self):
-        return self.sm.mwindow
+        return self.specModule.mwindow
 
     @property
     def models(self):
