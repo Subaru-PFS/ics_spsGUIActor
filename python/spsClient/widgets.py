@@ -8,8 +8,15 @@ class ValueGB(QGroupBox):
               "INTEGRATING": ('yellow', 'black'),
               "READING": ('orange', 'white'),
               "IDLE": ('green', 'white'),
+              "LOADING": ('blue', 'white'),
+              "LOADED": ('blue', 'white'),
+              "INITIALISING": ('yellow', 'black'),
+              "WARMING": ('orange', 'white'),
               "BUSY": ('orange', 'white'),
               "NAN": ('red', 'white'),
+              "FAILED": ('red', 'white'),
+              "ON": ('green', 'white'),
+              "OFF": ('red', 'white'),
               }
 
     def __init__(self, title):

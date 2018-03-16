@@ -51,7 +51,7 @@ def main():
 
     import miniActor
 
-    actor = miniActor.connectActor(['hub', 'ccd_r1', 'ccd_b1'])
+    actor = miniActor.connectActor(['hub', 'ccd_r1', 'ccd_b1', 'enu_sm1', 'dcb'])
 
     try:
         ex = SpsClient(reactor,
