@@ -72,3 +72,6 @@ class Device(object):
             background, color = ('black', 'white')
 
         valueGB.setColor(background, color)
+
+    def setLine(self, line):
+        self.line = line
