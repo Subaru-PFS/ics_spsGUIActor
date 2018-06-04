@@ -3,44 +3,29 @@ from functools import partial
 
 from spsClient.widgets import ValueGB
 
-
 class Device(object):
-    def __init__(self, specModule, actor):
+    def __init__(self, mwindow, actorName, deviceName):
         object.__init__(self)
-        self.specModule = specModule
-        self.actor = actor
-        self.mode = ValueGB('')
-        self.status = ValueGB('')
-        self.state = ValueGB('')
+        self.mwindow = mwindow
+        self.actorName = actorName
+        self.deviceName = deviceName
 
-        for gb in [self.mode, self.status, self.state]:
-            gb.setText('UNDEF')
-
-        self.setMode('Simulation')
-
-        self.models['hub'].keyVarDict['actors'].addCallback(self.getStatus)
-
-    @property
-    def mwindow(self):
-        return self.specModule.mwindow
+        self.actorStatus = ValueGB('Actor')
+        self.actorStatus.setText(deviceName)
+        self.line = 0
+        self.mwindow.actor.models['hub'].keyVarDict['actors'].addCallback(self.updateActorStatus, callNow=False)
 
     @property
     def models(self):
         return self.mwindow.actor.models
 
-    def setMode(self, mode):
-        self.mode.setText(mode)
+    @property
+    def isOnline(self):
+        return self.actorName in self.mwindow.actor.models['hub'].keyVarDict['actors']
 
-    def setStatus(self, status):
-        if status == 'Offline':
-            self.status.setColor('red')
-        elif status == 'Online':
-            self.status.setColor('green')
-
-        self.status.setText(status)
-
-    def setState(self, state):
-        self.state.setText(state)
+    @property
+    def widgets(self):
+        return [self.actorStatus]
 
     def getValueGB(self, title, actorName, key, ind, fmt):
         model = self.models[actorName]
@@ -57,12 +42,33 @@ class Device(object):
 
         value = values[ind]
 
-        strValue = 'nan' if value is None else fmt.format(value)
+        try:
+            strValue = fmt.format(value)
+        except TypeError:
+            strValue = 'nan'
+
         label.setText(strValue)
         label.pimpMe()
 
-    def getStatus(self, keyvar):
-        if self.actor in keyvar.getValue():
-            self.setStatus('Online')
+    def updateActorStatus(self, keyvar=None):
+        background, color = ('green', 'white') if self.isOnline else ('red', 'white')
+        self.actorStatus.setColor(background, color)
+
+        for widget in self.widgets:
+            if widget in [self.actorStatus]:
+                continue
+            if not self.isOnline:
+                try:
+                    widget.setColor('black', 'white')
+                except AttributeError:
+                    pass
+
+    def pimpValue(self, valueGB):
+
+        label = valueGB.value
+        if self.isOnline:
+            background, color = ('red', 'white') if label.text() == 'nan' else ('green', 'white')
         else:
-            self.setStatus('Offline')
+            background, color = ('black', 'white')
+
+        valueGB.setColor(background, color)

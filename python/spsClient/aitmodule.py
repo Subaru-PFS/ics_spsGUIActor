@@ -2,29 +2,27 @@ __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QGridLayout, QGroupBox
 
-from spsClient.viscu import Ccd
-from spsClient.enu import Enu
+from spsClient.seqno import Seqno
+from spsClient.dcb import Dcb
 
 
-class Specmodule(QGroupBox):
-    def __init__(self, mwindow, smId, cams=False):
-        cams = ['b', 'r'] if not cams else cams
+class Aitmodule(QGroupBox):
+    def __init__(self, mwindow):
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
         self.setLayout(self.grid)
-        self.setTitle('Spectrograph Module %i' % smId)
+        self.setTitle('AIT')
 
         self.mwindow = mwindow
-        self.smId = smId
 
-        self.enu = Enu(self)
-        self.cams = [Ccd(self, actorName='ccd_%s%i' % (cam, smId), deviceName='%sCU' % cam.upper()) for cam in cams]
+        self.dcb = Dcb(self)
+        self.seqno = Seqno(self)
 
         self.populateLayout()
 
     @property
     def devices(self):
-        return [self.enu] + self.cams
+        return [self.dcb, self.seqno]
 
     def populateLayout(self):
         for i, device in enumerate(self.devices):

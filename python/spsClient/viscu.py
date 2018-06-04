@@ -1,73 +1,68 @@
 __author__ = 'alefur'
-from functools import partial
 
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QProgressBar
 
 from spsClient.device import Device
+from functools import partial
 
 
-class Cryostat(Device):
-    def __init__(self, viscu):
-        self.viscu = viscu
-        Device.__init__(self, viscu.sm, self.viscu.xcuActor)
+class ReadRows(QProgressBar):
+    def __init__(self, ccdWidget):
+        QProgressBar.__init__(self)
+        self.setRange(0, 4176)
+        self.ccdWidget = ccdWidget
+        ccdWidget.keyVarDict['readRows'].addCallback(partial(self.updateBar), callNow=False)
+        ccdWidget.keyVarDict['exposureState'].addCallback(partial(self.hideBar))
 
-        self.pressure = self.getValueGB('Pressure(Torr)', self.viscu.xcuActor, 'ionpump1', 4, '{:g}')
+    def __del__(self):
+        print('ici')
 
-    def getStatus(self, keyvar):
-        self.viscu.getStatus(keyvar)
+    def updateBar(self, keyvar):
+        try:
+            val, __ = keyvar.getValue()
+
+        except ValueError:
+            val = 0
+
+        self.setValue(val)
+
+    def hideBar(self, keyvar):
+        try:
+            state = keyvar.getValue()
+            if state == 'reading':
+                self.show()
+            else:
+                raise ValueError
+
+        except ValueError:
+            self.hide()
 
 
 class Ccd(Device):
-    def __init__(self, specModule, actor):
-        Device.__init__(self, specModule, actor)
+    def __init__(self, specModule, actorName, deviceName):
+        Device.__init__(self, mwindow=specModule.mwindow, actorName=actorName, deviceName=deviceName)
 
-        self.state = self.getValueGB('', self.actor, 'exposureState', 0, '{:s}')
-        self.temperature = self.getValueGB('Temperature(K)', self.actor, 'ccdTemps', 1, '{:g}')
+        self.substate = self.getValueGB('', self.actorName, 'exposureState', 0, '{:s}')
+        self.temperature = self.getValueGB('Temperature(K)', self.actorName, 'ccdTemps', 1, '{:g}')
+        self.readRows = ReadRows(self)
 
-        setattr(self.state, 'pimpMe', partial(self.exposureState, self.state))
+        self.updateActorStatus()
+        setattr(self.substate, 'pimpMe', partial(self.pimpExposure, self.substate))
+        setattr(self.temperature, 'pimpMe', partial(self.pimpValue, self.temperature))
 
     @property
     def arm(self):
-        return self.actor.split('_')[1][0]
-
-    def exposureState(self, state):
-        label = state.value
-        stateLabel = label.text().upper()
-        label.setText(stateLabel)
-        background, police = state.colors[stateLabel]
-        state.setColor(background, police)
-
-    def getWidgets(self):
-        return [QLabel(('%scu' % self.arm).upper()), self.mode, self.status, self.state, self.temperature]
-
-class Viscu(Device):
-    def __init__(self, sm, arm):
-        self.arm = arm
-
-        Device.__init__(self, sm, 'metactor')
-
-        self.cryostat = Cryostat(self)
-        self.ccd = Ccd(self)
-
-    def getWidgets(self):
-        return [QLabel(('%scu' % self.arm).upper()), self.mode, self.status, self.ccd.state, self.ccd.temperature,
-                self.cryostat.pressure]
-
-    def getStatus(self, keyvar):
-        actorList = keyvar.getValue()
-        if self.xcuActor in actorList and self.ccdActor in actorList:
-            self.setStatus('Online')
-        else:
-            self.setStatus('Offline')
+        return self.actorName.split('_')[1][0]
 
     @property
-    def cam(self):
-        return '%s%i' % (self.arm, self.sm.smId)
+    def widgets(self):
+        return [self.actorStatus, self.substate, self.readRows, self.temperature]
 
     @property
-    def xcuActor(self):
-        return 'xcu_%s' % self.cam
+    def keyVarDict(self):
+        return self.models[self.actorName].keyVarDict
 
-    @property
-    def ccdActor(self):
-        return 'ccd_%s' % self.cam
+    def pimpExposure(self, exposureGB):
+        label = exposureGB.value
+        text = label.text()
+        exposureGB.setText(text.upper())

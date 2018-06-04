@@ -7,16 +7,21 @@ class ValueGB(QGroupBox):
     colors = {"WIPING": ('blue', 'white'),
               "INTEGRATING": ('yellow', 'black'),
               "READING": ('orange', 'white'),
+              "EXPOSING": ('yellow', 'black'),
               "IDLE": ('green', 'white'),
               "LOADING": ('blue', 'white'),
               "LOADED": ('blue', 'white'),
               "INITIALISING": ('yellow', 'black'),
               "WARMING": ('orange', 'white'),
+              "MOVING": ('orange', 'white'),
               "BUSY": ('orange', 'white'),
               "NAN": ('red', 'white'),
               "FAILED": ('red', 'white'),
+              "ONLINE": ('green', 'white'),
+              "OFFLINE": ('red', 'white'),
               "ON": ('green', 'white'),
               "OFF": ('red', 'white'),
+              "CONNECTED": ('green', 'white'),
               }
 
     def __init__(self, title):
@@ -54,9 +59,20 @@ class ValueGB(QGroupBox):
                 "QGroupBox {font-size: 9pt; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #f4a431, stop: 1 #5e4a14);border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " +
                 "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
+        elif background == "black":
+            self.setStyleSheet(
+                "QGroupBox {font-size: 9pt; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #dfdfdf, stop: 1 #000000);border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " +
+                "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
+
         self.value.setStyleSheet("QLabel{font-size: 11pt; qproperty-alignment: AlignCenter; color:%s;}" % police)
 
     def setText(self, txt):
+        try:
+            background, police = ValueGB.colors[txt]
+            self.setColor(background=background, police=police)
+        except KeyError:
+            pass
+
         self.value.setText(txt)
 
     def pimpMe(self):

@@ -1,42 +1,49 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QGridLayout, QGroupBox
 
 from spsClient.device import Device
 from functools import partial
 
 
 class Dcb(Device):
-    def __init__(self, specModule):
-        Device.__init__(self, specModule, 'dcb')
-        self.state = self.getValueGB('', self.actor, 'dcbState', 0, '{:s}')
-        self.hgar = self.getValueGB('Hg-Ar', self.actor, 'hgar', 0, '{:g}')
-        self.neon = self.getValueGB('Neon', self.actor, 'ne', 0, '{:g}')
-        self.xenon = self.getValueGB('Xenon', self.actor, 'xenon', 0, '{:g}')
-        self.halogen = self.getValueGB('Halogen', self.actor, 'halogen', 0, '{:g}')
-        self.photodiode = self.getValueGB('photodiode', self.actor, 'photodiode', 0, '{:g}')
+    def __init__(self, aitModule):
+        Device.__init__(self, mwindow=aitModule.mwindow, actorName='dcb', deviceName='DCB')
 
-        setattr(self.state, 'pimpMe', partial(self.ColorState, self.state))
-        setattr(self.hgar, 'pimpMe', partial(self.switch, self.hgar))
-        setattr(self.neon, 'pimpMe', partial(self.switch, self.neon))
-        setattr(self.xenon, 'pimpMe', partial(self.switch, self.xenon))
-        setattr(self.halogen, 'pimpMe', partial(self.switch, self.halogen))
+        self.state = self.getValueGB('', self.actorName, 'metaFSM', 0, '{:s}')
+        self.substate = self.getValueGB('', self.actorName, 'metaFSM', 1, '{:s}')
+        self.labsphere = self.getValueGB('Labsphere', self.actorName, 'pow_labsphere', 0, '{:s}')
+        self.hgar = self.getValueGB('Hg-Ar', self.actorName, 'hgar', 0, '{:g}')
+        self.neon = self.getValueGB('Neon', self.actorName, 'neon', 0, '{:g}')
+        self.xenon = self.getValueGB('Xenon', self.actorName, 'xenon', 0, '{:g}')
+        self.halogen = self.getValueGB('Halogen', self.actorName, 'halogen', 0, '{:g}')
+        self.photodiode = self.getValueGB('photodiode', self.actorName, 'photodiode', 0, '{:g}')
+        self.attenuator = self.getValueGB('attenuator', self.actorName, 'attenuator', 0, '{:g}')
 
+        setattr(self.labsphere, 'pimpMe', partial(self.pimpLabsphere, self.labsphere))
 
-    def getWidgets(self):
-        return [QLabel('DCB'), self.mode, self.status, self.state,
-                self.hgar, self.neon, self.xenon, self.halogen, self.photodiode]
+        setattr(self.hgar, 'pimpMe', partial(self.pimpSwitch, self.hgar))
+        setattr(self.neon, 'pimpMe', partial(self.pimpSwitch, self.neon))
+        setattr(self.xenon, 'pimpMe', partial(self.pimpSwitch, self.xenon))
+        setattr(self.halogen, 'pimpMe', partial(self.pimpSwitch, self.halogen))
 
-    def ColorState(self, state):
-        label = state.value
-        stateLabel = label.text().upper()
-        label.setText(stateLabel)
-        background, police = state.colors[stateLabel]
-        state.setColor(background, police)
+        setattr(self.photodiode, 'pimpMe', partial(self.pimpValue, self.photodiode))
+        setattr(self.attenuator, 'pimpMe', partial(self.pimpValue, self.attenuator))
 
-    def switch(self, state):
+        self.updateActorStatus()
+
+    @property
+    def widgets(self):
+        return [self.actorStatus, self.state, self.substate, self.labsphere, self.hgar, self.neon,
+                self.xenon, self.halogen, self.photodiode, self.attenuator]
+
+    def pimpLabsphere(self, labsphereGB):
+        label = labsphereGB.value
+        text = label.text()
+        labsphereGB.setText(text.upper())
+
+    def pimpSwitch(self, switchGB):
         boolean = {'0': 'OFF', '1': 'ON', 'nan': 'NAN'}
-        label = state.value
+        label = switchGB.value
+
         stateLabel = boolean[label.text()]
-        label.setText(stateLabel)
-        background, police = state.colors[stateLabel]
-        state.setColor(background, police)
+        switchGB.setText(stateLabel)
