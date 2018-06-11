@@ -1,5 +1,5 @@
 __author__ = 'alefur'
-
+from functools import partial
 from spsClient.device import Device
 
 
@@ -15,6 +15,8 @@ class Sac(Device):
 
         self.ccdState = self.getValueGB('CCD-State', self.actorName, 'ccd', 0, '{:s}')
 
+        setattr(self.pentaPosition, 'pimpMe', partial(self.pimpValue, self.pentaPosition))
+        setattr(self.detectorPosition, 'pimpMe', partial(self.pimpValue, self.detectorPosition))
         self.updateActorStatus()
 
     @property
