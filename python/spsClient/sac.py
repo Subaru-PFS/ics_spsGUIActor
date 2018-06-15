@@ -13,7 +13,6 @@ class Sac(Device):
         self.pentaPosition = ValueGB(self.keyVarDict['lsPenta'], 'Penta-Position', 2, '{:.2f}')
         self.detectorPosition = ValueGB(self.keyVarDict['lsDetector'], 'Detector-Position', 2, '{:.2f}')
 
-
     @property
     def customWidgets(self):
         return [self.state, self.substate, self.pentaPosition, self.detectorPosition]

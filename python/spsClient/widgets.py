@@ -5,7 +5,6 @@ from functools import partial
 from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import QGridLayout, QGroupBox, QPlainTextEdit, QLabel, QPushButton
 
-
 state2color = {"WIPING": ('blue', 'white'),
                "INTEGRATING": ('yellow', 'black'),
                "READING": ('orange', 'white'),
@@ -123,7 +122,6 @@ class ActorGB(ValueGB):
         self.grid.addWidget(self.button, 0, 0)
 
     def updateVals(self, ind, fmt, keyvar):
-
         background, color = ('green', 'white') if self.device.isOnline else ('red', 'white')
         self.setColor(background, color)
         self.device.setOnline()

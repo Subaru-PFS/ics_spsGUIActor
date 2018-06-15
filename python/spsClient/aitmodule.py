@@ -2,9 +2,10 @@ __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QGridLayout, QGroupBox
 from spsClient.breva import Breva
-from spsClient.sac import Sac
 from spsClient.dcb import Dcb
+from spsClient.sac import Sac
 from spsClient.seqno import Seqno
+
 
 class Aitmodule(QGroupBox):
     def __init__(self, mwindow):

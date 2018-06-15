@@ -1,7 +1,5 @@
 __author__ = 'alefur'
 
-from functools import partial
-
 from PyQt5.QtWidgets import QProgressBar
 from spsClient.device import Device
 from spsClient.widgets import ValueGB
@@ -11,12 +9,9 @@ class ReadRows(QProgressBar):
     def __init__(self, ccdDevice):
         QProgressBar.__init__(self)
         self.setRange(0, 4176)
-        self.ccdWidget = ccdDevice
-        ccdDevice.keyVarDict['readRows'].addCallback(partial(self.updateBar), callNow=False)
-        ccdDevice.keyVarDict['exposureState'].addCallback(partial(self.hideBar))
-
-    def __del__(self):
-        print('ici')
+        self.ccdDevice = ccdDevice
+        ccdDevice.keyVarDict['readRows'].addCallback(self.updateBar, callNow=False)
+        ccdDevice.keyVarDict['exposureState'].addCallback(self.hideBar)
 
     def updateBar(self, keyvar):
         try:
@@ -41,7 +36,6 @@ class ReadRows(QProgressBar):
 
 class Ccd(Device):
     def __init__(self, specModule, actorName, deviceName):
-
         Device.__init__(self, mwindow=specModule.mwindow, actorName=actorName, deviceName=deviceName)
 
         self.substate = ValueGB(self.keyVarDict['exposureState'], '', 0, '{:s}')
@@ -55,4 +49,3 @@ class Ccd(Device):
     @property
     def customWidgets(self):
         return [self.substate, self.readRows, self.temperature]
-
