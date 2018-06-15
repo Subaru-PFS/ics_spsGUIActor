@@ -1,8 +1,8 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QLabel, QGridLayout, QGroupBox
+from PyQt5.QtWidgets import QGridLayout, QGroupBox
 
 from spsClient.device import Device
-from functools import partial
+from spsClient.widgets import ValueGB
 
 
 class Seqno(Device, QGroupBox):
@@ -12,13 +12,8 @@ class Seqno(Device, QGroupBox):
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
         self.setLayout(self.grid)
-
-        self.visit = self.getValueGB('VisitId', self.actorName, 'visit', 0, '{:g}')
-        setattr(self.visit, 'pimpMe', partial(self.pimpValue, self.visit))
-
-        self.updateActorStatus()
+        self.visit = ValueGB(self.keyVarDict['visit'], 'VisitId', 0, '{:g}}')
 
     @property
-    def widgets(self):
-        return [self.actorStatus, self.visit]
-
+    def customWidgets(self):
+        return [self.visit]

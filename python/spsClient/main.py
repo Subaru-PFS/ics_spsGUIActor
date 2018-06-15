@@ -1,13 +1,12 @@
 __author__ = 'alefur'
 
-import sys
+import argparse
 import os
 import pwd
-import argparse
+import sys
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow
-
 from mainwindow import SpsWidget
 
 

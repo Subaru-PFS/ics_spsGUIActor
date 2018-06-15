@@ -1,9 +1,8 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QGridLayout, QGroupBox
-
-from spsClient.viscu import Ccd
 from spsClient.enu import Enu
+from spsClient.viscu import Ccd
 
 
 class Specmodule(QGroupBox):

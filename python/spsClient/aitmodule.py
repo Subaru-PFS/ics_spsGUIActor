@@ -1,11 +1,10 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QGridLayout, QGroupBox
-
-from spsClient.seqno import Seqno
-from spsClient.dcb import Dcb
-from spsClient.sac import Sac
 from spsClient.breva import Breva
+from spsClient.sac import Sac
+from spsClient.dcb import Dcb
+from spsClient.seqno import Seqno
 
 class Aitmodule(QGroupBox):
     def __init__(self, mwindow):
@@ -25,7 +24,7 @@ class Aitmodule(QGroupBox):
 
     @property
     def devices(self):
-        return [self.sac, self.breva]
+        return [self.dcb, self.seqno, self.sac, self.breva]
 
     def populateLayout(self):
         for i, device in enumerate(self.devices):
