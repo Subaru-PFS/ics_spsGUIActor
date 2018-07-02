@@ -1,8 +1,9 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QGridLayout, QWidget, QHBoxLayout
-from spsClient.aitmodule import Aitmodule
-from spsClient.specmodule import Specmodule
+from PyQt5.QtWidgets import QGridLayout, QWidget, QVBoxLayout
+from spsClient.module import Aitmodule
+from spsClient.module import Specmodule
+from spsClient.widgets import LogArea
 
 
 class SpsWidget(QWidget):
@@ -17,12 +18,15 @@ class SpsWidget(QWidget):
 
         self.spsClient = spsClient
         self.deviceLayout = QGridLayout()
-        self.mainLayout = QHBoxLayout()
+        self.mainLayout = QVBoxLayout()
         self.logLayout = QGridLayout()
+
+        self.logArea = LogArea()
+        self.logLayout.addWidget(self.logArea, 0, 0, 10, 1)
 
         self.deviceLayout.addWidget(Aitmodule(self), 0, 0)
         self.deviceLayout.addWidget(Specmodule(self, smId=1), 1, 0, 3, 1)
-        self.deviceLayout.addWidget(Specmodule(self, smId=2, cams=['r']), 4, 0, 2, 1)
+        self.deviceLayout.addWidget(Specmodule(self, smId=2, arms=['r']), 4, 0, 2, 1)
 
         self.mainLayout.addLayout(self.deviceLayout)
         self.mainLayout.addLayout(self.logLayout)

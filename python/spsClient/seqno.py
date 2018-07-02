@@ -1,18 +1,13 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QGridLayout, QGroupBox
-
-from spsClient.device import Device
+from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB
 
 
-class Seqno(Device, QGroupBox):
+class SeqnoRow(ModuleRow):
     def __init__(self, aitModule):
-        Device.__init__(self, mwindow=aitModule.mwindow, actorName='seqno', deviceName='SEQNO')
+        ModuleRow.__init__(self, module=aitModule, actorName='seqno', actorLabel='SEQNO')
 
-        QGroupBox.__init__(self)
-        self.grid = QGridLayout()
-        self.setLayout(self.grid)
-        self.visit = ValueGB(self.keyVarDict['visit'], 'VisitId', 0, '{:g}}')
+        self.visit = ValueGB(self, 'visit', 'VisitId', 0, '{:g}')
 
     @property
     def customWidgets(self):

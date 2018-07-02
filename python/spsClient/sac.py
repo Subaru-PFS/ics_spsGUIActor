@@ -1,17 +1,18 @@
 __author__ = 'alefur'
-from spsClient.device import Device
+
+from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB
 
 
-class Sac(Device):
+class SacRow(ModuleRow):
     def __init__(self, aitModule):
-        Device.__init__(self, mwindow=aitModule.mwindow, actorName='sac', deviceName='SAC')
+        ModuleRow.__init__(self, module=aitModule, actorName='sac', actorLabel='SAC')
 
-        self.state = ValueGB(self.keyVarDict['metaFSM'], '', 0, '{:s}')
-        self.substate = ValueGB(self.keyVarDict['metaFSM'], '', 1, '{:s}')
+        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}')
 
-        self.pentaPosition = ValueGB(self.keyVarDict['lsPenta'], 'Penta-Position', 2, '{:.2f}')
-        self.detectorPosition = ValueGB(self.keyVarDict['lsDetector'], 'Detector-Position', 2, '{:.2f}')
+        self.pentaPosition = ValueGB(self, 'lsPenta', 'Penta-Position', 2, '{:.2f}')
+        self.detectorPosition = ValueGB(self, 'lsDetector', 'Detector-Position', 2, '{:.2f}')
 
     @property
     def customWidgets(self):

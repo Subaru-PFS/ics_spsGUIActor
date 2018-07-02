@@ -1,30 +1,8 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QProgressBar, QGridLayout, QGroupBox, QDialog
+from PyQt5.QtWidgets import QProgressBar
 
-from spsClient.device import Device
-from spsClient.widgets import Coordinates, ValueGB
-
-
-class DeviceGB(QGroupBox):
-    def __init__(self, deviceName):
-        QGroupBox.__init__(self)
-        self.grid = QGridLayout()
-        self.setLayout(self.grid)
-
-        self.setTitle(deviceName)
-        self.setCheckable(True)
-
-        self.clicked.connect(self.showHide)
-
-    @property
-    def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())]
-
-    def showHide(self):
-        bool = True if self.isChecked() else False
-
-        for widget in self.customWidgets:
-            widget.setVisible(bool)
+from spsClient.modulerow import ModuleRow
+from spsClient.widgets import Coordinates, ValueGB, ControlDialog, ControlPannel
 
 
 class ElapsedTime(QProgressBar):
@@ -49,19 +27,19 @@ class ElapsedTime(QProgressBar):
         self.enuWidget.removeWidget(self)
 
 
-class RexmWidgets(DeviceGB):
-    def __init__(self, enuDevice):
-        DeviceGB.__init__(self, 'RDA')
+class RexmPannel(ControlPannel):
+    def __init__(self, controlDialog):
+        ControlPannel.__init__(self, controlDialog, 'RDA')
 
-        self.mode = ValueGB(enuDevice.keyVarDict['rexmMode'], 'Mode', 0, '{:s}', fontSize=9)
-        self.state = ValueGB(enuDevice.keyVarDict['rexmFSM'], '', 0, '{:s}', fontSize=9)
-        self.substate = ValueGB(enuDevice.keyVarDict['rexmFSM'], '', 1, '{:s}', fontSize=9)
-        self.position = ValueGB(enuDevice.keyVarDict['rexm'], 'Position', 0, '{:s}', fontSize=9)
+        self.mode = ValueGB(self.moduleRow, 'rexmMode', 'Mode', 0, '{:s}', fontSize=9)
+        self.state = ValueGB(self.moduleRow, 'rexmFSM', '', 0, '{:s}', fontSize=9)
+        self.substate = ValueGB(self.moduleRow, 'rexmFSM', '', 1, '{:s}', fontSize=9)
+        self.position = ValueGB(self.moduleRow, 'rexm', 'Position', 0, '{:s}', fontSize=9)
 
-        self.switchA = ValueGB(enuDevice.keyVarDict['rexmInfo'], 'SwitchA', 0, '{:d}', fontSize=9)
-        self.switchB = ValueGB(enuDevice.keyVarDict['rexmInfo'], 'switchB', 1, '{:d}', fontSize=9)
-        self.speed = ValueGB(enuDevice.keyVarDict['rexmInfo'], 'Speed', 2, '{:d}', fontSize=9)
-        self.steps = ValueGB(enuDevice.keyVarDict['rexmInfo'], 'Steps', 3, '{:d}', fontSize=9)
+        self.switchA = ValueGB(self.moduleRow, 'rexmInfo', 'SwitchA', 0, '{:d}', fontSize=9)
+        self.switchB = ValueGB(self.moduleRow, 'rexmInfo', 'switchB', 1, '{:d}', fontSize=9)
+        self.speed = ValueGB(self.moduleRow, 'rexmInfo', 'Speed', 2, '{:d}', fontSize=9)
+        self.steps = ValueGB(self.moduleRow, 'rexmInfo', 'Steps', 3, '{:d}', fontSize=9)
 
         self.grid.addWidget(self.mode, 0, 0)
         self.grid.addWidget(self.state, 0, 1)
@@ -74,22 +52,22 @@ class RexmWidgets(DeviceGB):
         self.grid.addWidget(self.steps, 1, 3)
 
 
-class BshWidgets(DeviceGB):
-    def __init__(self, enuDevice):
-        DeviceGB.__init__(self, 'BSH')
+class BshPannel(ControlPannel):
+    def __init__(self, controlDialog):
+        ControlPannel.__init__(self, controlDialog, 'BSH')
 
-        self.mode = ValueGB(enuDevice.keyVarDict['bshMode'], 'Mode', 0, '{:s}', fontSize=9)
-        self.state = ValueGB(enuDevice.keyVarDict['bshFSM'], '', 0, '{:s}', fontSize=9)
-        self.substate = ValueGB(enuDevice.keyVarDict['bshFSM'], '', 1, '{:s}', fontSize=9)
+        self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}', fontSize=9)
+        self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}', fontSize=9)
+        self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}', fontSize=9)
 
-        self.shutters = ValueGB(enuDevice.keyVarDict['shutters'], 'Shutters', 0, '{:s}', fontSize=9)
-        self.exptime = ValueGB(enuDevice.keyVarDict['integratingTime'], 'Exptime', 0, '{:.1f}', fontSize=9)
-        self.elapsedTime = ValueGB(enuDevice.keyVarDict['elapsedTime'], 'elapsedTime', 0, '{:.1f}', fontSize=9)
+        self.shutters = ValueGB(self.moduleRow, 'shutters', 'Shutters', 0, '{:s}', fontSize=9)
+        self.exptime = ValueGB(self.moduleRow, 'integratingTime', 'Exptime', 0, '{:.1f}', fontSize=9)
+        self.elapsedTime = ValueGB(self.moduleRow, 'elapsedTime', 'elapsedTime', 0, '{:.1f}', fontSize=9)
 
-        self.bia = ValueGB(enuDevice.keyVarDict['bia'], 'BIA', 0, '{:s}', fontSize=9)
-        self.biaStrobe = ValueGB(enuDevice.keyVarDict['biaStrobe'], 'Strobe', 0, '{:s}', fontSize=9)
-        self.biaPeriod = ValueGB(enuDevice.keyVarDict['biaConfig'], 'Bia-Period', 0, '{:.1f}', fontSize=9)
-        self.biaDuty = ValueGB(enuDevice.keyVarDict['biaConfig'], 'Bia-Duty', 1, '{:.1f}', fontSize=9)
+        self.bia = ValueGB(self.moduleRow, 'bia', 'BIA', 0, '{:s}', fontSize=9)
+        self.biaStrobe = ValueGB(self.moduleRow, 'biaStrobe', 'Strobe', 0, '{:s}', fontSize=9)
+        self.biaPeriod = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Period', 0, '{:.1f}', fontSize=9)
+        self.biaDuty = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Duty', 1, '{:.1f}', fontSize=9)
 
         self.grid.addWidget(self.mode, 0, 0)
         self.grid.addWidget(self.state, 0, 1)
@@ -105,19 +83,19 @@ class BshWidgets(DeviceGB):
         self.grid.addWidget(self.biaDuty, 2, 3)
 
 
-class SlitWidgets(DeviceGB):
-    def __init__(self, enuDevice):
-        DeviceGB.__init__(self, 'FCA')
+class SlitPannel(ControlPannel):
+    def __init__(self, controlDialog):
+        ControlPannel.__init__(self, controlDialog, 'FCA')
 
-        self.mode = ValueGB(enuDevice.keyVarDict['slitMode'], 'Mode', 0, '{:s}', fontSize=9)
-        self.state = ValueGB(enuDevice.keyVarDict['slitFSM'], '', 0, '{:s}', fontSize=9)
-        self.substate = ValueGB(enuDevice.keyVarDict['slitFSM'], '', 1, '{:s}', fontSize=9)
-        self.info = ValueGB(enuDevice.keyVarDict['slitInfo'], 'Info', 0, '{:s}', fontSize=9)
-        self.location = ValueGB(enuDevice.keyVarDict['slitLocation'], 'Location', 0, '{:s}', fontSize=9)
+        self.mode = ValueGB(self.moduleRow, 'slitMode', 'Mode', 0, '{:s}', fontSize=9)
+        self.state = ValueGB(self.moduleRow, 'slitFSM', '', 0, '{:s}', fontSize=9)
+        self.substate = ValueGB(self.moduleRow, 'slitFSM', '', 1, '{:s}', fontSize=9)
+        self.info = ValueGB(self.moduleRow, 'slitInfo', 'Info', 0, '{:s}', fontSize=9)
+        self.location = ValueGB(self.moduleRow, 'slitLocation', 'Location', 0, '{:s}', fontSize=9)
 
-        self.coordinates = Coordinates(enuDevice.keyVarDict['slit'], title='Position', fontSize=9)
-        self.home = Coordinates(enuDevice.keyVarDict['slitHome'], title='Home', fontSize=9)
-        self.tool = Coordinates(enuDevice.keyVarDict['slitTool'], title='Tool', fontSize=9)
+        self.coordinates = Coordinates(self.moduleRow, 'slit', title='Position', fontSize=9)
+        self.home = Coordinates(self.moduleRow, 'slitHome', title='Home', fontSize=9)
+        self.tool = Coordinates(self.moduleRow, 'slitTool', title='Tool', fontSize=9)
 
         self.grid.addWidget(self.mode, 0, 0)
         self.grid.addWidget(self.state, 0, 1)
@@ -135,45 +113,37 @@ class SlitWidgets(DeviceGB):
                self.home.widgets + self.tool.widgets
 
 
-class EnuDetail(QDialog):
-    def __init__(self, enuDevice):
-        QDialog.__init__(self, parent=enuDevice.specModule.mwindow.spsClient)
+class EnuDialog(ControlDialog):
+    def __init__(self, enuRow):
+        ControlDialog.__init__(self, moduleRow=enuRow, title='Entrance Unit SM%i' % enuRow.module.smId)
 
-        self.enuDevice = enuDevice
-        self.grid = QGridLayout()
-        self.textForHuman = ValueGB(enuDevice.keyVarDict['text'], 'Text', 0, '{:s}')
+        # self.textForHuman = ValueGB(enuDevice.keyVarDict['text'], 'Text', 0, '{:s}')
 
-        self.slitWidgets = SlitWidgets(enuDevice=enuDevice)
-        self.bshWidgets = BshWidgets(enuDevice=enuDevice)
-        self.rexmWidgets = RexmWidgets(enuDevice=enuDevice)
+        self.slitPannel = SlitPannel(self)
+        self.bshPannel = BshPannel(self)
+        self.rexmPannel = RexmPannel(self)
 
-        self.grid.addWidget(self.textForHuman, 0, 0, 1, 2)
-        self.grid.addWidget(self.slitWidgets, 1, 0, 5, 1)
-        self.grid.addWidget(self.bshWidgets, 1, 1, 3, 1)
-        self.grid.addWidget(self.rexmWidgets, 4, 1, 2, 1)
-        self.setLayout(self.grid)
-
-        self.setVisible(True)
-
-        self.setWindowTitle('Entrance Unit SM%i' % enuDevice.specModule.smId)
+        # self.grid.addWidget(self.textForHuman, 0, 0, 1, 2)
+        self.grid.addWidget(self.slitPannel, 1, 0, 5, 1)
+        self.grid.addWidget(self.bshPannel, 1, 1, 3, 1)
+        self.grid.addWidget(self.rexmPannel, 4, 1, 2, 1)
 
     @property
     def customWidgets(self):
-        return self.slitWidgets.customWidgets + self.bshWidgets.customWidgets + self.rexmWidgets.customWidgets
+        return self.slitPannel.customWidgets + self.bshPannel.customWidgets + self.rexmPannel.customWidgets
 
 
-class Enu(Device):
+class EnuRow(ModuleRow):
     def __init__(self, specModule):
-        Device.__init__(self, mwindow=specModule.mwindow, actorName='enu_sm%i' % specModule.smId, deviceName='ENU')
-        self.specModule = specModule
+        ModuleRow.__init__(self, module=specModule, actorName='enu_sm%i' % specModule.smId, actorLabel='ENU')
 
-        self.state = ValueGB(self.keyVarDict['metaFSM'], '', 0, '{:s}')
-        self.substate = ValueGB(self.keyVarDict['metaFSM'], '', 1, '{:s}')
+        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}')
 
-        self.rexm = ValueGB(self.keyVarDict['rexm'], 'Red Resolution', 0, '{:s}')
-        self.slit = ValueGB(self.keyVarDict['slitLocation'], 'FCA_Position', 0, '{:s}')
-        self.shutters = ValueGB(self.keyVarDict['shutters'], 'SHA_Position', 0, '{:s}')
-        self.bia = ValueGB(self.keyVarDict['bia'], 'BIA_State', 0, '{:s}')
+        self.rexm = ValueGB(self, 'rexm', 'Red Resolution', 0, '{:s}')
+        self.slit = ValueGB(self, 'slitLocation', 'FCA_Position', 0, '{:s}')
+        self.shutters = ValueGB(self, 'shutters', 'SHA_Position', 0, '{:s}')
+        self.bia = ValueGB(self, 'bia', 'BIA_State', 0, '{:s}')
 
         self.keyVarDict['integratingTime'].addCallback(self.showBar, callNow=False)
 
@@ -182,7 +152,7 @@ class Enu(Device):
         widgets = [self.state, self.substate, self.rexm, self.slit, self.shutters, self.bia]
 
         try:
-            widgets += self.enuDetail.customWidgets
+            widgets += self.enuDialog.customWidgets
         except AttributeError:
             pass
 
@@ -195,13 +165,13 @@ class Enu(Device):
             return
 
         elapsedTime = ElapsedTime(self, exptime=exptime)
-        self.specModule.grid.addWidget(elapsedTime, self.line, len(self.widgets))
+        self.module.grid.addWidget(elapsedTime, self.lineNB, len(self.widgets))
 
     def removeWidget(self, widget):
         self.state.show()
-        self.specModule.grid.removeWidget(widget)
+        self.module.grid.removeWidget(widget)
         widget.deleteLater()
 
     def showDetails(self):
-        self.enuDetail = EnuDetail(self)
-        self.enuDetail.show()
+        self.enuDialog = EnuDialog(self)
+        self.enuDialog.show()

@@ -1,17 +1,17 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QProgressBar
-from spsClient.device import Device
+from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB
 
 
 class ReadRows(QProgressBar):
-    def __init__(self, ccdDevice):
+    def __init__(self, ccdProp):
         QProgressBar.__init__(self)
         self.setRange(0, 4176)
-        self.ccdDevice = ccdDevice
-        ccdDevice.keyVarDict['readRows'].addCallback(self.updateBar, callNow=False)
-        ccdDevice.keyVarDict['exposureState'].addCallback(self.hideBar)
+        self.ccdProp = ccdProp
+        ccdProp.keyVarDict['readRows'].addCallback(self.updateBar, callNow=False)
+        ccdProp.keyVarDict['exposureState'].addCallback(self.hideBar)
 
     def updateBar(self, keyvar):
         try:
@@ -34,18 +34,26 @@ class ReadRows(QProgressBar):
             self.hide()
 
 
-class Ccd(Device):
-    def __init__(self, specModule, actorName, deviceName):
-        Device.__init__(self, mwindow=specModule.mwindow, actorName=actorName, deviceName=deviceName)
+class CcdRow(ModuleRow):
+    def __init__(self, specModule, arm):
+        ModuleRow.__init__(self, module=specModule, actorName='ccd_%s%i' % (arm, specModule.smId),
+                           actorLabel='%sCU' % arm.upper())
 
-        self.substate = ValueGB(self.keyVarDict['exposureState'], '', 0, '{:s}')
-        self.temperature = ValueGB(self.keyVarDict['ccdTemps'], 'Temperature(K)', 1, '{:g}')
+        self.substate = CcdState(self)
+        self.temperature = ValueGB(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}')
         self.readRows = ReadRows(self)
-
-    @property
-    def arm(self):
-        return self.actorName.split('_')[1][0]
 
     @property
     def customWidgets(self):
         return [self.substate, self.readRows, self.temperature]
+
+
+class CcdState(ValueGB):
+    def __init__(self, moduleRow):
+        self.moduleRow = moduleRow
+        ValueGB.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}')
+
+    def setText(self, txt):
+        txt = txt.upper()
+
+        ValueGB.setText(self, txt)
