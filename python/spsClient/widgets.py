@@ -243,6 +243,7 @@ class CmdButton(QPushButton):
         QPushButton.__init__(self, label)
         self.setCheckable(True)
         self.clicked.connect(self.getCommand)
+        self.setEnabled(False)
 
     @property
     def controlDialog(self):

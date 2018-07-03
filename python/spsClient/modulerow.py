@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QPushButton
-from spsClient.widgets import ValueGB
+from spsClient.widgets import ValueGB, CmdButton
 
 
 class ModuleRow(object):
@@ -38,7 +38,12 @@ class ModuleRow(object):
     def setOnline(self):
 
         for widget in self.customWidgets:
+
             try:
+                if issubclass(type(widget), CmdButton):
+                    widget.setEnabled(self.isOnline)
+                    continue
+
                 if not self.isOnline:
                     widget.setColor('black', 'white')
             except AttributeError:

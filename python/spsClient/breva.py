@@ -34,8 +34,8 @@ class BrevaCommands(CommandsGB):
             self.motorsOff.setVisible(False)
 
     @property
-    def widgets(self):
-        return [self.initButton]
+    def buttons(self):
+        return [self.initButton, self.motorsOn, self.motorsOff, self.moveCmd.button, self.gotoCmd.button]
 
 
 class MoveCmd(QGridLayout):
@@ -50,17 +50,17 @@ class MoveCmd(QGridLayout):
                           DoubleSpinBoxGB('V', -10, 10, 4),
                           DoubleSpinBoxGB('W', -5, 10, 4)]
 
-        self.comboMove = QComboBox()
-        self.comboMove.addItems(['abs', 'relo', 'relu'])
-        self.comboMove.currentIndexChanged.connect(self.resetCoords)
+        self.combo = QComboBox()
+        self.combo.addItems(['abs', 'relo', 'relu'])
+        self.combo.currentIndexChanged.connect(self.resetCoords)
 
-        self.moveButton = MoveButton(self)
+        self.button = MoveButton(self)
 
-        self.addWidget(self.comboMove, 0, 0)
+        self.addWidget(self.combo, 0, 0)
         for i, spinbox in enumerate(self.spinboxes):
             self.addWidget(spinbox, i // 3, i % 3 + 1)
 
-        self.addWidget(self.moveButton, 1, 0)
+        self.addWidget(self.button, 1, 0)
 
     def resetCoords(self, ind):
         if ind == 0:
@@ -75,7 +75,7 @@ class MoveCmd(QGridLayout):
         labels = ['x', 'y', 'z', 'rx', 'ry', 'rz']
         values = [spinbox.getValue() for spinbox in self.spinboxes]
 
-        cmdStr = 'breva move %s ' % self.comboMove.currentText()
+        cmdStr = 'breva move %s ' % self.combo.currentText()
         cmdStr += (" ".join(['%s=%.4f' % (label, value) for label, value in zip(labels, values)]))
 
         return cmdStr
@@ -102,9 +102,9 @@ class GotoCmd(QGridLayout):
         self.comboFiber = QComboBox()
         self.comboFiber.addItems(['topend', 'topmid', 'botmid', 'botend'])
 
-        self.gotoButton = GotoButton(self)
+        self.button = GotoButton(self)
 
-        self.addWidget(self.gotoButton, 0, 0)
+        self.addWidget(self.button, 0, 0)
         self.addWidget(self.comboFiber, 0, 1)
 
     def buildCmd(self):
@@ -176,18 +176,18 @@ class BrevaPannel(ControlPannel):
 
     @property
     def customWidgets(self):
-        return self.coordinates.widgets + self.repobj.widgets + self.reputil.widgets + self.commands.widgets
+        return self.coordinates.widgets + self.repobj.widgets + self.reputil.widgets + self.commands.buttons
 
 
 class BrevaDialog(ControlDialog):
     def __init__(self, brevaRow):
         ControlDialog.__init__(self, moduleRow=brevaRow)
-        self.brevaPannel = BrevaPannel(self)
-        self.grid.addWidget(self.brevaPannel, 0, 0)
+        self.controlPannel = BrevaPannel(self)
+        self.grid.addWidget(self.controlPannel, 0, 0)
 
     @property
     def customWidgets(self):
-        return self.brevaPannel.customWidgets
+        return self.controlPannel.customWidgets
 
 
 class BrevaRow(ModuleRow):
@@ -204,15 +204,15 @@ class BrevaRow(ModuleRow):
         widgets = [self.state, self.substate, self.motorState, self.fiberTargeted]
 
         try:
-            widgets += self.brevaDetail.customWidgets
+            widgets += self.controlDialog.customWidgets
         except AttributeError:
             pass
 
         return widgets
 
     def showDetails(self):
-        self.brevaDialog = BrevaDialog(self)
-        self.brevaDialog.show()
+        self.controlDialog = BrevaDialog(self)
+        self.controlDialog.show()
 
 
 class MotorState(ValueGB):
@@ -230,7 +230,7 @@ class MotorState(ValueGB):
         self.value.setText(txt)
 
         try:
-            self.moduleRow.brevaDialog.brevaPannel.commands.setMotorState()
+            self.moduleRow.controlDialog.controlPannel.commands.setMotorState()
         except AttributeError:
             pass
 

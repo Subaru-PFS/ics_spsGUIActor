@@ -152,7 +152,7 @@ class EnuRow(ModuleRow):
         widgets = [self.state, self.substate, self.rexm, self.slit, self.shutters, self.bia]
 
         try:
-            widgets += self.enuDialog.customWidgets
+            widgets += self.controlDialog.customWidgets
         except AttributeError:
             pass
 
@@ -173,5 +173,5 @@ class EnuRow(ModuleRow):
         widget.deleteLater()
 
     def showDetails(self):
-        self.enuDialog = EnuDialog(self)
-        self.enuDialog.show()
+        self.controlDialog = EnuDialog(self)
+        self.controlDialog.show()
