@@ -28,9 +28,9 @@ state2color = {"WIPING": ('blue', 'white'),
                "simulation": ('orange', 'white'),
                "nan": ('red', 'white'),
                "undef": ('red', 'white'),
-               "off": ('red', 'white'),
-               "on": ('green', 'white'),
                }
+
+convertText = {'on': 'ON', 'off': 'OFF'}
 
 
 class ValueGB(QGroupBox):
@@ -120,7 +120,8 @@ class Coordinates(QGroupBox):
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
 
-        self.widgets = [ValueGB(moduleRow, key, pos, i, '{:.5f}', fontSize) for i, pos in enumerate(Coordinates.posName)]
+        self.widgets = [ValueGB(moduleRow, key, pos, i, '{:.5f}', fontSize) for i, pos in
+                        enumerate(Coordinates.posName)]
 
         for i, widget in enumerate(self.widgets):
             self.grid.addWidget(widget, 0, i)
@@ -134,7 +135,7 @@ class Coordinates(QGroupBox):
 
 class CommandsGB(QGroupBox):
     def __init__(self, controlPannel):
-        self.controlPannel= controlPannel
+        self.controlPannel = controlPannel
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
 
@@ -217,7 +218,6 @@ class ControlDialog(QDialog):
 
 class DoubleSpinBoxGB(QGroupBox):
     def __init__(self, title, vmin, vmax, decimals):
-
         QGroupBox.__init__(self)
         self.setTitle('%s' % title)
 
@@ -238,18 +238,72 @@ class DoubleSpinBoxGB(QGroupBox):
 
 
 class CmdButton(QPushButton):
-    def __init__(self, controlPannel, label):
+    def __init__(self, controlPannel, label, cmdStr=False):
         self.controlPannel = controlPannel
+        self.cmdStr = cmdStr
         QPushButton.__init__(self, label)
         self.setCheckable(True)
         self.clicked.connect(self.getCommand)
-        self.setEnabled(False)
+        self.setEnabled(controlPannel.moduleRow.isOnline)
 
     @property
     def controlDialog(self):
         return self.controlPannel.controlDialog
 
+    def buildCmd(self):
+        return self.cmdStr
+
     def getCommand(self):
+        if self.isChecked():
+            cmdStr = self.buildCmd()
+            self.controlDialog.addCommand(button=self, cmdStr=cmdStr)
+        else:
+            self.controlDialog.clearCommand(button=self)
+
+
+class InnerButton(CmdButton):
+    def __init__(self, upperCmd, label):
+        self.upperCmd = upperCmd
+        CmdButton.__init__(self, controlPannel=upperCmd.controlPannel, label=label)
+
+    def buildCmd(self):
+        return self.upperCmd.buildCmd()
+
+
+class SwitchGB(ValueGB):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=11):
+        self.moduleRow = moduleRow
+        ValueGB.__init__(self, moduleRow, key=key, title=title, ind=ind, fmt=fmt, fontSize=fontSize)
+
+    def setText(self, txt):
+        try:
+            txt = 'ON' if int(txt) else 'OFF'
+
+        except ValueError:
+            pass
+
+        self.value.setText(txt)
+        self.customize()
+
+
+class EnumGB(ValueGB):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=11):
+        self.moduleRow = moduleRow
+        ValueGB.__init__(self, moduleRow, key=key, title=title, ind=ind, fmt=fmt, fontSize=fontSize)
+
+    def setText(self, txt):
+        txt = txt.upper()
+        ValueGB.setText(self, txt=txt)
+
+
+class CustomedCmd(QGridLayout):
+    def __init__(self, controlPannel, buttonLabel):
+        QGridLayout.__init__(self)
+        self.controlPannel = controlPannel
+        self.button = InnerButton(self, label=buttonLabel)
+        self.addWidget(self.button, 0, 0)
+
+    def buildCmd(self):
         pass
 
 
