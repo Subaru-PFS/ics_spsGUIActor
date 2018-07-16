@@ -39,7 +39,7 @@ class BrevaCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.initButton, self.motorsOn, self.motorsOff, self.moveCmd.button, self.gotoCmd.button]
+        return [self.initButton, self.motorsOn, self.motorsOff, self.moveCmd.button, self.gotoCmd.button, self.setRepCmd.button ]
 
 
 class CoordBoxes(QGridLayout):

@@ -11,8 +11,8 @@ class SacRow(ModuleRow):
         self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}')
         self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}')
 
-        self.pentaPosition = ValueGB(self, 'lsPenta', 'Penta', 2, '{:.2f}')
-        self.detectorPosition = ValueGB(self, 'lsDetector', 'Detector', 2, '{:.2f}')
+        self.pentaPosition = ValueGB(self, 'lsPenta', 'Penta', 2, '{:.3f}')
+        self.detectorPosition = ValueGB(self, 'lsDetector', 'Detector', 2, '{:.3f}')
 
     @property
     def customWidgets(self):
@@ -32,7 +32,7 @@ class SacRow(ModuleRow):
 
 
 class MoveCmd(CustomedCmd):
-    limits = dict(penta=(-300, 500),
+    limits = dict(penta=(-450, 450),
                   detector=(0, 12))
 
     def __init__(self, controlPannel, stage):
@@ -44,7 +44,7 @@ class MoveCmd(CustomedCmd):
         self.combo = QComboBox()
         self.combo.addItems(['abs', 'rel'])
 
-        self.distSpinbox = DoubleSpinBoxGB('Dist', l_bound, u_bound, 2)
+        self.distSpinbox = DoubleSpinBoxGB('Dist', l_bound, u_bound, 3)
 
         self.addWidget(self.combo, 0, 1)
         self.addWidget(self.distSpinbox, 0, 2)
@@ -111,7 +111,7 @@ class StagePannel(ControlPannel):
 
         self.state = ValueGB(self.moduleRow, 'ls%s' % label, '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'ls%s' % label, '', 1, '{:s}')
-        self.position = ValueGB(self.moduleRow, 'ls%s' % label, 'Position', 2, '{:.2f}')
+        self.position = ValueGB(self.moduleRow, 'ls%s' % label, 'Position', 2, '{:.3f}')
 
         self.commands = StageCommands(self, stage)
 
