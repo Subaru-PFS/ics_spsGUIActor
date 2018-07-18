@@ -2,24 +2,26 @@ __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QComboBox, QGridLayout
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import Coordinates, ValueGB, SwitchGB, CommandsGB, ControlDialog, ControlPannel, CmdButton, DoubleSpinBoxGB, CustomedCmd
+from spsClient.widgets import Coordinates, ValueGB, SwitchGB, CommandsGB, ControlDialog, ControlPanel, CmdButton, DoubleSpinBoxGB, CustomedCmd
 
 
 class BrevaCommands(CommandsGB):
-    def __init__(self, controlPannel):
-        CommandsGB.__init__(self, controlPannel)
-        self.initButton = CmdButton(controlPannel=controlPannel, label='INIT', cmdStr='breva init')
-        self.motorsOn = CmdButton(controlPannel=controlPannel, label='MOTOR ON', cmdStr='breva motor on')
-        self.motorsOff = CmdButton(controlPannel=controlPannel, label='MOTOR OFF', cmdStr='breva motor off')
+    def __init__(self, controlPanel):
+        CommandsGB.__init__(self, controlPanel)
+        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT', cmdStr='breva connect controller=hexa')
+        self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='breva init')
+        self.motorsOn = CmdButton(controlPanel=controlPanel, label='MOTOR ON', cmdStr='breva motor on')
+        self.motorsOff = CmdButton(controlPanel=controlPanel, label='MOTOR OFF', cmdStr='breva motor off')
         self.coordBoxes = CoordBoxes()
 
-        self.moveCmd = MoveCmd(controlPannel=controlPannel)
-        self.setRepCmd = SetRepCmd(controlPannel=controlPannel)
-        self.gotoCmd = GotoCmd(controlPannel=controlPannel)
+        self.moveCmd = MoveCmd(controlPanel=controlPanel)
+        self.setRepCmd = SetRepCmd(controlPanel=controlPanel)
+        self.gotoCmd = GotoCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.initButton, 0, 0)
-        self.grid.addWidget(self.motorsOn, 0, 1)
-        self.grid.addWidget(self.motorsOff, 0, 1)
+        self.grid.addWidget(self.connectButton, 0, 0)
+        self.grid.addWidget(self.initButton, 0, 1)
+        self.grid.addWidget(self.motorsOn, 0, 2)
+        self.grid.addWidget(self.motorsOff, 0, 2)
         self.grid.addLayout(self.moveCmd, 1, 0, 1, 2)
         self.grid.addLayout(self.setRepCmd, 2, 0, 1, 2)
         self.grid.addLayout(self.coordBoxes, 1, 2, 2, 3)
@@ -28,7 +30,7 @@ class BrevaCommands(CommandsGB):
         self.setMotorState()
 
     def setMotorState(self):
-        state = self.controlPannel.controlDialog.moduleRow.motorState.value.text()
+        state = self.controlPanel.controlDialog.moduleRow.motorState.value.text()
 
         if state == 'ON':
             self.motorsOn.setVisible(False)
@@ -39,7 +41,7 @@ class BrevaCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.initButton, self.motorsOn, self.motorsOff, self.moveCmd.button, self.gotoCmd.button, self.setRepCmd.button ]
+        return [self.connectButton, self.initButton, self.motorsOn, self.motorsOff, self.moveCmd.button, self.gotoCmd.button, self.setRepCmd.button ]
 
 
 class CoordBoxes(QGridLayout):
@@ -57,8 +59,8 @@ class CoordBoxes(QGridLayout):
 
 
 class MoveCmd(CustomedCmd):
-    def __init__(self, controlPannel):
-        CustomedCmd.__init__(self, controlPannel=controlPannel, buttonLabel='MOVE')
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MOVE')
 
         self.combo = QComboBox()
         self.combo.addItems(['abs', 'relo', 'relu'])
@@ -68,11 +70,11 @@ class MoveCmd(CustomedCmd):
 
     @property
     def spinboxes(self):
-        return self.controlPannel.commands.coordBoxes.widgets
+        return self.controlPanel.commands.coordBoxes.widgets
 
     def resetCoords(self, ind):
         if ind == 0:
-            vals = [float(valueGB.value.text()) for valueGB in self.controlPannel.coordinates.widgets]
+            vals = [float(valueGB.value.text()) for valueGB in self.controlPanel.coordinates.widgets]
         else:
             vals = 6 * [0]
 
@@ -90,8 +92,8 @@ class MoveCmd(CustomedCmd):
 
 
 class SetRepCmd(CustomedCmd):
-    def __init__(self, controlPannel):
-        CustomedCmd.__init__(self, controlPannel=controlPannel, buttonLabel='SET')
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SET')
 
         self.combo = QComboBox()
         self.combo.addItems(['REPOBJ', 'REPUTIL'])
@@ -105,7 +107,7 @@ class SetRepCmd(CustomedCmd):
 
     @property
     def spinboxes(self):
-        return self.controlPannel.commands.coordBoxes.widgets
+        return self.controlPanel.commands.coordBoxes.widgets
 
     def buildCmd(self):
         labels = ['x', 'y', 'z', 'rx', 'ry', 'rz']
@@ -118,23 +120,24 @@ class SetRepCmd(CustomedCmd):
 
 
 class GotoCmd(CustomedCmd):
-    def __init__(self, controlPannel):
-        CustomedCmd.__init__(self, controlPannel=controlPannel, buttonLabel='GO TO')
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='GO TO')
 
         self.comboFiber = QComboBox()
-        self.comboFiber.addItems(['topend', 'topmid', 'botmid', 'botend'])
+        self.comboFiber.addItems(['engtopend', 'engtopmid', 'engbotmid', 'engbotend',
+                                  'scitopend', 'scitopmid', 'scibotmid', 'scibotend'])
 
         self.addWidget(self.comboFiber, 0, 1)
 
     def buildCmd(self):
-        cmdStr = 'breva goto %s ' % self.comboFiber.currentText()
+        cmdStr = 'breva goto fiber=%s ' % self.comboFiber.currentText()
 
         return cmdStr
 
 
-class BrevaPannel(ControlPannel):
+class BrevaPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPannel.__init__(self, controlDialog, title='breva')
+        ControlPanel.__init__(self, controlDialog, title='breva')
 
         self.coordinates = Coordinates(self.moduleRow, 'position', title='Position', fontSize=9)
         self.repobj = Coordinates(self.moduleRow, 'REPOBJ', title='REPOBJ', fontSize=9)
@@ -154,12 +157,12 @@ class BrevaPannel(ControlPannel):
 class BrevaDialog(ControlDialog):
     def __init__(self, brevaRow):
         ControlDialog.__init__(self, moduleRow=brevaRow)
-        self.controlPannel = BrevaPannel(self)
-        self.grid.addWidget(self.controlPannel, 0, 0)
+        self.controlPanel = BrevaPanel(self)
+        self.grid.addWidget(self.controlPanel, 0, 0)
 
     @property
     def customWidgets(self):
-        return self.controlPannel.customWidgets
+        return self.controlPanel.customWidgets
 
 
 class BrevaRow(ModuleRow):
@@ -197,6 +200,6 @@ class MotorState(SwitchGB):
         SwitchGB.setText(self, txt)
 
         try:
-            self.moduleRow.controlDialog.controlPannel.commands.setMotorState()
+            self.moduleRow.controlDialog.controlPanel.commands.setMotorState()
         except AttributeError:
             pass
