@@ -4,7 +4,7 @@ from functools import partial
 
 from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import QPlainTextEdit, QLabel, QPushButton, QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
-    QDialogButtonBox, QDoubleSpinBox
+    QDialogButtonBox, QDoubleSpinBox, QSpinBox
 
 state2color = {"WIPING": ('blue', 'white'),
                "INTEGRATING": ('yellow', 'black'),
@@ -134,8 +134,8 @@ class Coordinates(QGroupBox):
 
 
 class CommandsGB(QGroupBox):
-    def __init__(self, controlPannel):
-        self.controlPannel = controlPannel
+    def __init__(self, controlPanel):
+        self.controlPanel = controlPanel
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
 
@@ -150,7 +150,7 @@ class CommandsGB(QGroupBox):
         return []
 
 
-class ControlPannel(QGroupBox):
+class ControlPanel(QGroupBox):
     def __init__(self, controlDialog, title):
         QGroupBox.__init__(self)
         self.controlDialog = controlDialog
@@ -192,6 +192,8 @@ class ControlDialog(QDialog):
         buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.sendCommands)
         buttonBox.button(QDialogButtonBox.Discard).clicked.connect(self.cancelCommands)
 
+        self.reload = ReloadButton(self)
+        self.vbox.addWidget(self.reload)
         self.vbox.addLayout(self.grid)
         self.vbox.addWidget(buttonBox)
 
@@ -225,7 +227,27 @@ class DoubleSpinBoxGB(QGroupBox):
         self.value = QDoubleSpinBox()
         self.value.setValue(0)
         self.value.setDecimals(decimals)
-        self.value.setRange(-5000, 5000)
+        #self.value.setRange(-5000, 5000)
+        self.grid.addWidget(self.value, 0, 0)
+
+        self.setLayout(self.grid)
+
+    def setValue(self, value):
+        self.value.setValue(value)
+
+    def getValue(self):
+        return float(self.value.value())
+
+
+class SpinBoxGB(QGroupBox):
+    def __init__(self, title, vmin, vmax):
+        QGroupBox.__init__(self)
+        self.setTitle('%s' % title)
+
+        self.grid = QGridLayout()
+        self.value = QSpinBox()
+        self.value.setValue(0)
+        self.value.setRange(vmin, vmax)
         self.grid.addWidget(self.value, 0, 0)
 
         self.setLayout(self.grid)
@@ -238,17 +260,38 @@ class DoubleSpinBoxGB(QGroupBox):
 
 
 class CmdButton(QPushButton):
-    def __init__(self, controlPannel, label, cmdStr=False):
-        self.controlPannel = controlPannel
+    def __init__(self, controlPanel, label, cmdStr=False):
+        self.controlPanel = controlPanel
         self.cmdStr = cmdStr
         QPushButton.__init__(self, label)
         self.setCheckable(True)
         self.clicked.connect(self.getCommand)
-        self.setEnabled(controlPannel.moduleRow.isOnline)
+        self.setEnabled(controlPanel.moduleRow.isOnline)
 
     @property
     def controlDialog(self):
-        return self.controlPannel.controlDialog
+        return self.controlPanel.controlDialog
+
+    def buildCmd(self):
+        return self.cmdStr
+
+    def getCommand(self):
+        if self.isChecked():
+            cmdStr = self.buildCmd()
+            self.controlDialog.addCommand(button=self, cmdStr=cmdStr)
+        else:
+            self.controlDialog.clearCommand(button=self)
+
+
+class ReloadButton(QPushButton):
+    def __init__(self, controlDialog):
+        self.controlDialog = controlDialog
+        self.cmdStr = '%s reloadConfiguration'%controlDialog.moduleRow.actorName
+        QPushButton.__init__(self, 'Reload Config')
+        self.setCheckable(True)
+        self.clicked.connect(self.getCommand)
+        self.setEnabled(controlDialog.moduleRow.isOnline)
+        self.setMaximumWidth(200)
 
     def buildCmd(self):
         return self.cmdStr
@@ -264,7 +307,7 @@ class CmdButton(QPushButton):
 class InnerButton(CmdButton):
     def __init__(self, upperCmd, label):
         self.upperCmd = upperCmd
-        CmdButton.__init__(self, controlPannel=upperCmd.controlPannel, label=label)
+        CmdButton.__init__(self, controlPanel=upperCmd.controlPanel, label=label)
 
     def buildCmd(self):
         return self.upperCmd.buildCmd()
@@ -297,9 +340,9 @@ class EnumGB(ValueGB):
 
 
 class CustomedCmd(QGridLayout):
-    def __init__(self, controlPannel, buttonLabel):
+    def __init__(self, controlPanel, buttonLabel):
         QGridLayout.__init__(self)
-        self.controlPannel = controlPannel
+        self.controlPanel = controlPanel
         self.button = InnerButton(self, label=buttonLabel)
         self.addWidget(self.button, 0, 0)
 
