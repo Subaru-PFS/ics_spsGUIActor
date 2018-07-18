@@ -2,7 +2,7 @@ __author__ = 'alefur'
 from PyQt5.QtWidgets import QProgressBar, QGridLayout, QComboBox
 
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import Coordinates, ValueGB, ControlDialog, ControlPannel, CommandsGB, CmdButton, \
+from spsClient.widgets import Coordinates, ValueGB, ControlDialog, ControlPanel, CommandsGB, CmdButton, \
     DoubleSpinBoxGB, CustomedCmd
 
 
@@ -28,9 +28,9 @@ class ElapsedTime(QProgressBar):
         self.enuWidget.removeWidget(self)
 
 
-class RexmPannel(ControlPannel):
+class RexmPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPannel.__init__(self, controlDialog, 'RDA')
+        ControlPanel.__init__(self, controlDialog, 'RDA')
 
         self.mode = ValueGB(self.moduleRow, 'rexmMode', 'Mode', 0, '{:s}', fontSize=9)
         self.state = ValueGB(self.moduleRow, 'rexmFSM', '', 0, '{:s}', fontSize=9)
@@ -56,9 +56,9 @@ class RexmPannel(ControlPannel):
         self.showHide()
 
 
-class BshPannel(ControlPannel):
+class BshPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPannel.__init__(self, controlDialog, 'BSH')
+        ControlPanel.__init__(self, controlDialog, 'BSH')
 
         self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}', fontSize=9)
         self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}', fontSize=9)
@@ -105,8 +105,8 @@ class CoordBoxes(QGridLayout):
 
 
 class MoveCmd(CustomedCmd):
-    def __init__(self, controlPannel):
-        CustomedCmd.__init__(self, controlPannel=controlPannel, buttonLabel='MOVE')
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MOVE')
 
         self.combo = QComboBox()
         self.combo.addItems(['absolute', 'relative'])
@@ -116,11 +116,11 @@ class MoveCmd(CustomedCmd):
 
     @property
     def spinboxes(self):
-        return self.controlPannel.commands.coordBoxes.widgets
+        return self.controlPanel.commands.coordBoxes.widgets
 
     def resetCoords(self, ind):
         if ind == 0:
-            vals = [float(valueGB.value.text()) for valueGB in self.controlPannel.coordinates.widgets]
+            vals = [float(valueGB.value.text()) for valueGB in self.controlPanel.coordinates.widgets]
         else:
             vals = 6 * [0]
 
@@ -131,15 +131,15 @@ class MoveCmd(CustomedCmd):
         labels = ['X', 'Y', 'Z', 'U', 'V', 'W']
         values = [spinbox.getValue() for spinbox in self.spinboxes]
 
-        cmdStr = '%s slit move %s ' % (self.controlPannel.enuActor, self.combo.currentText())
+        cmdStr = '%s slit move %s ' % (self.controlPanel.enuActor, self.combo.currentText())
         cmdStr += (" ".join(['%s=%.5f' % (label, value) for label, value in zip(labels, values)]))
 
         return cmdStr
 
 
 class SetRepCmd(CustomedCmd):
-    def __init__(self, controlPannel):
-        CustomedCmd.__init__(self, controlPannel=controlPannel, buttonLabel='SET')
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SET')
 
         self.combo = QComboBox()
         self.combo.addItems(['home', 'tool'])
@@ -153,34 +153,38 @@ class SetRepCmd(CustomedCmd):
 
     @property
     def spinboxes(self):
-        return self.controlPannel.commands.coordBoxes.widgets
+        return self.controlPanel.commands.coordBoxes.widgets
 
     def buildCmd(self):
         labels = ['X', 'Y', 'Z', 'U', 'V', 'W']
         values = [spinbox.getValue() for spinbox in self.spinboxes]
 
-        cmdStr = '%s slit set %s ' % (self.controlPannel.enuActor, self.combo.currentText().lower())
+        cmdStr = '%s slit set %s ' % (self.controlPanel.enuActor, self.combo.currentText().lower())
         cmdStr += (" ".join(['%s=%.5f' % (label, value) for label, value in zip(labels, values)]))
 
         return cmdStr
 
 
 class SlitCommands(CommandsGB):
-    def __init__(self, controlPannel):
-        CommandsGB.__init__(self, controlPannel)
-        self.initButton = CmdButton(controlPannel=controlPannel, label='INIT',
-                                    cmdStr='%s slit init' % controlPannel.enuActor)
-        self.abortButton = CmdButton(controlPannel=controlPannel, label='ABORT',
-                                     cmdStr='%s slit abort' % controlPannel.enuActor)
-        self.goHomeButton = CmdButton(controlPannel=controlPannel, label='GO HOME',
-                                      cmdStr='%s slit move home' % controlPannel.enuActor)
+    def __init__(self, controlPanel):
+        CommandsGB.__init__(self, controlPanel)
+
+        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
+                                       cmdStr='%s connect controller=slit' % controlPanel.enuActor)
+        self.initButton = CmdButton(controlPanel=controlPanel, label='INIT',
+                                    cmdStr='%s slit init' % controlPanel.enuActor)
+        self.abortButton = CmdButton(controlPanel=controlPanel, label='ABORT',
+                                     cmdStr='%s slit abort' % controlPanel.enuActor)
+        self.goHomeButton = CmdButton(controlPanel=controlPanel, label='GO HOME',
+                                      cmdStr='%s slit move home' % controlPanel.enuActor)
         self.coordBoxes = CoordBoxes()
 
-        self.moveCmd = MoveCmd(controlPannel=controlPannel)
-        self.setRepCmd = SetRepCmd(controlPannel=controlPannel)
+        self.moveCmd = MoveCmd(controlPanel=controlPanel)
+        self.setRepCmd = SetRepCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.initButton, 0, 0)
-        self.grid.addWidget(self.abortButton, 0, 1)
+        self.grid.addWidget(self.connectButton, 0, 0)
+        self.grid.addWidget(self.initButton, 0, 1)
+        self.grid.addWidget(self.abortButton, 0, 2)
         self.grid.addLayout(self.coordBoxes, 1, 0, 2, 2)
         self.grid.addLayout(self.moveCmd, 3, 0, 1, 2)
         self.grid.addLayout(self.setRepCmd, 4, 0, 1, 2)
@@ -191,9 +195,9 @@ class SlitCommands(CommandsGB):
         return [self.initButton, self.goHomeButton, self.moveCmd.button, self.setRepCmd.button]
 
 
-class SlitPannel(ControlPannel):
+class SlitPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPannel.__init__(self, controlDialog, 'FCA')
+        ControlPanel.__init__(self, controlDialog, 'FCA')
 
         self.mode = ValueGB(self.moduleRow, 'slitMode', 'Mode', 0, '{:s}', fontSize=9)
         self.state = ValueGB(self.moduleRow, 'slitFSM', '', 0, '{:s}', fontSize=9)
@@ -235,18 +239,18 @@ class EnuDialog(ControlDialog):
 
         # self.textForHuman = ValueGB(enuDevice.keyVarDict['text'], 'Text', 0, '{:s}')
 
-        self.slitPannel = SlitPannel(self)
-        self.bshPannel = BshPannel(self)
-        self.rexmPannel = RexmPannel(self)
+        self.slitPanel = SlitPanel(self)
+        self.bshPanel = BshPanel(self)
+        self.rexmPanel = RexmPanel(self)
 
         # self.grid.addWidget(self.textForHuman, 0, 0, 1, 2)
-        self.grid.addWidget(self.slitPannel, 1, 0, 5, 1)
-        self.grid.addWidget(self.bshPannel, 1, 1, 3, 1)
-        self.grid.addWidget(self.rexmPannel, 4, 1, 2, 1)
+        self.grid.addWidget(self.slitPanel, 1, 0, 5, 1)
+        self.grid.addWidget(self.bshPanel, 1, 1, 3, 1)
+        self.grid.addWidget(self.rexmPanel, 4, 1, 2, 1)
 
     @property
     def customWidgets(self):
-        return self.slitPannel.customWidgets + self.bshPannel.customWidgets + self.rexmPannel.customWidgets
+        return self.slitPanel.customWidgets + self.bshPanel.customWidgets + self.rexmPanel.customWidgets
 
 
 class EnuRow(ModuleRow):
