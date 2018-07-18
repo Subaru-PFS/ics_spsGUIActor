@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QComboBox
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB, CommandsGB, ControlDialog, ControlPannel, DoubleSpinBoxGB, CmdButton, CustomedCmd
+from spsClient.widgets import ValueGB, CommandsGB, ControlDialog, ControlPanel, DoubleSpinBoxGB, CmdButton, CustomedCmd
 
 
 class SacRow(ModuleRow):
@@ -35,8 +35,8 @@ class MoveCmd(CustomedCmd):
     limits = dict(penta=(-450, 450),
                   detector=(0, 12))
 
-    def __init__(self, controlPannel, stage):
-        CustomedCmd.__init__(self, controlPannel, buttonLabel='MOVE')
+    def __init__(self, controlPanel, stage):
+        CustomedCmd.__init__(self, controlPanel, buttonLabel='MOVE')
 
         self.stage = stage
         l_bound, u_bound = MoveCmd.limits[stage]
@@ -59,7 +59,7 @@ class MoveCmd(CustomedCmd):
 class Looptime(ValueGB):
     def __init__(self, ccdCmd):
         self.ccdCmd = ccdCmd
-        ValueGB.__init__(self, ccdCmd.controlPannel.moduleRow, 'looptime', '', 0, '{:.2f}')
+        ValueGB.__init__(self, ccdCmd.controlPanel.moduleRow, 'looptime', '', 0, '{:.2f}')
 
     def setText(self, txt):
         if float(txt) > 0:
@@ -71,8 +71,8 @@ class Looptime(ValueGB):
 
 
 class ExposeCmd(CustomedCmd):
-    def __init__(self, controlPannel):
-        CustomedCmd.__init__(self, controlPannel, buttonLabel='EXPOSE')
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel, buttonLabel='EXPOSE')
 
         self.combo = QComboBox()
         self.combo.addItems(['object', 'background'])
@@ -90,11 +90,11 @@ class ExposeCmd(CustomedCmd):
 
 
 class StageCommands(CommandsGB):
-    def __init__(self, controlPannel, stage):
-        CommandsGB.__init__(self, controlPannel)
-        self.initButton = CmdButton(controlPannel=controlPannel, label='INIT', cmdStr='sac stages %s init' % stage)
+    def __init__(self, controlPanel, stage):
+        CommandsGB.__init__(self, controlPanel)
+        self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='sac stages %s init' % stage)
 
-        self.moveCmd = MoveCmd(controlPannel=controlPannel, stage=stage)
+        self.moveCmd = MoveCmd(controlPanel=controlPanel, stage=stage)
 
         self.grid.addWidget(self.initButton, 0, 0)
         self.grid.addLayout(self.moveCmd, 1, 0, 1, 3)
@@ -104,10 +104,10 @@ class StageCommands(CommandsGB):
         return [self.initButton, self.moveCmd.button]
 
 
-class StagePannel(ControlPannel):
+class StagePanel(ControlPanel):
     def __init__(self, controlDialog, stage):
         label = stage.capitalize()
-        ControlPannel.__init__(self, controlDialog, '%s Stage' % stage.capitalize())
+        ControlPanel.__init__(self, controlDialog, '%s Stage' % stage.capitalize())
 
         self.state = ValueGB(self.moduleRow, 'ls%s' % label, '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'ls%s' % label, '', 1, '{:s}')
@@ -127,13 +127,13 @@ class StagePannel(ControlPannel):
 
 
 class CcdCommands(CommandsGB):
-    def __init__(self, controlPannel):
-        CommandsGB.__init__(self, controlPannel)
+    def __init__(self, controlPanel):
+        CommandsGB.__init__(self, controlPanel)
 
-        self.connectButton = CmdButton(controlPannel=controlPannel, label='CONNECT', cmdStr='sac ccd connect')
-        self.exposeCmd = ExposeCmd(controlPannel=controlPannel)
-        self.startLoop = CmdButton(controlPannel=controlPannel, label='START LOOP', cmdStr='sac ccd loop start')
-        self.stopLoop = CmdButton(controlPannel=controlPannel, label='STOP LOOP', cmdStr='sac ccd loop stop')
+        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT', cmdStr='sac ccd connect')
+        self.exposeCmd = ExposeCmd(controlPanel=controlPanel)
+        self.startLoop = CmdButton(controlPanel=controlPanel, label='START LOOP', cmdStr='sac ccd loop start')
+        self.stopLoop = CmdButton(controlPanel=controlPanel, label='STOP LOOP', cmdStr='sac ccd loop stop')
         self.looptime = Looptime(self)
 
         self.grid.addWidget(self.connectButton, 0, 0)
@@ -146,9 +146,9 @@ class CcdCommands(CommandsGB):
         return [self.connectButton, self.exposeCmd.button, self.startLoop, self.stopLoop]
 
 
-class CcdPannel(ControlPannel):
+class CcdPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPannel.__init__(self, controlDialog, 'CCD')
+        ControlPanel.__init__(self, controlDialog, 'CCD')
 
         self.state = ValueGB(self.moduleRow, 'ccd', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'ccd', '', 1, '{:s}')
@@ -169,14 +169,14 @@ class SacDialog(ControlDialog):
     def __init__(self, sacRow):
         ControlDialog.__init__(self, moduleRow=sacRow)
 
-        self.detectorPannel = StagePannel(self, 'detector')
-        self.pentaPannel = StagePannel(self, 'penta')
-        self.ccdPannel = CcdPannel(self)
+        self.detectorPanel = StagePanel(self, 'detector')
+        self.pentaPanel = StagePanel(self, 'penta')
+        self.ccdPanel = CcdPanel(self)
 
-        self.grid.addWidget(self.detectorPannel, 0, 0)
-        self.grid.addWidget(self.pentaPannel, 1, 0)
-        self.grid.addWidget(self.ccdPannel, 2, 0)
+        self.grid.addWidget(self.detectorPanel, 0, 0)
+        self.grid.addWidget(self.pentaPanel, 1, 0)
+        self.grid.addWidget(self.ccdPanel, 2, 0)
 
     @property
     def customWidgets(self):
-        return self.detectorPannel.customWidgets + self.pentaPannel.customWidgets, self.ccdPannel.customWidgets
+        return self.detectorPanel.customWidgets + self.pentaPanel.customWidgets, self.ccdPanel.customWidgets
