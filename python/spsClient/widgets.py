@@ -177,6 +177,7 @@ class ControlPanel(QGroupBox):
             widget.setVisible(bool)
 
 
+
 class ControlDialog(QDialog):
     def __init__(self, moduleRow, title=False):
         title = moduleRow.actorLabel if not title else title
@@ -227,7 +228,7 @@ class DoubleSpinBoxGB(QGroupBox):
         self.value = QDoubleSpinBox()
         self.value.setValue(0)
         self.value.setDecimals(decimals)
-        #self.value.setRange(-5000, 5000)
+        self.value.setRange(vmin, vmax)
         self.grid.addWidget(self.value, 0, 0)
 
         self.setLayout(self.grid)
