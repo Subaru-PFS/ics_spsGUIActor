@@ -1,7 +1,8 @@
 __author__ = 'alefur'
 
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlDialog, ControlPanel, CommandsGB, CmdButton, CustomedCmd, SpinBoxGB, QLabel
+from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlDialog, ControlPanel, CommandsGB, CmdButton, \
+    CustomedCmd, SpinBoxGB, QLabel
 
 
 class DcbRow(ModuleRow):
@@ -120,6 +121,7 @@ class SwitchLabsphere(SwitchButton):
         self.buttonOn.setVisible(not bool)
         self.buttonOff.setVisible(bool)
 
+
 class AtenCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
@@ -187,7 +189,6 @@ class LabspherePanel(ControlPanel):
         return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons
 
 
-
 class AttenuatorCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel, buttonLabel='SET VALUE')
@@ -204,7 +205,8 @@ class AttenuatorCmd(CustomedCmd):
 class LabsphereCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT', cmdStr='dcb connect controller=labsphere')
+        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
+                                       cmdStr='dcb connect controller=labsphere')
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='dcb labsphere init')
         self.attenuatorCmd = AttenuatorCmd(controlPanel=controlPanel)
         self.switchHalogen = SwitchButton(controlPanel=controlPanel, key='halogen', label='Halogen',
@@ -218,7 +220,7 @@ class LabsphereCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return []
+        return [self.connectButton, self.initButton, self.attenuatorCmd.button] + self.switchHalogen.buttons
 
 
 class DcbDialog(ControlDialog):

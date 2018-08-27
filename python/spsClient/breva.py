@@ -2,13 +2,15 @@ __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QComboBox, QGridLayout
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import Coordinates, ValueGB, SwitchGB, CommandsGB, ControlDialog, ControlPanel, CmdButton, DoubleSpinBoxGB, CustomedCmd
+from spsClient.widgets import Coordinates, ValueGB, SwitchGB, CommandsGB, ControlDialog, ControlPanel, CmdButton, \
+    DoubleSpinBoxGB, CustomedCmd
 
 
 class BrevaCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT', cmdStr='breva connect controller=hexa')
+        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
+                                       cmdStr='breva connect controller=hexa')
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='breva init')
         self.motorsOn = CmdButton(controlPanel=controlPanel, label='MOTOR ON', cmdStr='breva motor on')
         self.motorsOff = CmdButton(controlPanel=controlPanel, label='MOTOR OFF', cmdStr='breva motor off')
@@ -41,7 +43,8 @@ class BrevaCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.connectButton, self.initButton, self.motorsOn, self.motorsOff, self.moveCmd.button, self.gotoCmd.button, self.setRepCmd.button ]
+        return [self.connectButton, self.initButton, self.motorsOn, self.motorsOff, self.moveCmd.button,
+                self.setRepCmd.button, self.gotoCmd.button]
 
 
 class CoordBoxes(QGridLayout):

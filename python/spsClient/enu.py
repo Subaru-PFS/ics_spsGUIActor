@@ -93,12 +93,12 @@ class BshPanel(ControlPanel):
 class CoordBoxes(QGridLayout):
     def __init__(self):
         QGridLayout.__init__(self)
-        self.widgets = [DoubleSpinBoxGB('X', -5, 5, 5),
-                        DoubleSpinBoxGB('Y', -5, 5, 5),
-                        DoubleSpinBoxGB('Z', -5, 5, 5),
-                        DoubleSpinBoxGB('U', -1, 1, 5),
-                        DoubleSpinBoxGB('V', -1, 1, 5),
-                        DoubleSpinBoxGB('W', -1, 1, 5)]
+        self.widgets = [DoubleSpinBoxGB('X', -10, 10, 5),
+                        DoubleSpinBoxGB('Y', -10, 10, 5),
+                        DoubleSpinBoxGB('Z', -10, 10, 5),
+                        DoubleSpinBoxGB('U', -2, 2, 5),
+                        DoubleSpinBoxGB('V', -2, 2, 5),
+                        DoubleSpinBoxGB('W', -2, 2, 5)]
 
         for i, spinbox in enumerate(self.widgets):
             self.addWidget(spinbox, i // 3, i % 3)
@@ -192,7 +192,8 @@ class SlitCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.initButton, self.goHomeButton, self.moveCmd.button, self.setRepCmd.button]
+        return [self.connectButton, self.initButton, self.abortButton,
+                self.goHomeButton, self.moveCmd.button, self.setRepCmd.button]
 
 
 class SlitPanel(ControlPanel):
@@ -230,7 +231,7 @@ class SlitPanel(ControlPanel):
     @property
     def customWidgets(self):
         return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.coordinates.widgets + \
-               self.home.widgets + self.tool.widgets
+               self.home.widgets + self.tool.widgets + self.commands.buttons
 
 
 class EnuDialog(ControlDialog):
