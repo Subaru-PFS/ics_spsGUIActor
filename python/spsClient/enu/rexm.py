@@ -38,7 +38,7 @@ class RexmCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.connectButton, self.initButton, self.abortButton]
+        return [self.connectButton, self.initButton, self.abortButton, self.moveCmd.button]
 
 
 class RexmPanel(ControlPanel):

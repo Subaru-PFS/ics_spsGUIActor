@@ -104,7 +104,7 @@ class BshCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.connectButton] + self.switchBia.buttons, self.switchStrobe.buttons
+        return [self.connectButton, self.shutterCmd.button, self.setBiaParam.button] + self.switchBia.buttons + self.switchStrobe.buttons
 
 
 class BshPanel(ControlPanel):
@@ -147,4 +147,4 @@ class BshPanel(ControlPanel):
 
     @property
     def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())]
+        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons

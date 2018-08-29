@@ -65,7 +65,7 @@ class SwitchButton(SwitchGB):
         self.buttonOn = CmdButton(controlPanel=controlPanel, label='%s ON' % label, cmdStr=cmdStrOn)
         self.buttonOff = CmdButton(controlPanel=controlPanel, label='%s OFF' % label, cmdStr=cmdStrOff)
 
-        ValueGB.__init__(self, controlPanel.moduleRow, key=key, title='', ind=ind, fmt=fmt)
+        SwitchGB.__init__(self, controlPanel.moduleRow, key=key, title='', ind=ind, fmt=fmt)
 
     @property
     def buttons(self):

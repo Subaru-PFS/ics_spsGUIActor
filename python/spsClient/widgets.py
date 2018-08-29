@@ -234,10 +234,24 @@ class DoubleSpinBoxGB(QGroupBox):
         self.setLayout(self.grid)
 
     def setValue(self, value):
-        self.value.setValue(value)
+        self.value.setValue(float(value))
 
     def getValue(self):
         return float(self.value.value())
+
+
+class LockSpinBox(QSpinBox):
+    def __init__(self):
+        self.locked = False
+        QSpinBox.__init__(self)
+
+    def focusInEvent(self, event):
+        self.locked = True
+        QSpinBox.focusInEvent(self, event)
+
+    def focusOutEvent(self, event):
+        self.locked = False
+        QSpinBox.focusOutEvent(self, event)
 
 
 class SpinBoxGB(QGroupBox):
@@ -246,18 +260,27 @@ class SpinBoxGB(QGroupBox):
         self.setTitle('%s' % title)
 
         self.grid = QGridLayout()
-        self.value = QSpinBox()
+        self.value = LockSpinBox()
         self.value.setValue(0)
         self.value.setRange(vmin, vmax)
         self.grid.addWidget(self.value, 0, 0)
 
         self.setLayout(self.grid)
 
+    @property
+    def locked(self):
+        return self.value.locked
+
     def setValue(self, value):
+        try:
+            value = int(value)
+        except ValueError:
+            value = 0
+
         self.value.setValue(value)
 
     def getValue(self):
-        return float(self.value.value())
+        return int(self.value.value())
 
 
 class CmdButton(QPushButton):
