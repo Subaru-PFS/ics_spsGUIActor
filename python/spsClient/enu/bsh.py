@@ -2,7 +2,8 @@ __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QComboBox
 from spsClient.dcb.aten import SwitchButton
-from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CustomedCmd, CommandsGB, SwitchGB, SpinBoxGB
+from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CustomedCmd, CommandsGB, SwitchGB, SpinBoxGB, \
+    DoubleSpinBoxGB
 
 
 class ShutterCmd(CustomedCmd):
@@ -20,11 +21,30 @@ class ShutterCmd(CustomedCmd):
 
     def buildCmd(self):
         cmdStr = '%s shutters %s %s' % (self.controlPanel.enuActor,
-                                             self.comboMove.currentText(),
-                                             self.comboShut.currentText())
+                                        self.comboMove.currentText(),
+                                        self.comboShut.currentText())
 
         return cmdStr
 
+
+class ExposeCmd(CustomedCmd):
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='EXPOSE')
+
+        self.exptime = DoubleSpinBoxGB('Exptime', 1, 10000, 1)
+
+        self.comboShut = QComboBox()
+        self.comboShut.addItems(['', 'blue', 'red'])
+
+        self.addWidget(self.exptime, 0, 1)
+        self.addWidget(self.comboShut, 0, 2)
+
+    def buildCmd(self):
+        cmdStr = '%s shutters expose exptime=%.1f %s' % (self.controlPanel.enuActor,
+                                                         self.exptime.getValue(),
+                                                         self.comboShut.currentText())
+
+        return cmdStr
 
 
 class BiaPeriod(ValueGB):
@@ -51,6 +71,7 @@ class BiaDuty(ValueGB):
 
     def getValue(self):
         return self.spinbox.getValue()
+
 
 class SetBiaParamCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -88,7 +109,11 @@ class BshCommands(CommandsGB):
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
                                        cmdStr='%s connect controller=bsh' % controlPanel.enuActor)
 
+        self.abortButton = CmdButton(controlPanel=controlPanel, label='ABORT',
+                                     cmdStr='%s shutters abort' % controlPanel.enuActor)
+
         self.shutterCmd = ShutterCmd(controlPanel=controlPanel)
+        self.exposeCmd = ExposeCmd(controlPanel=controlPanel)
         self.switchBia = SwitchBia(controlPanel=controlPanel)
 
         self.switchStrobe = SwitchButton(controlPanel=controlPanel, key='biaStrobe', label='STROBE',
@@ -97,15 +122,17 @@ class BshCommands(CommandsGB):
         self.setBiaParam = SetBiaParamCmd(controlPanel=controlPanel)
 
         self.grid.addWidget(self.connectButton, 0, 0)
-        self.grid.addLayout(self.shutterCmd, 1, 0,1,3)
-
-        self.switchBia.setGrid(self.grid, 2, 0)
-        self.switchStrobe.setGrid(self.grid, 2, 1)
-        self.grid.addLayout(self.setBiaParam, 3, 0, 1, 3)
+        self.grid.addWidget(self.abortButton, 0, 1)
+        self.grid.addLayout(self.shutterCmd, 1, 0, 1, 3)
+        self.grid.addLayout(self.exposeCmd, 2, 0, 1, 3)
+        self.switchBia.setGrid(self.grid, 3, 0)
+        self.switchStrobe.setGrid(self.grid, 3, 1)
+        self.grid.addLayout(self.setBiaParam, 4, 0, 1, 3)
 
     @property
     def buttons(self):
-        return [self.connectButton, self.shutterCmd.button, self.setBiaParam.button] + self.switchBia.buttons + self.switchStrobe.buttons
+        return [self.connectButton, self.shutterCmd.button,
+                self.setBiaParam.button] + self.switchBia.buttons + self.switchStrobe.buttons
 
 
 class BshPanel(ControlPanel):
