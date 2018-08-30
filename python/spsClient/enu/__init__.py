@@ -7,13 +7,19 @@ from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB, ControlDialog
 from spsClient import bigFont
 
+
 class ElapsedTime(QProgressBar):
-    def __init__(self, enuWidget, exptime):
+    def __init__(self, enuRow):
         QProgressBar.__init__(self)
+        self.setFormat('EXPOSING \r\n' + '%p%')
+        self.enuRow = enuRow
+        self.enuRow.keyVarDict['elapsedTime'].addCallback(self.updateBar, callNow=False)
+        self.enuRow.keyVarDict['bshFSM'].addCallback(self.hideBar)
+
+        self.setFixedSize(100, 45)
+
+    def setExptime(self, exptime):
         self.setRange(0, exptime)
-        self.enuWidget = enuWidget
-        enuWidget.keyVarDict['elapsedTime'].addCallback(self.updateBar)
-        enuWidget.keyVarDict['exptime'].addCallback(self.hideBar, callNow=False)
 
     def updateBar(self, keyvar):
         try:
@@ -24,10 +30,22 @@ class ElapsedTime(QProgressBar):
         self.setValue(val)
 
     def hideBar(self, keyvar):
-        self.enuWidget.keyVarDict['elapsedTime'].removeCallback(self.updateBar)
-        self.enuWidget.keyVarDict['exptime'].removeCallback(self.hideBar)
-        self.enuWidget.removeWidget(self)
+        try:
+            state, substate = keyvar.getValue()
+            if substate == 'EXPOSING':
+                self.enuRow.addElaspedTime()
+                self.enuRow.substate.hide()
+                self.show()
+            else:
+                raise ValueError
 
+        except ValueError:
+            self.resetValue()
+
+    def resetValue(self):
+        self.hide()
+        self.setValue(0)
+        self.enuRow.substate.show()
 
 class EnuDialog(ControlDialog):
     def __init__(self, enuRow):
@@ -57,8 +75,9 @@ class EnuRow(ModuleRow):
         self.slit = ValueGB(self, 'slitLocation', 'FCA_Position', 0, '{:s}', fontSize=bigFont)
         self.shutters = ValueGB(self, 'shutters', 'SHA_Position', 0, '{:s}', fontSize=bigFont)
         self.bia = ValueGB(self, 'bia', 'BIA_State', 0, '{:s}', fontSize=bigFont)
+        self.elapsedTime = ElapsedTime(self)
 
-        self.keyVarDict['integratingTime'].addCallback(self.showBar, callNow=False)
+        self.keyVarDict['integratingTime'].addCallback(self.setExptime, callNow=False)
 
     @property
     def customWidgets(self):
@@ -71,14 +90,17 @@ class EnuRow(ModuleRow):
 
         return widgets
 
-    def showBar(self, keyvar):
+    def setExptime(self, keyvar):
         try:
             exptime = keyvar.getValue()
         except ValueError:
             return
 
-        elapsedTime = ElapsedTime(self, exptime=exptime)
-        self.module.grid.addWidget(elapsedTime, self.lineNB, len(self.widgets))
+        self.elapsedTime.setExptime(exptime)
+
+    def addElaspedTime(self):
+
+        self.module.grid.addWidget(self.elapsedTime, self.lineNB, 2)
 
     def removeWidget(self, widget):
         self.state.show()
