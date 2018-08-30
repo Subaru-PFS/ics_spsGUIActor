@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QComboBox, QGridLayout
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import Coordinates, ValueGB, SwitchGB, CommandsGB, ControlDialog, ControlPanel, CmdButton, \
     DoubleSpinBoxGB, CustomedCmd
-
+from spsClient import bigFont
 
 class BrevaCommands(CommandsGB):
     def __init__(self, controlPanel):
@@ -142,9 +142,9 @@ class BrevaPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog, title='breva')
 
-        self.coordinates = Coordinates(self.moduleRow, 'position', title='Position', fontSize=9)
-        self.repobj = Coordinates(self.moduleRow, 'REPOBJ', title='REPOBJ', fontSize=9)
-        self.reputil = Coordinates(self.moduleRow, 'REPUTIL', title='REPUTIL', fontSize=9)
+        self.coordinates = Coordinates(self.moduleRow, 'position', title='Position')
+        self.repobj = Coordinates(self.moduleRow, 'REPOBJ', title='REPOBJ')
+        self.reputil = Coordinates(self.moduleRow, 'REPUTIL', title='REPUTIL')
         self.commands = BrevaCommands(self)
 
         self.grid.addWidget(self.coordinates, 0, 0, 1, 6)
@@ -172,11 +172,11 @@ class BrevaRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='breva', actorLabel='BREVA')
 
-        self.state = ValueGB(self, 'hexaFSM', '', 0, '{:s}')
-        self.substate = ValueGB(self, 'hexaFSM', '', 1, '{:s}')
+        self.state = ValueGB(self, 'hexaFSM', '', 0, '{:s}', fontSize=bigFont)
+        self.substate = ValueGB(self, 'hexaFSM', '', 1, '{:s}', fontSize=bigFont)
         self.motorState = MotorState(self)
-        self.error = ValueGB(self, 'error', 'ERROR', 0, '{:g}')
-        self.fiberTargeted = ValueGB(self, 'targetedFiber', 'Fiber', 0, '{:s}')
+        self.error = ValueGB(self, 'error', 'ERROR', 0, '{:g}', fontSize=bigFont)
+        self.fiberTargeted = ValueGB(self, 'targetedFiber', 'Fiber', 0, '{:s}', fontSize=bigFont)
 
     @property
     def customWidgets(self):
@@ -197,7 +197,7 @@ class BrevaRow(ModuleRow):
 class MotorState(SwitchGB):
     def __init__(self, moduleRow):
         self.moduleRow = moduleRow
-        SwitchGB.__init__(self, moduleRow, key='motors_on', title='MOTORS', ind=0, fmt='{:g}')
+        SwitchGB.__init__(self, moduleRow, key='motors_on', title='MOTORS', ind=0, fmt='{:g}', fontSize=bigFont)
 
     def setText(self, txt):
         SwitchGB.setText(self, txt)

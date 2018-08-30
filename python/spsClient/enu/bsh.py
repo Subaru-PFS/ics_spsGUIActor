@@ -29,7 +29,7 @@ class ShutterCmd(CustomedCmd):
 class BiaPeriod(ValueGB):
     def __init__(self, moduleRow):
         self.spinbox = SpinBoxGB('Period', 0, 65536)
-        ValueGB.__init__(self, moduleRow, 'biaConfig', '', 0, '{:d}', fontSize=9)
+        ValueGB.__init__(self, moduleRow, 'biaConfig', '', 0, '{:d}')
 
     def setText(self, txt):
         if not self.spinbox.locked:
@@ -42,7 +42,7 @@ class BiaPeriod(ValueGB):
 class BiaDuty(ValueGB):
     def __init__(self, moduleRow):
         self.spinbox = SpinBoxGB('Duty', 0, 255)
-        ValueGB.__init__(self, moduleRow, 'biaConfig', '', 1, '{:d}', fontSize=9)
+        ValueGB.__init__(self, moduleRow, 'biaConfig', '', 1, '{:d}')
 
     def setText(self, txt):
         if not self.spinbox.locked:
@@ -111,19 +111,19 @@ class BshPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog, 'BSH')
 
-        self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}', fontSize=9)
-        self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}', fontSize=9)
-        self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}', fontSize=9)
+        self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}')
+        self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}')
 
-        self.shutters = ValueGB(self.moduleRow, 'shutters', 'Shutters', 0, '{:s}', fontSize=9)
-        self.exptime = ValueGB(self.moduleRow, 'integratingTime', 'Exptime', 0, '{:.1f}', fontSize=9)
-        self.elapsedTime = ValueGB(self.moduleRow, 'elapsedTime', 'elapsedTime', 0, '{:.1f}', fontSize=9)
+        self.shutters = ValueGB(self.moduleRow, 'shutters', 'Shutters', 0, '{:s}')
+        self.exptime = ValueGB(self.moduleRow, 'integratingTime', 'Exptime', 0, '{:.1f}')
+        self.elapsedTime = ValueGB(self.moduleRow, 'elapsedTime', 'elapsedTime', 0, '{:.1f}')
 
-        self.bia = ValueGB(self.moduleRow, 'bia', 'BIA', 0, '{:s}', fontSize=9)
-        self.biaStrobe = SwitchGB(self.moduleRow, 'biaStrobe', 'Strobe', 0, '{:g}', fontSize=9)
+        self.bia = ValueGB(self.moduleRow, 'bia', 'BIA', 0, '{:s}')
+        self.biaStrobe = SwitchGB(self.moduleRow, 'biaStrobe', 'Strobe', 0, '{:g}')
 
-        self.biaPeriod = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Period', 0, '{:d}', fontSize=9)
-        self.biaDuty = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Duty', 1, '{:d}', fontSize=9)
+        self.biaPeriod = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Period', 0, '{:d}')
+        self.biaDuty = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Duty', 1, '{:d}')
 
         self.commands = BshCommands(self)
         self.grid.addWidget(self.mode, 0, 0)

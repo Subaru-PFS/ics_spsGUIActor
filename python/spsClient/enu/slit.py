@@ -99,7 +99,7 @@ class SlitCommands(CommandsGB):
         self.grid.addWidget(self.connectButton, 0, 0)
         self.grid.addWidget(self.initButton, 0, 1)
         self.grid.addWidget(self.abortButton, 0, 2)
-        self.grid.addLayout(self.coordBoxes, 1, 0, 2, 2)
+        self.grid.addLayout(self.coordBoxes, 1, 0, 2, 3)
         self.grid.addLayout(self.moveCmd, 3, 0, 1, 2)
         self.grid.addLayout(self.setRepCmd, 4, 0, 1, 2)
         self.grid.addWidget(self.goHomeButton, 5, 0, 1, 1)
@@ -114,15 +114,15 @@ class SlitPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog, 'FCA')
 
-        self.mode = ValueGB(self.moduleRow, 'slitMode', 'Mode', 0, '{:s}', fontSize=9)
-        self.state = ValueGB(self.moduleRow, 'slitFSM', '', 0, '{:s}', fontSize=9)
-        self.substate = ValueGB(self.moduleRow, 'slitFSM', '', 1, '{:s}', fontSize=9)
-        self.info = ValueGB(self.moduleRow, 'slitInfo', 'Info', 0, '{:s}', fontSize=9)
-        self.location = ValueGB(self.moduleRow, 'slitLocation', 'Location', 0, '{:s}', fontSize=9)
+        self.mode = ValueGB(self.moduleRow, 'slitMode', 'Mode', 0, '{:s}')
+        self.state = ValueGB(self.moduleRow, 'slitFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'slitFSM', '', 1, '{:s}')
+        self.info = ValueGB(self.moduleRow, 'slitInfo', 'Info', 0, '{:s}')
+        self.location = ValueGB(self.moduleRow, 'slitLocation', 'Location', 0, '{:s}')
 
-        self.coordinates = Coordinates(self.moduleRow, 'slit', title='Position', fontSize=9)
-        self.home = Coordinates(self.moduleRow, 'slitHome', title='Home', fontSize=9)
-        self.tool = Coordinates(self.moduleRow, 'slitTool', title='Tool', fontSize=9)
+        self.coordinates = Coordinates(self.moduleRow, 'slit', title='Position')
+        self.home = Coordinates(self.moduleRow, 'slitHome', title='Home')
+        self.tool = Coordinates(self.moduleRow, 'slitTool', title='Tool')
 
         self.commands = SlitCommands(self)
 

@@ -2,7 +2,7 @@ __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QPushButton
 from spsClient.widgets import ValueGB, CmdButton
-
+from spsClient import bigFont
 
 class ModuleRow(object):
     def __init__(self, module, actorName, actorLabel):
@@ -61,8 +61,8 @@ class ActorGB(ValueGB):
         self.moduleRow = moduleRow
         self.button = QPushButton()
         self.button.setFlat(True)
-        ValueGB.__init__(self, None, None, 'ACTOR', 0, '{:s}', callNow=False,
-                         keyvar=moduleRow.models['hub'].keyVarDict['actors'])
+        ValueGB.__init__(self, None, None, 'Actor', 0, '{:s}', callNow=False,
+                         keyvar=moduleRow.models['hub'].keyVarDict['actors'],fontSize=bigFont)
 
         self.grid.removeWidget(self.value)
         self.setText(moduleRow.actorLabel)
@@ -75,7 +75,7 @@ class ActorGB(ValueGB):
 
     def setColor(self, background, police='white'):
         bckColor = ValueGB.setColor(self, background=background, police=police)
-        self.button.setStyleSheet("QPushButton{font-size: 11pt; background: %s; color:%s; }" % (bckColor, police))
+        self.button.setStyleSheet("QPushButton{font-size: %ipt; background: %s; color:%s; }" % (self.fontSize, bckColor, police))
 
     def setText(self, txt):
         self.button.setText(txt)

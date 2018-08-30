@@ -45,15 +45,15 @@ class RexmPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog, 'RDA')
 
-        self.mode = ValueGB(self.moduleRow, 'rexmMode', 'Mode', 0, '{:s}', fontSize=9)
-        self.state = ValueGB(self.moduleRow, 'rexmFSM', '', 0, '{:s}', fontSize=9)
-        self.substate = ValueGB(self.moduleRow, 'rexmFSM', '', 1, '{:s}', fontSize=9)
-        self.position = ValueGB(self.moduleRow, 'rexm', 'Position', 0, '{:s}', fontSize=9)
+        self.mode = ValueGB(self.moduleRow, 'rexmMode', 'Mode', 0, '{:s}')
+        self.state = ValueGB(self.moduleRow, 'rexmFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'rexmFSM', '', 1, '{:s}')
+        self.position = ValueGB(self.moduleRow, 'rexm', 'Position', 0, '{:s}')
 
-        self.switchA = ValueGB(self.moduleRow, 'rexmInfo', 'SwitchA', 0, '{:d}', fontSize=9)
-        self.switchB = ValueGB(self.moduleRow, 'rexmInfo', 'switchB', 1, '{:d}', fontSize=9)
-        self.speed = ValueGB(self.moduleRow, 'rexmInfo', 'Speed', 2, '{:d}', fontSize=9)
-        self.steps = ValueGB(self.moduleRow, 'rexmInfo', 'Steps', 3, '{:d}', fontSize=9)
+        self.switchA = ValueGB(self.moduleRow, 'rexmInfo', 'SwitchA', 0, '{:d}')
+        self.switchB = ValueGB(self.moduleRow, 'rexmInfo', 'switchB', 1, '{:d}')
+        self.speed = ValueGB(self.moduleRow, 'rexmInfo', 'Speed', 2, '{:d}')
+        self.steps = ValueGB(self.moduleRow, 'rexmInfo', 'Steps', 3, '{:d}')
 
         self.commands = RexmCommands(self)
 

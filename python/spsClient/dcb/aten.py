@@ -2,7 +2,6 @@ __author__ = 'alefur'
 
 from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlPanel, CommandsGB, CmdButton
 
-
 class AtenPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog, 'Aten')

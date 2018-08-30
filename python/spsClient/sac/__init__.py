@@ -3,17 +3,17 @@ from spsClient.modulerow import ModuleRow
 from spsClient.sac.ccd import CcdPanel
 from spsClient.sac.stage import StagePanel
 from spsClient.widgets import ValueGB, ControlDialog
-
+from spsClient import bigFont
 
 class SacRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='sac', actorLabel='SAC')
 
-        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}')
-        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}')
+        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=bigFont)
+        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=bigFont)
 
-        self.pentaPosition = ValueGB(self, 'lsPenta', 'Penta', 2, '{:.3f}')
-        self.detectorPosition = ValueGB(self, 'lsDetector', 'Detector', 2, '{:.3f}')
+        self.pentaPosition = ValueGB(self, 'lsPenta', 'Penta', 2, '{:.3f}', fontSize=bigFont)
+        self.detectorPosition = ValueGB(self, 'lsDetector', 'Detector', 2, '{:.3f}', fontSize=bigFont)
 
     @property
     def customWidgets(self):

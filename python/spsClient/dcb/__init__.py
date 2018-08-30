@@ -6,21 +6,21 @@ from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlDialog, ControlP
 
 from spsClient.dcb.aten import AtenPanel
 from spsClient.dcb.labsphere import LabspherePanel
-
+from spsClient import bigFont
 
 class DcbRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='dcb', actorLabel='DCB')
 
-        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}')
-        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}')
-        self.labsphere = EnumGB(self, 'pow_labsphere', 'Labsphere', 0, '{:s}')
-        self.hgar = SwitchGB(self, 'hgar', 'Hg-Ar', 0, '{:g}')
-        self.neon = SwitchGB(self, 'neon', 'Neon', 0, '{:g}')
-        self.xenon = SwitchGB(self, 'xenon', 'Xenon', 0, '{:g}')
-        self.halogen = SwitchGB(self, 'halogen', 'Halogen', 0, '{:g}')
-        self.photodiode = ValueGB(self, 'photodiode', 'photodiode', 0, '{:g}')
-        self.attenuator = ValueGB(self, 'attenuator', 'attenuator', 0, '{:g}')
+        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=bigFont)
+        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=bigFont)
+        self.labsphere = EnumGB(self, 'pow_labsphere', 'Labsphere', 0, '{:s}', fontSize=bigFont)
+        self.hgar = SwitchGB(self, 'hgar', 'Hg-Ar', 0, '{:g}', fontSize=bigFont)
+        self.neon = SwitchGB(self, 'neon', 'Neon', 0, '{:g}', fontSize=bigFont)
+        self.xenon = SwitchGB(self, 'xenon', 'Xenon', 0, '{:g}', fontSize=bigFont)
+        self.halogen = SwitchGB(self, 'halogen', 'Halogen', 0, '{:g}', fontSize=bigFont)
+        self.photodiode = ValueGB(self, 'photodiode', 'photodiode', 0, '{:g}', fontSize=bigFont)
+        self.attenuator = ValueGB(self, 'attenuator', 'attenuator', 0, '{:g}', fontSize=bigFont)
 
     @property
     def customWidgets(self):

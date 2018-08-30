@@ -6,6 +6,8 @@ from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import QPlainTextEdit, QLabel, QPushButton, QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
     QDialogButtonBox, QDoubleSpinBox, QSpinBox
 
+from spsClient import smallFont
+
 state2color = {"WIPING": ('blue', 'white'),
                "INTEGRATING": ('yellow', 'black'),
                "READING": ('orange', 'white'),
@@ -34,7 +36,7 @@ convertText = {'on': 'ON', 'off': 'OFF'}
 
 
 class ValueGB(QGroupBox):
-    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=11, callNow=True, keyvar=False):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=smallFont, callNow=True, keyvar=False):
 
         keyvar = moduleRow.keyVarDict[key] if not moduleRow is None else keyvar
         self.keyvar = keyvar
@@ -90,7 +92,7 @@ class ValueGB(QGroupBox):
             bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #dfdfdf, stop: 1 #000000)'
 
         self.setStyleSheet(
-            "QGroupBox {font-size: 9pt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " % bckColor +
+            "QGroupBox {font-size: %ipt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " % (self.fontSize-1, bckColor) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
         self.value.setStyleSheet(
@@ -116,7 +118,7 @@ class ValueGB(QGroupBox):
 class Coordinates(QGroupBox):
     posName = ['X', 'Y', 'Z', 'U', 'V', 'W']
 
-    def __init__(self, moduleRow, key, title, fontSize=11):
+    def __init__(self, moduleRow, key, title, fontSize=smallFont):
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
 
@@ -129,12 +131,12 @@ class Coordinates(QGroupBox):
         self.setTitle(title)
         self.setLayout(self.grid)
         self.setStyleSheet(
-            "QGroupBox {font-size: 9pt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " +
+            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} "%(fontSize) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
 
 class CommandsGB(QGroupBox):
-    def __init__(self, controlPanel):
+    def __init__(self, controlPanel, fontSize=smallFont):
         self.controlPanel = controlPanel
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
@@ -142,7 +144,7 @@ class CommandsGB(QGroupBox):
         self.setTitle('Commands')
         self.setLayout(self.grid)
         self.setStyleSheet(
-            "QGroupBox {font-size: 9pt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " +
+            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} "%(fontSize) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
     @property
@@ -338,7 +340,7 @@ class InnerButton(CmdButton):
 
 
 class SwitchGB(ValueGB):
-    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=11):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=smallFont):
         self.moduleRow = moduleRow
         ValueGB.__init__(self, moduleRow, key=key, title=title, ind=ind, fmt=fmt, fontSize=fontSize)
 
@@ -354,7 +356,7 @@ class SwitchGB(ValueGB):
 
 
 class EnumGB(ValueGB):
-    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=11):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=smallFont):
         self.moduleRow = moduleRow
         ValueGB.__init__(self, moduleRow, key=key, title=title, ind=ind, fmt=fmt, fontSize=fontSize)
 

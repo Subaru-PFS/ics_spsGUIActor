@@ -3,7 +3,7 @@ __author__ = 'alefur'
 from PyQt5.QtWidgets import QProgressBar
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB
-
+from spsClient import bigFont
 
 class ReadRows(QProgressBar):
     def __init__(self, ccdProp):
@@ -40,7 +40,7 @@ class CcdRow(ModuleRow):
                            actorLabel='%sCU' % arm.upper())
 
         self.substate = CcdState(self)
-        self.temperature = ValueGB(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}')
+        self.temperature = ValueGB(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', fontSize=bigFont)
         self.readRows = ReadRows(self)
 
     @property
@@ -51,7 +51,7 @@ class CcdRow(ModuleRow):
 class CcdState(ValueGB):
     def __init__(self, moduleRow):
         self.moduleRow = moduleRow
-        ValueGB.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}')
+        ValueGB.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}', fontSize=bigFont)
 
     def setText(self, txt):
         txt = txt.upper()
