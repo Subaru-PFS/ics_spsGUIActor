@@ -6,7 +6,7 @@ from spsClient.dcb import DcbRow
 from spsClient.enu import EnuRow
 from spsClient.sac import SacRow
 from spsClient.seqno import SeqnoRow
-from spsClient.viscu import CcdRow
+from spsClient.viscu import CamRow
 
 
 class Module(QGroupBox):
@@ -53,8 +53,7 @@ class Specmodule(Module):
         self.smId = smId
 
         self.enu = EnuRow(self)
-        self.cams = [CcdRow(self, arm=arm) for arm in arms]
-
+        self.cams = [CamRow(self, arm=arm) for arm in arms]
         self.populateLayout()
 
     @property
