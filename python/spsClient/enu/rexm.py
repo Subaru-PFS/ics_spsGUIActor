@@ -43,7 +43,7 @@ class RexmCommands(CommandsGB):
 
 class RexmPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog, 'RDA')
+        ControlPanel.__init__(self, controlDialog)
 
         self.mode = ValueGB(self.moduleRow, 'rexmMode', 'Mode', 0, '{:s}')
         self.state = ValueGB(self.moduleRow, 'rexmFSM', '', 0, '{:s}')
@@ -67,10 +67,8 @@ class RexmPanel(ControlPanel):
         self.grid.addWidget(self.speed, 1, 2)
         self.grid.addWidget(self.steps, 1, 3)
 
-        self.grid.addWidget(self.commands, 0, 4, 2, 2)
+        self.grid.addWidget(self.commands, 0, 4, 4, 3)
 
-        self.setChecked(False)
-        self.showHide()
 
     @property
     def enuActor(self):

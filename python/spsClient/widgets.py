@@ -4,7 +4,7 @@ from functools import partial
 
 from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import QPlainTextEdit, QLabel, QPushButton, QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
-    QDialogButtonBox, QDoubleSpinBox, QSpinBox
+    QDialogButtonBox, QDoubleSpinBox, QSpinBox, QTabWidget
 
 from spsClient import smallFont
 
@@ -153,16 +153,11 @@ class CommandsGB(QGroupBox):
 
 
 class ControlPanel(QGroupBox):
-    def __init__(self, controlDialog, title):
+    def __init__(self, controlDialog):
         QGroupBox.__init__(self)
         self.controlDialog = controlDialog
         self.grid = QGridLayout()
         self.setLayout(self.grid)
-
-        self.setTitle(title)
-        self.setCheckable(True)
-
-        self.clicked.connect(self.showHide)
 
     @property
     def moduleRow(self):
@@ -172,13 +167,6 @@ class ControlPanel(QGroupBox):
     def customWidgets(self):
         return [self.grid.itemAt(i).widget() for i in range(self.grid.count())]
 
-    def showHide(self):
-        bool = True if self.isChecked() else False
-
-        for widget in self.customWidgets:
-            widget.setVisible(bool)
-
-
 
 class ControlDialog(QDialog):
     def __init__(self, moduleRow, title=False):
@@ -186,7 +174,7 @@ class ControlDialog(QDialog):
         QDialog.__init__(self, parent=moduleRow.mwindow.spsClient)
 
         self.vbox = QVBoxLayout()
-        self.grid = QGridLayout()
+        self.tabWidget = QTabWidget(self)
         self.cmdBuffer = dict()
 
         self.moduleRow = moduleRow
@@ -197,7 +185,7 @@ class ControlDialog(QDialog):
 
         self.reload = ReloadButton(self)
         self.vbox.addWidget(self.reload)
-        self.vbox.addLayout(self.grid)
+        self.vbox.addWidget(self.tabWidget)
         self.vbox.addWidget(buttonBox)
 
         self.setLayout(self.vbox)

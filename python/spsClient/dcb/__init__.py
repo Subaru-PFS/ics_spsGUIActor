@@ -39,8 +39,8 @@ class DcbDialog(ControlDialog):
         self.atenPanel = AtenPanel(self)
         self.labspherePanel = LabspherePanel(self)
 
-        self.grid.addWidget(self.atenPanel, 0, 0)
-        self.grid.addWidget(self.labspherePanel, 1, 0)
+        self.tabWidget.addTab(self.atenPanel, 'Aten')
+        self.tabWidget.addTab(self.labspherePanel, 'Labsphere')
 
     @property
     def customWidgets(self):

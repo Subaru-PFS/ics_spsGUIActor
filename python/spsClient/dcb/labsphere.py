@@ -6,7 +6,7 @@ from spsClient.widgets import ValueGB, SwitchGB, ControlPanel, CommandsGB, CmdBu
 
 class LabspherePanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog, 'Labsphere')
+        ControlPanel.__init__(self, controlDialog)
 
         self.mode = ValueGB(self.moduleRow, 'labsphereMode', '', 0, '{:s}')
         self.state = ValueGB(self.moduleRow, 'labsphereFSM', '', 0, '{:s}')

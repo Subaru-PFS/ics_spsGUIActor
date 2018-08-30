@@ -26,6 +26,7 @@ class ShutterCmd(CustomedCmd):
         return cmdStr
 
 
+
 class BiaPeriod(ValueGB):
     def __init__(self, moduleRow):
         self.spinbox = SpinBoxGB('Period', 0, 65536)
@@ -109,7 +110,7 @@ class BshCommands(CommandsGB):
 
 class BshPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog, 'BSH')
+        ControlPanel.__init__(self, controlDialog)
 
         self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}')
         self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}')
@@ -139,7 +140,7 @@ class BshPanel(ControlPanel):
         self.grid.addWidget(self.biaPeriod, 2, 2)
         self.grid.addWidget(self.biaDuty, 2, 3)
 
-        self.grid.addWidget(self.commands, 0, 4, 3, 2)
+        self.grid.addWidget(self.commands, 0, 4, 6, 3)
 
     @property
     def enuActor(self):

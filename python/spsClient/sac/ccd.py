@@ -58,7 +58,7 @@ class CcdCommands(CommandsGB):
 
 class CcdPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog, 'CCD')
+        ControlPanel.__init__(self, controlDialog)
 
         self.state = ValueGB(self.moduleRow, 'ccd', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'ccd', '', 1, '{:s}')

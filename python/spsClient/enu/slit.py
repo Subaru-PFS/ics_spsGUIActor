@@ -112,7 +112,7 @@ class SlitCommands(CommandsGB):
 
 class SlitPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog, 'FCA')
+        ControlPanel.__init__(self, controlDialog)
 
         self.mode = ValueGB(self.moduleRow, 'slitMode', 'Mode', 0, '{:s}')
         self.state = ValueGB(self.moduleRow, 'slitFSM', '', 0, '{:s}')

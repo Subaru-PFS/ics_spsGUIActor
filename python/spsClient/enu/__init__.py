@@ -33,16 +33,13 @@ class EnuDialog(ControlDialog):
     def __init__(self, enuRow):
         ControlDialog.__init__(self, moduleRow=enuRow, title='Entrance Unit SM%i' % enuRow.module.smId)
 
-        # self.textForHuman = ValueGB(enuDevice.keyVarDict['text'], 'Text', 0, '{:s}')
-
         self.slitPanel = SlitPanel(self)
         self.bshPanel = BshPanel(self)
         self.rexmPanel = RexmPanel(self)
 
-        # self.grid.addWidget(self.textForHuman, 0, 0, 1, 2)
-        self.grid.addWidget(self.slitPanel, 1, 0, 5, 1)
-        self.grid.addWidget(self.bshPanel, 1, 1, 3, 1)
-        self.grid.addWidget(self.rexmPanel, 4, 1, 2, 1)
+        self.tabWidget.addTab(self.slitPanel, 'FCA')
+        self.tabWidget.addTab(self.bshPanel, 'BSH')
+        self.tabWidget.addTab(self.rexmPanel, 'RDA')
 
     @property
     def customWidgets(self):

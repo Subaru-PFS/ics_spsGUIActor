@@ -140,7 +140,7 @@ class GotoCmd(CustomedCmd):
 
 class BrevaPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog, title='breva')
+        ControlPanel.__init__(self, controlDialog)
 
         self.coordinates = Coordinates(self.moduleRow, 'position', title='Position')
         self.repobj = Coordinates(self.moduleRow, 'REPOBJ', title='REPOBJ')
@@ -161,7 +161,7 @@ class BrevaDialog(ControlDialog):
     def __init__(self, brevaRow):
         ControlDialog.__init__(self, moduleRow=brevaRow)
         self.controlPanel = BrevaPanel(self)
-        self.grid.addWidget(self.controlPanel, 0, 0)
+        self.tabWidget.addTab(self.controlPanel, '')
 
     @property
     def customWidgets(self):

@@ -4,7 +4,7 @@ from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlPanel, CommandsG
 
 class AtenPanel(ControlPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog, 'Aten')
+        ControlPanel.__init__(self, controlDialog)
 
         self.mode = ValueGB(self.moduleRow, 'atenMode', '', 0, '{:s}')
         self.state = ValueGB(self.moduleRow, 'atenFSM', '', 0, '{:s}')

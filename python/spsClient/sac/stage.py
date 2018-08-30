@@ -46,7 +46,7 @@ class StageCommands(CommandsGB):
 class StagePanel(ControlPanel):
     def __init__(self, controlDialog, stage):
         label = stage.capitalize()
-        ControlPanel.__init__(self, controlDialog, '%s Stage' % stage.capitalize())
+        ControlPanel.__init__(self, controlDialog)
 
         self.state = ValueGB(self.moduleRow, 'ls%s' % label, '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'ls%s' % label, '', 1, '{:s}')
