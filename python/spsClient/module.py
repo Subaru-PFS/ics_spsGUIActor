@@ -6,7 +6,7 @@ from spsClient.dcb import DcbRow
 from spsClient.enu import EnuRow
 from spsClient.sac import SacRow
 from spsClient.seqno import SeqnoRow
-from spsClient.viscu import CamRow
+from spsClient.cam import CamRow
 
 
 class Module(QGroupBox):
