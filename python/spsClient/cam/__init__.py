@@ -4,8 +4,8 @@ from PyQt5.QtWidgets import QProgressBar
 from PyQt5.QtWidgets import QPushButton, QGroupBox, QGridLayout
 from spsClient import bigFont
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB
-
+from spsClient.widgets import ValueGB,ControlDialog
+from spsClient.cam.motors import MotorsPanel
 
 class ReadRows(QProgressBar):
     def __init__(self, ccdRow):
@@ -167,4 +167,13 @@ class CamRow(object):
         self.specModule.grid.addWidget(self.ccd.readRows, self.lineNB, 1)
 
     def showDetails(self):
-        pass
+        self.controlDialog = CamDialog(self)
+        self.controlDialog.show()
+
+
+class CamDialog(ControlDialog):
+    def __init__(self, camRow):
+        ControlDialog.__init__(self, moduleRow=camRow.xcu, title='%s %i' % (camRow.label, camRow.specModule.smId))
+
+        self.motorsPanel = MotorsPanel(self)
+        self.tabWidget.addTab(self.motorsPanel, 'Motors')
