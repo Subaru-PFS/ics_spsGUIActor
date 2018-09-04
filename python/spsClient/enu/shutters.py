@@ -1,8 +1,9 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QComboBox, QGroupBox, QGridLayout
-from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CustomedCmd, CommandsGB, DoubleSpinBoxGB, AbortButton
 from spsClient import smallFont
+from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CustomedCmd, CommandsGB, DoubleSpinBoxGB, AbortButton
+
 
 class ShutterCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -68,7 +69,6 @@ class Shutter(QGroupBox):
         return [self.open, self.close, self.error]
 
 
-
 class ShuttersCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
@@ -128,4 +128,5 @@ class ShuttersPanel(ControlPanel):
 
     @property
     def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons
+        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.blueShutter.widgets + \
+               self.redShutter.widgets + self.commands.buttons

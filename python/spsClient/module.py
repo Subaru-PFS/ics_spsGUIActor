@@ -34,15 +34,15 @@ class Aitmodule(Module):
         Module.__init__(self, mwindow=mwindow, title='AIT')
 
         self.dcb = DcbRow(self)
-        self.seqno = SeqnoRow(self)
-        self.sac = SacRow(self)
-        self.breva = BrevaRow(self)
+        # self.seqno = SeqnoRow(self)
+        # self.sac = SacRow(self)
+        # self.breva = BrevaRow(self)
 
         self.populateLayout()
 
     @property
     def rows(self):
-        return [self.dcb, self.sac, self.breva]
+        return [self.dcb]
 
 
 class Specmodule(Module):

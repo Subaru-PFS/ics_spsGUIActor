@@ -26,7 +26,7 @@ class SpsWidget(QWidget):
 
         self.deviceLayout.addWidget(Aitmodule(self), 0, 0)
         self.deviceLayout.addWidget(Specmodule(self, smId=1), 1, 0, 3, 1)
-        self.deviceLayout.addWidget(Specmodule(self, smId=2, arms=['r']), 4, 0, 2, 1)
+        #self.deviceLayout.addWidget(Specmodule(self, smId=2, arms=['r']), 4, 0, 2, 1)
 
         self.mainLayout.addLayout(self.deviceLayout)
         self.mainLayout.addLayout(self.logLayout)
