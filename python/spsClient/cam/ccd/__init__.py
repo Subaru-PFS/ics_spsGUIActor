@@ -2,6 +2,7 @@ __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QProgressBar, QTabWidget, QGridLayout, QGroupBox
 from spsClient import bigFont, smallFont
+from spsClient.cam.ccd.fee import FeePanel
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB, ReloadButton, ControlDialog
 
@@ -91,7 +92,9 @@ class CcdGB(QGroupBox, ControlDialog):
         self.setLayout(self.grid)
         self.tabWidget = QTabWidget(self)
         self.reload = ReloadButton(self)
+        self.feePanel = FeePanel(self)
 
+        self.tabWidget.addTab(self.feePanel, 'Fee')
 
         self.grid.addWidget(ccdRow.actorStatus, 0, 0)
         self.grid.addWidget(self.reload, 0, 1)
@@ -104,4 +107,4 @@ class CcdGB(QGroupBox, ControlDialog):
 
     @property
     def customWidgets(self):
-        return [self.reload]
+        return [self.reload] + self.feePanel.customWidgets
