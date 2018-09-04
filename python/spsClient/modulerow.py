@@ -1,17 +1,20 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QPushButton
-from spsClient.widgets import ValueGB, CmdButton
+from functools import partial
+
+from PyQt5.QtWidgets import QPushButton, QGroupBox, QGridLayout
 from spsClient import bigFont
+from spsClient.widgets import ValueGB
+
 
 class ModuleRow(object):
-    def __init__(self, module, actorName, actorLabel):
+    def __init__(self, module, actorName, actorLabel, fontSize=bigFont):
         object.__init__(self)
         self.module = module
         self.actorName = actorName
         self.actorLabel = actorLabel
 
-        self.actorStatus = ActorGB(self)
+        self.actorStatus = ActorGB(self, fontSize=fontSize)
         self.actorStatus.button.clicked.connect(self.showDetails)
         self.lineNB = 0
 
@@ -36,18 +39,8 @@ class ModuleRow(object):
         return [self.actorStatus] + self.customWidgets
 
     def setOnline(self):
-
         for widget in self.customWidgets:
-
-            try:
-                if issubclass(type(widget), CmdButton):
-                    widget.setEnabled(self.isOnline)
-                    continue
-
-                if not self.isOnline:
-                    widget.setColor('black', 'white')
-            except AttributeError:
-                pass
+            widget.setEnabled(self.isOnline)
 
     def setLine(self, lineNB):
         self.lineNB = lineNB
@@ -56,26 +49,36 @@ class ModuleRow(object):
         pass
 
 
-class ActorGB(ValueGB):
-    def __init__(self, moduleRow):
+class ActorGB(ValueGB, QGroupBox):
+    def __init__(self, moduleRow, fontSize=bigFont):
         self.moduleRow = moduleRow
+        self.keyvar = moduleRow.models['hub'].keyVarDict['actors']
+        self.fontSize = fontSize
+
+        QGroupBox.__init__(self)
+        self.setTitle('Actor')
+
+        self.grid = QGridLayout()
         self.button = QPushButton()
         self.button.setFlat(True)
-        ValueGB.__init__(self, None, None, 'Actor', 0, '{:s}', callNow=False,
-                         keyvar=moduleRow.models['hub'].keyVarDict['actors'],fontSize=bigFont)
+        self.setLayout(self.grid)
 
-        self.grid.removeWidget(self.value)
+        self.cb = partial(self.updateVals, 0, '{:s}')
+        self.keyvar.addCallback(self.cb, callNow=False)
+
         self.setText(moduleRow.actorLabel)
         self.grid.addWidget(self.button, 0, 0)
 
     def updateVals(self, ind, fmt, keyvar):
         background, color = ('green', 'white') if self.moduleRow.isOnline else ('red', 'white')
         self.setColor(background, color)
+
         self.moduleRow.setOnline()
 
     def setColor(self, background, police='white'):
-        bckColor = ValueGB.setColor(self, background=background, police=police)
-        self.button.setStyleSheet("QPushButton{font-size: %ipt; background: %s; color:%s; }" % (self.fontSize, bckColor, police))
+        bckColor = ValueGB.setBackground(self, background=background)
+        self.button.setStyleSheet(
+            "QPushButton{font-size: %ipt; background: %s; color:%s; }" % (self.fontSize, bckColor, police))
 
     def setText(self, txt):
         self.button.setText(txt)
