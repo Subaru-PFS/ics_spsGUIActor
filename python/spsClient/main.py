@@ -50,10 +50,14 @@ def main():
 
     import miniActor
 
-    actor = miniActor.connectActor(['hub', 'dcb', 'sac', 'breva', 'seqno',
-                                    'enu_sm1', 'enu_sm2',
-                                    'xcu_b1', 'xcu_r1', 'xcu_r2',
-                                    'ccd_b1', 'ccd_r1','ccd_r2'])
+    specIds = [i + 1 for i in range(4)]
+    allcams = ['b%i' % i for i in specIds] + ['r%i' % i for i in specIds] + ['n%i' % i for i in specIds]
+
+    ccds = ['ccd_%s' % cam for cam in allcams]
+    xcus = ['xcu_%s' % cam for cam in allcams]
+    enus = ['enu_sm%i' % i for i in specIds]
+
+    actor = miniActor.connectActor(['hub', 'dcb', 'sac', 'breva', 'seqno'] + enus + ccds + xcus)
 
     try:
         ex = SpsClient(reactor,
