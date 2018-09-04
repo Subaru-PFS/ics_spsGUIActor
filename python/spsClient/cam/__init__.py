@@ -1,111 +1,30 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QProgressBar
-from PyQt5.QtWidgets import QPushButton, QGroupBox, QGridLayout
+from PyQt5.QtWidgets import QPushButton, QDialog, QVBoxLayout, QDialogButtonBox, QGroupBox, QGridLayout
+
 from spsClient import bigFont
-from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB
+from spsClient.cam.ccd import CcdRow, CcdGB
+from spsClient.cam.xcu import XcuRow, XcuGB
+from spsClient.modulerow import ActorGB
+from spsClient.widgets import ControlDialog
 
 
-class ReadRows(QProgressBar):
-    def __init__(self, ccdRow):
-        self.ccdRow = ccdRow
-        QProgressBar.__init__(self)
-        self.setRange(0, 4176)
-        self.setFormat('READING \r\n' + '%p%')
-
-        self.ccdRow.keyVarDict['readRows'].addCallback(self.updateBar, callNow=False)
-        self.ccdRow.keyVarDict['exposureState'].addCallback(self.hideBar)
-        self.setFixedSize(90, 45)
-
-    def updateBar(self, keyvar):
-        try:
-            val, __ = keyvar.getValue()
-        except ValueError:
-            val = 0
-
-        self.setValue(val)
-
-    def hideBar(self, keyvar):
-        try:
-            state = keyvar.getValue()
-            if state == 'reading':
-                self.ccdRow.substate.hide()
-                self.ccdRow.cam.addReadRows()
-                self.show()
-
-            else:
-                raise ValueError
-
-        except ValueError:
-            self.resetValue()
-
-    def resetValue(self):
-        self.hide()
-        self.setValue(0)
-        self.ccdRow.substate.show()
-
-
-class CcdState(ValueGB):
-    def __init__(self, moduleRow):
-        self.moduleRow = moduleRow
-        ValueGB.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}', fontSize=bigFont)
-
-    def setText(self, txt):
-        txt = txt.upper()
-
-        ValueGB.setText(self, txt)
-
-
-class CcdRow(ModuleRow):
+class CamStatus(ActorGB, QGroupBox):
     def __init__(self, cam):
         self.cam = cam
-        ModuleRow.__init__(self, module=cam.specModule,
-                           actorName='ccd_%s%i' % (cam.arm, cam.specModule.smId),
-                           actorLabel='%sCU' % cam.arm.upper())
-
-        self.substate = CcdState(self)
-        self.temperature = ValueGB(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', fontSize=bigFont)
-        self.readRows = ReadRows(self)
-
-    @property
-    def customWidgets(self):
-        return [self.substate, self.readRows, self.temperature]
-
-    def setOnline(self):
-        ModuleRow.setOnline(self)
-        self.cam.setOnline()
-
-
-class XcuRow(ModuleRow):
-    def __init__(self, cam):
-        self.cam = cam
-        ModuleRow.__init__(self, module=cam.specModule,
-                           actorName='xcu_%s%i' % (cam.arm, cam.specModule.smId),
-                           actorLabel='')
-
-        self.pressure = ValueGB(self, 'pressure', 'Pressure(Torr)', 0, '{:g}', fontSize=bigFont)
-
-    @property
-    def customWidgets(self):
-        return [self.pressure]
-
-    def setOnline(self):
-        ModuleRow.setOnline(self)
-        self.cam.setOnline()
-
-
-class CamStatus(QGroupBox):
-    def __init__(self, cam):
-        self.cam = cam
+        self.fontSize = bigFont
         QGroupBox.__init__(self)
         self.setTitle('Actor')
-        self.grid = QGridLayout()
-        self.setLayout(self.grid)
+
         self.button = QPushButton()
         self.button.setFlat(True)
-        self.setText(cam.label)
+
+        self.grid = QGridLayout()
         self.grid.addWidget(self.button, 0, 0)
+        self.setLayout(self.grid)
+
+        self.setColor('black')
+        self.setText(cam.label)
 
     def setStatus(self, status):
         if status == 0:
@@ -114,27 +33,6 @@ class CamStatus(QGroupBox):
             self.setColor('orange')
         if status == 2:
             self.setColor('green')
-
-    def setColor(self, background, police='white'):
-        if background == "red":
-            bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #f43131, stop: 1 #5e1414)'
-
-        elif background == "green":
-            bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #45f42e, stop: 1 #195511)'
-
-        elif background == "orange":
-            bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #f4a431, stop: 1 #5e4a14)'
-
-        self.setStyleSheet(
-            "QGroupBox {font-size: %ipt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " % (
-            bigFont - 1, bckColor)
-            + "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
-
-        self.button.setStyleSheet(
-            "QPushButton{font-size: %ipt; background: %s; color:%s; }" % (bigFont, bckColor, police))
-
-    def setText(self, txt):
-        self.button.setText(txt)
 
 
 class CamRow(object):
@@ -146,8 +44,8 @@ class CamRow(object):
         self.lineNB = 0
         self.actorStatus = CamStatus(self)
         self.actorStatus.button.clicked.connect(self.showDetails)
-        self.ccd = CcdRow(cam=self)
-        self.xcu = XcuRow(cam=self)
+        self.ccd = CcdRow(camRow=self)
+        self.xcu = XcuRow(camRow=self)
 
     @property
     def mwindow(self):
@@ -167,4 +65,33 @@ class CamRow(object):
         self.specModule.grid.addWidget(self.ccd.readRows, self.lineNB, 1)
 
     def showDetails(self):
-        pass
+        self.controlDialog = CamDialog(self)
+        self.controlDialog.show()
+
+
+class CamDialog(ControlDialog):
+    def __init__(self, camRow):
+        title = '%s %i' % (camRow.label, camRow.specModule.smId)
+        QDialog.__init__(self, parent=camRow.mwindow.spsClient)
+
+        self.vbox = QVBoxLayout()
+        self.hbox = QVBoxLayout()
+        self.cmdBuffer = dict()
+        self.moduleRow = camRow
+
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Apply | QDialogButtonBox.Discard)
+        buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.sendCommands)
+        buttonBox.button(QDialogButtonBox.Discard).clicked.connect(self.cancelCommands)
+
+        self.vbox.addLayout(self.hbox)
+        self.vbox.addWidget(buttonBox)
+
+        self.setLayout(self.vbox)
+        self.setVisible(True)
+        self.setWindowTitle(title)
+
+        self.xcuGB = XcuGB(camRow.xcu)
+        self.ccdGB = CcdGB(camRow.ccd)
+
+        self.hbox.addWidget(self.xcuGB)
+        self.hbox.addWidget(self.ccdGB)
