@@ -2,6 +2,7 @@ __author__ = 'alefur'
 
 from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlPanel, CommandsGB, CmdButton
 
+
 class AtenPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog)
@@ -32,23 +33,23 @@ class AtenPanel(ControlPanel):
         self.grid.addWidget(self.state, 0, 1)
         self.grid.addWidget(self.substate, 0, 2)
 
-        self.grid.addWidget(self.labsphere, 1, 0)
-        self.grid.addWidget(self.sac, 1, 1)
-        self.grid.addWidget(self.breva, 1, 2)
+        self.grid.addWidget(self.voltage, 1, 0)
+        self.grid.addWidget(self.current, 1, 1)
+        self.grid.addWidget(self.power, 1, 2)
 
-        self.grid.addWidget(self.hgar, 2, 0)
-        self.grid.addWidget(self.neon, 2, 1)
-        self.grid.addWidget(self.xenon, 2, 2)
-        self.grid.addWidget(self.krypton, 2, 3)
+        self.grid.addWidget(self.labsphere, 2, 0)
+        self.grid.addWidget(self.sac, 2, 1)
+        self.grid.addWidget(self.breva, 2, 2)
 
-        self.grid.addWidget(self.bakeout, 3, 0)
-        self.grid.addWidget(self.roughpump, 3, 1)
+        self.grid.addWidget(self.hgar, 3, 0)
+        self.grid.addWidget(self.neon, 3, 1)
+        self.grid.addWidget(self.xenon, 3, 2)
 
-        self.grid.addWidget(self.voltage, 4, 0)
-        self.grid.addWidget(self.current, 4, 1)
-        self.grid.addWidget(self.power, 4, 2)
+        self.grid.addWidget(self.krypton, 4, 0)
+        self.grid.addWidget(self.bakeout, 4, 1)
+        self.grid.addWidget(self.roughpump, 4, 2)
 
-        self.grid.addWidget(self.commands, 0, 4, 4, 3)
+        self.grid.addWidget(self.commands, 0, 3, 5, 4)
 
     @property
     def customWidgets(self):
@@ -98,6 +99,7 @@ class SwitchLabsphere(SwitchButton):
 class AtenCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='dcb aten status')
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT', cmdStr='dcb connect controller=aten')
 
         self.switchLabsphere = SwitchLabsphere(controlPanel=controlPanel)
@@ -112,7 +114,8 @@ class AtenCommands(CommandsGB):
         self.switchBakeout = SwitchButton(controlPanel=controlPanel, key='bakeout', label='Bakeout')
         self.switchRoughpump = SwitchButton(controlPanel=controlPanel, key='roughpump', label='RoughPump')
 
-        self.grid.addWidget(self.connectButton, 0, 0)
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
 
         self.switchLabsphere.setGrid(self.grid, 1, 0)
         self.switchSac.setGrid(self.grid, 1, 1)
@@ -121,13 +124,13 @@ class AtenCommands(CommandsGB):
         self.switchHgar.setGrid(self.grid, 2, 0)
         self.switchNeon.setGrid(self.grid, 2, 1)
         self.switchXenon.setGrid(self.grid, 2, 2)
-        self.switchKrypton.setGrid(self.grid, 2, 3)
 
-        self.switchBakeout.setGrid(self.grid, 3, 0)
-        self.switchRoughpump.setGrid(self.grid, 3, 1)
+        self.switchKrypton.setGrid(self.grid, 3, 0)
+        self.switchBakeout.setGrid(self.grid, 3, 1)
+        self.switchRoughpump.setGrid(self.grid, 3, 2)
 
     @property
     def buttons(self):
-        return [self.connectButton] + self.switchLabsphere.buttons + self.switchSac.buttons + \
+        return [self.statusButton, self.connectButton] + self.switchLabsphere.buttons + self.switchSac.buttons + \
                self.switchBreva.buttons + self.switchBakeout.buttons + self.switchHgar.buttons + \
                self.switchNeon.buttons + self.switchXenon.buttons + self.switchKrypton.buttons

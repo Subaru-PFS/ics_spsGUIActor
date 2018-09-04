@@ -1,12 +1,11 @@
 __author__ = 'alefur'
 
-from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlDialog, ControlPanel, CommandsGB, CmdButton, \
-    CustomedCmd, SpinBoxGB, QLabel
-
+from spsClient import bigFont
 from spsClient.dcb.aten import AtenPanel
 from spsClient.dcb.labsphere import LabspherePanel
-from spsClient import bigFont
+from spsClient.modulerow import ModuleRow
+from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlDialog
+
 
 class DcbRow(ModuleRow):
     def __init__(self, aitModule):
@@ -44,4 +43,4 @@ class DcbDialog(ControlDialog):
 
     @property
     def customWidgets(self):
-        return self.atenPanel.customWidgets + self.labspherePanel.customWidgets
+        return [self.reload] + self.atenPanel.customWidgets + self.labspherePanel.customWidgets

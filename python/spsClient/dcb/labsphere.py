@@ -26,7 +26,7 @@ class LabspherePanel(ControlPanel):
         self.grid.addWidget(self.photodiode, 1, 1)
         self.grid.addWidget(self.attenuator, 1, 2)
 
-        self.grid.addWidget(self.commands, 0, 3, 3, 3)
+        self.grid.addWidget(self.commands, 0, 3, 4, 3)
 
     @property
     def customWidgets(self):
@@ -49,6 +49,7 @@ class AttenuatorCmd(CustomedCmd):
 class LabsphereCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='dcb labsphere status')
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
                                        cmdStr='dcb connect controller=labsphere')
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='dcb labsphere init')
@@ -56,11 +57,13 @@ class LabsphereCommands(CommandsGB):
         self.switchHalogen = SwitchButton(controlPanel=controlPanel, key='halogen', label='Halogen',
                                           cmdHead='dcb labsphere switch', cmdTail=' ')
 
-        self.grid.addWidget(self.connectButton, 0, 0)
-        self.grid.addWidget(self.initButton, 0, 1)
-        self.grid.addLayout(self.attenuatorCmd, 1, 0, 1, 2)
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
 
-        self.switchHalogen.setGrid(self.grid, 2, 0)
+        self.grid.addWidget(self.initButton, 1, 0)
+        self.grid.addLayout(self.attenuatorCmd, 2, 0, 1, 2)
+
+        self.switchHalogen.setGrid(self.grid, 3, 0)
 
     @property
     def buttons(self):
