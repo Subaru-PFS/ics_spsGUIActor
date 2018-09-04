@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QGridLayout, QComboBox
 
-from spsClient.widgets import Coordinates, ValueGB, ControlPanel, CommandsGB, CmdButton, DoubleSpinBoxGB, CustomedCmd
+from spsClient.widgets import Coordinates, ValueGB, ControlPanel, CommandsGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, AbortButton
 
 
 class CoordBoxes(QGridLayout):
@@ -45,7 +45,7 @@ class MoveCmd(CustomedCmd):
         labels = ['X', 'Y', 'Z', 'U', 'V', 'W']
         values = [spinbox.getValue() for spinbox in self.spinboxes]
 
-        cmdStr = '%s slit move %s ' % (self.controlPanel.enuActor, self.combo.currentText())
+        cmdStr = '%s slit move %s ' % (self.controlPanel.actorName, self.combo.currentText())
         cmdStr += (" ".join(['%s=%.5f' % (label, value) for label, value in zip(labels, values)]))
 
         return cmdStr
@@ -73,7 +73,7 @@ class SetRepCmd(CustomedCmd):
         labels = ['X', 'Y', 'Z', 'U', 'V', 'W']
         values = [spinbox.getValue() for spinbox in self.spinboxes]
 
-        cmdStr = '%s slit set %s ' % (self.controlPanel.enuActor, self.combo.currentText().lower())
+        cmdStr = '%s slit set %s ' % (self.controlPanel.actorName, self.combo.currentText().lower())
         cmdStr += (" ".join(['%s=%.5f' % (label, value) for label, value in zip(labels, values)]))
 
         return cmdStr
@@ -82,31 +82,32 @@ class SetRepCmd(CustomedCmd):
 class SlitCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
-
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
+                                      cmdStr='%s slit status' % controlPanel.actorName)
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='%s connect controller=slit' % controlPanel.enuActor)
+                                       cmdStr='%s connect controller=slit' % controlPanel.actorName)
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT',
-                                    cmdStr='%s slit init' % controlPanel.enuActor)
-        self.abortButton = CmdButton(controlPanel=controlPanel, label='ABORT',
-                                     cmdStr='%s slit abort' % controlPanel.enuActor)
+                                    cmdStr='%s slit init' % controlPanel.actorName)
+        self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s slit abort' % controlPanel.actorName)
         self.goHomeButton = CmdButton(controlPanel=controlPanel, label='GO HOME',
-                                      cmdStr='%s slit move home' % controlPanel.enuActor)
+                                      cmdStr='%s slit move home' % controlPanel.actorName)
         self.coordBoxes = CoordBoxes()
 
         self.moveCmd = MoveCmd(controlPanel=controlPanel)
         self.setRepCmd = SetRepCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.connectButton, 0, 0)
-        self.grid.addWidget(self.initButton, 0, 1)
-        self.grid.addWidget(self.abortButton, 0, 2)
-        self.grid.addLayout(self.coordBoxes, 1, 0, 2, 3)
-        self.grid.addLayout(self.moveCmd, 3, 0, 1, 2)
-        self.grid.addLayout(self.setRepCmd, 4, 0, 1, 2)
-        self.grid.addWidget(self.goHomeButton, 5, 0, 1, 1)
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
+        self.grid.addWidget(self.initButton, 1, 0)
+        self.grid.addWidget(self.abortButton, 1, 1)
+        self.grid.addLayout(self.coordBoxes, 2, 0, 2, 3)
+        self.grid.addLayout(self.moveCmd, 4, 0, 1, 2)
+        self.grid.addLayout(self.setRepCmd, 5, 0, 1, 2)
+        self.grid.addWidget(self.goHomeButton, 6, 0, 1, 1)
 
     @property
     def buttons(self):
-        return [self.connectButton, self.initButton, self.abortButton,
+        return [self.statusButton, self.connectButton, self.initButton, self.abortButton,
                 self.goHomeButton, self.moveCmd.button, self.setRepCmd.button]
 
 
@@ -139,7 +140,7 @@ class SlitPanel(ControlPanel):
         self.grid.addWidget(self.commands, 0, 7, 5, 4)
 
     @property
-    def enuActor(self):
+    def actorName(self):
         return self.controlDialog.moduleRow.actorName
 
     @property

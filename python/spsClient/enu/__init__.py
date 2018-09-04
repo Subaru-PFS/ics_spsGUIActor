@@ -1,11 +1,12 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QProgressBar
-from spsClient.enu.bsh import BshPanel
+from spsClient import bigFont
+from spsClient.enu.shutters import ShuttersPanel
+from spsClient.enu.bia import BiaPanel
 from spsClient.enu.rexm import RexmPanel
 from spsClient.enu.slit import SlitPanel
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB, ControlDialog
-from spsClient import bigFont
 
 
 class ElapsedTime(QProgressBar):
@@ -47,21 +48,25 @@ class ElapsedTime(QProgressBar):
         self.setValue(0)
         self.enuRow.substate.show()
 
+
 class EnuDialog(ControlDialog):
     def __init__(self, enuRow):
         ControlDialog.__init__(self, moduleRow=enuRow, title='Entrance Unit SM%i' % enuRow.module.smId)
 
         self.slitPanel = SlitPanel(self)
-        self.bshPanel = BshPanel(self)
+        self.shuttersPanel = ShuttersPanel(self)
+        self.biaPanel = BiaPanel(self)
         self.rexmPanel = RexmPanel(self)
 
         self.tabWidget.addTab(self.slitPanel, 'FCA')
-        self.tabWidget.addTab(self.bshPanel, 'BSH')
+        self.tabWidget.addTab(self.shuttersPanel, 'SHUTTERS')
+        self.tabWidget.addTab(self.biaPanel, 'BIA')
         self.tabWidget.addTab(self.rexmPanel, 'RDA')
 
     @property
     def customWidgets(self):
-        return self.slitPanel.customWidgets + self.bshPanel.customWidgets + self.rexmPanel.customWidgets
+        return [self.reload] + self.slitPanel.customWidgets + \
+               self.shuttersPanel.customWidgets + self.biaPanel.customWidgets + self.rexmPanel.customWidgets
 
 
 class EnuRow(ModuleRow):

@@ -1,6 +1,6 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QComboBox
-from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CustomedCmd, CommandsGB
+from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CustomedCmd, CommandsGB, AbortButton
 
 
 class MoveCmd(CustomedCmd):
@@ -13,7 +13,7 @@ class MoveCmd(CustomedCmd):
         self.addWidget(self.combo, 0, 1)
 
     def buildCmd(self):
-        cmdStr = '%s rexm move %s ' % (self.controlPanel.enuActor, self.combo.currentText())
+        cmdStr = '%s rexm move %s ' % (self.controlPanel.actorName, self.combo.currentText())
 
         return cmdStr
 
@@ -21,24 +21,25 @@ class MoveCmd(CustomedCmd):
 class RexmCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
-
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
+                                      cmdStr='%s rexm status' % controlPanel.actorName)
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='%s connect controller=rexm' % controlPanel.enuActor)
+                                       cmdStr='%s connect controller=rexm' % controlPanel.actorName)
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT',
-                                    cmdStr='%s rexm init' % controlPanel.enuActor)
-        self.abortButton = CmdButton(controlPanel=controlPanel, label='ABORT',
-                                     cmdStr='%s rexm abort' % controlPanel.enuActor)
+                                    cmdStr='%s rexm init' % controlPanel.actorName)
+        self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s rexm abort' % controlPanel.actorName)
 
         self.moveCmd = MoveCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.connectButton, 0, 0)
-        self.grid.addWidget(self.initButton, 0, 1)
-        self.grid.addWidget(self.abortButton, 0, 2)
-        self.grid.addLayout(self.moveCmd, 1, 0, 1, 2)
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
+        self.grid.addWidget(self.initButton, 1, 0)
+        self.grid.addWidget(self.abortButton, 1, 1)
+        self.grid.addLayout(self.moveCmd, 2, 0, 1, 2)
 
     @property
     def buttons(self):
-        return [self.connectButton, self.initButton, self.abortButton, self.moveCmd.button]
+        return [self.statusButton, self.connectButton, self.initButton, self.abortButton, self.moveCmd.button]
 
 
 class RexmPanel(ControlPanel):
@@ -69,9 +70,8 @@ class RexmPanel(ControlPanel):
 
         self.grid.addWidget(self.commands, 0, 4, 4, 3)
 
-
     @property
-    def enuActor(self):
+    def actorName(self):
         return self.controlDialog.moduleRow.actorName
 
     @property
