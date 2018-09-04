@@ -39,21 +39,22 @@ class ExposeCmd(CustomedCmd):
 class CcdCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
-
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='sac ccd status')
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT', cmdStr='sac ccd connect')
         self.exposeCmd = ExposeCmd(controlPanel=controlPanel)
         self.startLoop = CmdButton(controlPanel=controlPanel, label='START LOOP', cmdStr='sac ccd loop start')
         self.stopLoop = CmdButton(controlPanel=controlPanel, label='STOP LOOP', cmdStr='sac ccd loop stop')
         self.looptime = Looptime(self)
 
-        self.grid.addWidget(self.connectButton, 0, 0)
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
         self.grid.addLayout(self.exposeCmd, 1, 0, 1, 3)
         self.grid.addWidget(self.startLoop, 2, 0)
         self.grid.addWidget(self.stopLoop, 2, 0)
 
     @property
     def buttons(self):
-        return [self.connectButton, self.exposeCmd.button, self.startLoop, self.stopLoop]
+        return [self.statusButton, self.connectButton, self.exposeCmd.button, self.startLoop, self.stopLoop]
 
 
 class CcdPanel(ControlPanel):

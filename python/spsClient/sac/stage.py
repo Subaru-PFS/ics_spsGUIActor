@@ -31,16 +31,18 @@ class MoveCmd(CustomedCmd):
 class StageCommands(CommandsGB):
     def __init__(self, controlPanel, stage):
         CommandsGB.__init__(self, controlPanel)
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='sac stages %s status' % stage)
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='sac stages %s init' % stage)
 
         self.moveCmd = MoveCmd(controlPanel=controlPanel, stage=stage)
 
-        self.grid.addWidget(self.initButton, 0, 0)
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.initButton, 0, 1)
         self.grid.addLayout(self.moveCmd, 1, 0, 1, 3)
 
     @property
     def buttons(self):
-        return [self.initButton, self.moveCmd.button]
+        return [self.statusButton, self.initButton, self.moveCmd.button]
 
 
 class StagePanel(ControlPanel):

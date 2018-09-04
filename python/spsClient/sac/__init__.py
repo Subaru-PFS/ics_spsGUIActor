@@ -1,9 +1,10 @@
 __author__ = 'alefur'
+from spsClient import bigFont
 from spsClient.modulerow import ModuleRow
 from spsClient.sac.ccd import CcdPanel
 from spsClient.sac.stage import StagePanel
 from spsClient.widgets import ValueGB, ControlDialog
-from spsClient import bigFont
+
 
 class SacRow(ModuleRow):
     def __init__(self, aitModule):
@@ -46,4 +47,5 @@ class SacDialog(ControlDialog):
 
     @property
     def customWidgets(self):
-        return self.detectorPanel.customWidgets + self.pentaPanel.customWidgets, self.ccdPanel.customWidgets
+        return [self.reload] + self.detectorPanel.customWidgets\
+               + self.pentaPanel.customWidgets + self.ccdPanel.customWidgets
