@@ -5,7 +5,6 @@ from functools import partial
 from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import QPlainTextEdit, QLabel, QPushButton, QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
     QDialogButtonBox, QDoubleSpinBox, QSpinBox, QTabWidget
-
 from spsClient import smallFont
 
 state2color = {"WIPING": ('blue', 'white'),
@@ -36,10 +35,9 @@ convertText = {'on': 'ON', 'off': 'OFF'}
 
 
 class ValueGB(QGroupBox):
-    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=smallFont, callNow=True, keyvar=False):
-
-        keyvar = moduleRow.keyVarDict[key] if not moduleRow is None else keyvar
-        self.keyvar = keyvar
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=smallFont, callNow=True):
+        self.moduleRow = moduleRow
+        self.keyvar = moduleRow.keyVarDict[key]
         self.title = title
         self.fontSize = fontSize
 
@@ -51,7 +49,6 @@ class ValueGB(QGroupBox):
 
         self.grid.addWidget(self.value, 0, 0)
         self.setLayout(self.grid)
-        self.setColor('black')
 
         self.cb = partial(self.updateVals, ind, fmt)
         self.keyvar.addCallback(self.cb, callNow=callNow)
@@ -72,7 +69,7 @@ class ValueGB(QGroupBox):
 
         self.setText(strValue)
 
-    def setColor(self, background, police='white'):
+    def setBackground(self, background):
         if background == "red":
             bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #f43131, stop: 1 #5e1414)'
 
@@ -92,13 +89,15 @@ class ValueGB(QGroupBox):
             bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #dfdfdf, stop: 1 #000000)'
 
         self.setStyleSheet(
-            "QGroupBox {font-size: %ipt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " % (self.fontSize-1, bckColor) +
+            "QGroupBox {font-size: %ipt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " % (
+                self.fontSize - 1, bckColor) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
+        return bckColor
 
+    def setColor(self, background, police='white'):
+        self.setBackground(background=background)
         self.value.setStyleSheet(
             "QLabel{font-size: %ipt; qproperty-alignment: AlignCenter; color:%s;}" % (self.fontSize, police))
-
-        return bckColor
 
     def setText(self, txt):
         self.value.setText(txt)
@@ -113,6 +112,11 @@ class ValueGB(QGroupBox):
             background, police = 'green', 'white'
 
         self.setColor(background=background, police=police)
+        self.setEnabled(self.moduleRow.isOnline)
+
+    def setEnabled(self, isOnline):
+        if not isOnline:
+            self.setColor(background='black')
 
 
 class Coordinates(QGroupBox):
@@ -131,7 +135,7 @@ class Coordinates(QGroupBox):
         self.setTitle(title)
         self.setLayout(self.grid)
         self.setStyleSheet(
-            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} "%(fontSize) +
+            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (fontSize) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
 
@@ -144,7 +148,7 @@ class CommandsGB(QGroupBox):
         self.setTitle('Commands')
         self.setLayout(self.grid)
         self.setStyleSheet(
-            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} "%(fontSize) +
+            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (fontSize) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
     @property
@@ -296,11 +300,20 @@ class CmdButton(QPushButton):
         else:
             self.controlDialog.clearCommand(button=self)
 
+    def setColor(self, background, color="white"):
+        self.setStyleSheet("QPushButton {font: 9pt; background-color: %s;color : %s ;}" % (background, color))
+
+
+class AbortButton(CmdButton):
+    def __init__(self, controlPanel, cmdStr):
+        CmdButton.__init__(self, controlPanel=controlPanel, label='ABORT', cmdStr=cmdStr)
+        self.setColor('red')
+
 
 class ReloadButton(QPushButton):
     def __init__(self, controlDialog):
         self.controlDialog = controlDialog
-        self.cmdStr = '%s reloadConfiguration'%controlDialog.moduleRow.actorName
+        self.cmdStr = '%s reloadConfiguration' % controlDialog.moduleRow.actorName
         QPushButton.__init__(self, 'Reload Config')
         self.setCheckable(True)
         self.clicked.connect(self.getCommand)
@@ -362,6 +375,24 @@ class CustomedCmd(QGridLayout):
 
     def buildCmd(self):
         pass
+
+
+class MonitorCmd(CustomedCmd):
+    def __init__(self, controlPanel, controllerName):
+        self.controllerName = controllerName
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MONITOR')
+
+        self.period = SpinBoxGB('Period', 0, 120)
+        self.period.setValue(15)
+
+        self.addWidget(self.period, 0, 1)
+
+    def buildCmd(self):
+        cmdStr = '%s monitor controllers=%s period=%d' % (self.controlPanel.actorName,
+                                                          self.controllerName,
+                                                          self.period.getValue())
+
+        return cmdStr
 
 
 class LogArea(QPlainTextEdit):
