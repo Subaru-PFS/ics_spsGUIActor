@@ -1,14 +1,16 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QComboBox, QGridLayout
+from spsClient import bigFont
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import Coordinates, ValueGB, SwitchGB, CommandsGB, ControlDialog, ControlPanel, CmdButton, \
     DoubleSpinBoxGB, CustomedCmd
-from spsClient import bigFont
+
 
 class BrevaCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='breva status')
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
                                        cmdStr='breva connect controller=hexa')
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='breva init')
@@ -20,14 +22,15 @@ class BrevaCommands(CommandsGB):
         self.setRepCmd = SetRepCmd(controlPanel=controlPanel)
         self.gotoCmd = GotoCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.connectButton, 0, 0)
-        self.grid.addWidget(self.initButton, 0, 1)
-        self.grid.addWidget(self.motorsOn, 0, 2)
-        self.grid.addWidget(self.motorsOff, 0, 2)
-        self.grid.addLayout(self.moveCmd, 1, 0, 1, 2)
-        self.grid.addLayout(self.setRepCmd, 2, 0, 1, 2)
-        self.grid.addLayout(self.coordBoxes, 1, 2, 2, 3)
-        self.grid.addLayout(self.gotoCmd, 3, 0, 1, 2)
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
+        self.grid.addWidget(self.initButton, 1, 0)
+        self.grid.addWidget(self.motorsOn, 1, 1)
+        self.grid.addWidget(self.motorsOff, 1, 1)
+        self.grid.addLayout(self.moveCmd, 2, 0, 1, 2)
+        self.grid.addLayout(self.setRepCmd, 3, 0, 1, 2)
+        self.grid.addLayout(self.coordBoxes, 2, 2, 2, 3)
+        self.grid.addLayout(self.gotoCmd, 4, 0, 1, 2)
 
         self.setMotorState()
 
@@ -43,7 +46,7 @@ class BrevaCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.connectButton, self.initButton, self.motorsOn, self.motorsOff, self.moveCmd.button,
+        return [self.statusButton, self.connectButton, self.initButton, self.motorsOn, self.motorsOff, self.moveCmd.button,
                 self.setRepCmd.button, self.gotoCmd.button]
 
 
@@ -165,7 +168,7 @@ class BrevaDialog(ControlDialog):
 
     @property
     def customWidgets(self):
-        return self.controlPanel.customWidgets
+        return [self.reload] + self.controlPanel.customWidgets
 
 
 class BrevaRow(ModuleRow):
