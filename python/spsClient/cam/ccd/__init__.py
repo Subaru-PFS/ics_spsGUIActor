@@ -1,9 +1,9 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QProgressBar
-from spsClient import bigFont
+from PyQt5.QtWidgets import QProgressBar, QTabWidget, QGridLayout, QGroupBox
+from spsClient import bigFont, smallFont
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB
+from spsClient.widgets import ValueGB, ReloadButton, ControlDialog
 
 
 class ReadRows(QProgressBar):
@@ -30,7 +30,7 @@ class ReadRows(QProgressBar):
             state = keyvar.getValue()
             if state == 'reading':
                 self.ccdRow.substate.hide()
-                self.ccdRow.cam.addReadRows()
+                self.ccdRow.camRow.addReadRows()
                 self.show()
 
             else:
@@ -57,11 +57,12 @@ class CcdState(ValueGB):
 
 
 class CcdRow(ModuleRow):
-    def __init__(self, cam):
-        self.cam = cam
-        ModuleRow.__init__(self, module=cam.specModule,
-                           actorName='ccd_%s%i' % (cam.arm, cam.specModule.smId),
-                           actorLabel='%sCU' % cam.arm.upper())
+    def __init__(self, camRow):
+        self.camRow = camRow
+        ModuleRow.__init__(self, module=camRow.specModule,
+                           actorName='ccd_%s%i' % (camRow.arm, camRow.specModule.smId),
+                           actorLabel='CCD',
+                           fontSize=smallFont)
 
         self.substate = CcdState(self)
         self.temperature = ValueGB(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', fontSize=bigFont)
@@ -69,8 +70,38 @@ class CcdRow(ModuleRow):
 
     @property
     def customWidgets(self):
-        return [self.substate, self.readRows, self.temperature]
+        widgets = [self.substate, self.readRows, self.temperature]
+        try:
+            widgets += self.camRow.controlDialog.ccdGB.customWidgets
+        except AttributeError:
+            pass
+
+        return widgets
 
     def setOnline(self):
         ModuleRow.setOnline(self)
-        self.cam.setOnline()
+        self.camRow.setOnline()
+
+
+class CcdGB(QGroupBox, ControlDialog):
+    def __init__(self, ccdRow):
+        self.moduleRow = ccdRow
+        QGroupBox.__init__(self)
+        self.grid = QGridLayout()
+        self.setLayout(self.grid)
+        self.tabWidget = QTabWidget(self)
+        self.reload = ReloadButton(self)
+
+
+        self.grid.addWidget(ccdRow.actorStatus, 0, 0)
+        self.grid.addWidget(self.reload, 0, 1)
+
+        self.grid.addWidget(self.tabWidget, 1, 0, 6, 6)
+
+    @property
+    def cmdBuffer(self):
+        return self.moduleRow.camRow.controlDialog.cmdBuffer
+
+    @property
+    def customWidgets(self):
+        return [self.reload]
