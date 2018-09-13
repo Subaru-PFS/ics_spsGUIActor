@@ -3,6 +3,7 @@ __author__ = 'alefur'
 from spsClient import bigFont
 from spsClient.dcb.aten import AtenPanel
 from spsClient.dcb.labsphere import LabspherePanel
+from spsClient.dcb.mono import MonoPanel
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlDialog
 
@@ -37,10 +38,12 @@ class DcbDialog(ControlDialog):
 
         self.atenPanel = AtenPanel(self)
         self.labspherePanel = LabspherePanel(self)
+        self.monoPanel = MonoPanel(self)
 
         self.tabWidget.addTab(self.atenPanel, 'Aten')
         self.tabWidget.addTab(self.labspherePanel, 'Labsphere')
+        self.tabWidget.addTab(self.monoPanel, 'Monochromator')
 
     @property
     def customWidgets(self):
-        return [self.reload] + self.atenPanel.customWidgets + self.labspherePanel.customWidgets
+        return [self.reload] + self.atenPanel.allWidgets + self.labspherePanel.allWidgets + self.monoPanel.allWidgets
