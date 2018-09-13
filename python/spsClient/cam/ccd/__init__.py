@@ -3,6 +3,7 @@ __author__ = 'alefur'
 from PyQt5.QtWidgets import QProgressBar, QTabWidget, QGridLayout, QGroupBox
 from spsClient import bigFont, smallFont
 from spsClient.cam.ccd.fee import FeePanel
+from spsClient.cam.ccd.ccd import CcdPanel
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB, ReloadButton, ControlDialog
 
@@ -71,12 +72,15 @@ class CcdRow(ModuleRow):
 
     @property
     def customWidgets(self):
-        widgets = [self.substate, self.readRows, self.temperature]
+        return [self.substate, self.readRows, self.temperature]
+
+    @property
+    def allWidgets(self):
+        widgets = self.customWidgets
         try:
             widgets += self.camRow.controlDialog.ccdGB.customWidgets
         except AttributeError:
             pass
-
         return widgets
 
     def setOnline(self):
@@ -92,9 +96,12 @@ class CcdGB(QGroupBox, ControlDialog):
         self.setLayout(self.grid)
         self.tabWidget = QTabWidget(self)
         self.reload = ReloadButton(self)
+
         self.feePanel = FeePanel(self)
+        self.ccdPanel = CcdPanel(self)
 
         self.tabWidget.addTab(self.feePanel, 'Fee')
+        self.tabWidget.addTab(self.ccdPanel, 'Ccd')
 
         self.grid.addWidget(ccdRow.actorStatus, 0, 0)
         self.grid.addWidget(self.reload, 0, 1)
@@ -107,4 +114,4 @@ class CcdGB(QGroupBox, ControlDialog):
 
     @property
     def customWidgets(self):
-        return [self.reload] + self.feePanel.customWidgets
+        return [self.reload] + self.feePanel.allWidgets + self.ccdPanel.allWidgets

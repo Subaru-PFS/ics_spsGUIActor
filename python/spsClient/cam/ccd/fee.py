@@ -27,8 +27,8 @@ class FeePanel(ControlPanel):
         ControlPanel.__init__(self, controlDialog)
 
         self.preamp = ValueGB(self.moduleRow, 'ccdTemps', 'Preamp', 0, '{:.2f}')
-        self.ccd0 = ValueGB(self.moduleRow, 'ccdTemps', 'Preamp', 1, '{:.2f}')
-        self.ccd1 = ValueGB(self.moduleRow, 'ccdTemps', 'Preamp', 2, '{:.2f}')
+        self.ccd0 = ValueGB(self.moduleRow, 'ccdTemps', 'Ccd0', 1, '{:.2f}')
+        self.ccd1 = ValueGB(self.moduleRow, 'ccdTemps', 'Ccd1', 2, '{:.2f}')
 
         self.commands = FeeCommands(self)
 
@@ -37,11 +37,3 @@ class FeePanel(ControlPanel):
         self.grid.addWidget(self.ccd1, 0, 2)
 
         self.grid.addWidget(self.commands, 0, 4, 4, 3)
-
-    @property
-    def actorName(self):
-        return self.controlDialog.moduleRow.actorName
-
-    @property
-    def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons
