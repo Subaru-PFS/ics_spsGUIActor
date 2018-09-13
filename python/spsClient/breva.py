@@ -157,7 +157,7 @@ class BrevaPanel(ControlPanel):
 
     @property
     def customWidgets(self):
-        return self.coordinates.widgets + self.repobj.widgets + self.reputil.widgets + self.commands.buttons
+        return self.coordinates.widgets + self.repobj.widgets + self.reputil.widgets
 
 
 class BrevaDialog(ControlDialog):
@@ -168,7 +168,7 @@ class BrevaDialog(ControlDialog):
 
     @property
     def customWidgets(self):
-        return [self.reload] + self.controlPanel.customWidgets
+        return [self.reload] + self.controlPanel.allWidgets
 
 
 class BrevaRow(ModuleRow):
@@ -183,14 +183,7 @@ class BrevaRow(ModuleRow):
 
     @property
     def customWidgets(self):
-        widgets = [self.state, self.substate, self.motorState, self.error, self.fiberTargeted]
-
-        try:
-            widgets += self.controlDialog.customWidgets
-        except AttributeError:
-            pass
-
-        return widgets
+        return [self.state, self.substate, self.motorState, self.error, self.fiberTargeted]
 
     def showDetails(self):
         self.controlDialog = BrevaDialog(self)

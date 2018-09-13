@@ -70,7 +70,3 @@ class CcdPanel(ControlPanel):
         self.grid.addWidget(self.substate, 0, 1)
 
         self.grid.addWidget(self.commands, 0, 2, 3, 3)
-
-    @property
-    def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons

@@ -29,10 +29,3 @@ class GaugePanel(ControlPanel):
 
         self.grid.addWidget(self.commands, 0, 5, 4, 3)
 
-    @property
-    def actorName(self):
-        return self.controlDialog.moduleRow.actorName
-
-    @property
-    def customWidgets(self):
-        return [self.pressure] + self.commands.buttons

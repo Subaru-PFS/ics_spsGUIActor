@@ -38,8 +38,17 @@ class ModuleRow(object):
     def widgets(self):
         return [self.actorStatus] + self.customWidgets
 
+    @property
+    def allWidgets(self):
+        widgets = self.customWidgets
+        try:
+            widgets += self.controlDialog.customWidgets
+        except AttributeError:
+            pass
+        return widgets
+
     def setOnline(self):
-        for widget in self.customWidgets:
+        for widget in self.allWidgets:
             widget.setEnabled(self.isOnline)
 
     def setLine(self, lineNB):

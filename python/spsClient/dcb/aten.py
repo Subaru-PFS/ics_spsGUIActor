@@ -51,10 +51,6 @@ class AtenPanel(ControlPanel):
 
         self.grid.addWidget(self.commands, 0, 3, 5, 4)
 
-    @property
-    def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons
-
 
 class SwitchButton(SwitchGB):
     def __init__(self, controlPanel, key, label, ind=0, fmt='{:g}', cmdHead='dcb power', cmdTail=''):

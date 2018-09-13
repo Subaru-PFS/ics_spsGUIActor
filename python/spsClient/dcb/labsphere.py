@@ -28,10 +28,6 @@ class LabspherePanel(ControlPanel):
 
         self.grid.addWidget(self.commands, 0, 3, 4, 3)
 
-    @property
-    def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons
-
 
 class AttenuatorCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -67,4 +63,5 @@ class LabsphereCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.connectButton, self.initButton, self.attenuatorCmd.button] + self.switchHalogen.buttons
+        return [self.statusButton, self.connectButton, self.initButton, self.attenuatorCmd.button] \
+               + self.switchHalogen.buttons

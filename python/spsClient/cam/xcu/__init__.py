@@ -20,13 +20,15 @@ class XcuRow(ModuleRow):
 
     @property
     def customWidgets(self):
-        widgets = [self.pressure]
+        return [self.pressure]
 
+    @property
+    def allWidgets(self):
+        widgets = self.customWidgets
         try:
             widgets += self.camRow.controlDialog.xcuGB.customWidgets
         except AttributeError:
             pass
-
         return widgets
 
     def setOnline(self):

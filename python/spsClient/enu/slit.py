@@ -140,10 +140,5 @@ class SlitPanel(ControlPanel):
         self.grid.addWidget(self.commands, 0, 7, 5, 4)
 
     @property
-    def actorName(self):
-        return self.controlDialog.moduleRow.actorName
-
-    @property
     def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.coordinates.widgets + \
-               self.home.widgets + self.tool.widgets + self.commands.buttons
+        return self.coordinates.widgets + self.home.widgets + self.tool.widgets

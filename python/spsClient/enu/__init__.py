@@ -65,8 +65,8 @@ class EnuDialog(ControlDialog):
 
     @property
     def customWidgets(self):
-        return [self.reload] + self.slitPanel.customWidgets + \
-               self.shuttersPanel.customWidgets + self.biaPanel.customWidgets + self.rexmPanel.customWidgets
+        return [self.reload] + self.slitPanel.allWidgets + self.shuttersPanel.allWidgets \
+               + self.biaPanel.allWidgets + self.rexmPanel.allWidgets
 
 
 class EnuRow(ModuleRow):
@@ -86,14 +86,7 @@ class EnuRow(ModuleRow):
 
     @property
     def customWidgets(self):
-        widgets = [self.state, self.substate, self.rexm, self.slit, self.shutters, self.bia]
-
-        try:
-            widgets += self.controlDialog.customWidgets
-        except AttributeError:
-            pass
-
-        return widgets
+        return [self.state, self.substate, self.rexm, self.slit, self.shutters, self.bia]
 
     def setExptime(self, keyvar):
         try:

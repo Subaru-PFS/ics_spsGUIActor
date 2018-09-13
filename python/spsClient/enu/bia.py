@@ -112,11 +112,3 @@ class BiaPanel(ControlPanel):
         self.grid.addWidget(self.biaDuty, 2, 1)
 
         self.grid.addWidget(self.commands, 0, 4, 6, 3)
-
-    @property
-    def actorName(self):
-        return self.controlDialog.moduleRow.actorName
-
-    @property
-    def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons

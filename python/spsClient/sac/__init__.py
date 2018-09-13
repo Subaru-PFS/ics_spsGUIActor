@@ -19,14 +19,7 @@ class SacRow(ModuleRow):
     @property
     def customWidgets(self):
 
-        widgets = [self.state, self.substate, self.pentaPosition, self.detectorPosition]
-
-        try:
-            widgets += self.controlDialog.customWidgets
-        except AttributeError:
-            pass
-
-        return widgets
+        return [self.state, self.substate, self.pentaPosition, self.detectorPosition]
 
     def showDetails(self):
         self.controlDialog = SacDialog(self)
@@ -47,5 +40,4 @@ class SacDialog(ControlDialog):
 
     @property
     def customWidgets(self):
-        return [self.reload] + self.detectorPanel.customWidgets\
-               + self.pentaPanel.customWidgets + self.ccdPanel.customWidgets
+        return [self.reload] + self.detectorPanel.allWidgets+ self.pentaPanel.allWidgets + self.ccdPanel.allWidgets

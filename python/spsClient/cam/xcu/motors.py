@@ -119,9 +119,6 @@ class MotorsPanel(ControlPanel):
 
         self.grid.addWidget(self.commands, 0, 5, 4, 3)
 
-    @property
-    def actorName(self):
-        return self.controlDialog.moduleRow.actorName
 
     @property
     def motors(self):
@@ -129,4 +126,4 @@ class MotorsPanel(ControlPanel):
 
     @property
     def customWidgets(self):
-        return self.motorA.widgets + self.motorB.widgets + self.motorC.widgets + self.commands.buttons
+        return self.motorA.widgets + self.motorB.widgets + self.motorC.widgets

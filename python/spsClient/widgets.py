@@ -17,6 +17,8 @@ state2color = {"WIPING": ('blue', 'white'),
                "INITIALISING": ('yellow', 'black'),
                "WARMING": ('orange', 'white'),
                "MOVING": ('orange', 'white'),
+               "OPENING": ('orange', 'white'),
+               "CLOSING": ('orange', 'white'),
                "BUSY": ('orange', 'white'),
                "NAN": ('red', 'white'),
                "FAILED": ('red', 'white'),
@@ -152,7 +154,7 @@ class CommandsGB(QGroupBox):
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
     @property
-    def widgets(self):
+    def buttons(self):
         return []
 
 
@@ -163,13 +165,27 @@ class ControlPanel(QGroupBox):
         self.grid = QGridLayout()
         self.setLayout(self.grid)
 
+        self.commands = CommandsGB(self)
+
     @property
     def moduleRow(self):
         return self.controlDialog.moduleRow
 
     @property
+    def actorName(self):
+        return self.controlDialog.moduleRow.actorName
+
+    @property
+    def basicWidgets(self):
+        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons
+
+    @property
     def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())]
+        return []
+
+    @property
+    def allWidgets(self):
+        return self.basicWidgets + self.customWidgets
 
 
 class ControlDialog(QDialog):

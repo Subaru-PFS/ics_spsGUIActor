@@ -77,7 +77,8 @@ class ShuttersCommands(CommandsGB):
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
                                        cmdStr='%s connect controller=bsh' % controlPanel.actorName)
 
-        self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s shutters abort' % controlPanel.actorName)
+        self.abortButton = AbortButton(controlPanel=controlPanel,
+                                       cmdStr='%s shutters close force' % controlPanel.actorName)
 
         self.shutterCmd = ShutterCmd(controlPanel=controlPanel)
         self.exposeCmd = ExposeCmd(controlPanel=controlPanel)
@@ -123,10 +124,5 @@ class ShuttersPanel(ControlPanel):
         self.grid.addWidget(self.commands, 0, 4, 5, 3)
 
     @property
-    def actorName(self):
-        return self.controlDialog.moduleRow.actorName
-
-    @property
     def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.blueShutter.widgets + \
-               self.redShutter.widgets + self.commands.buttons
+        return self.blueShutter.widgets + self.redShutter.widgets

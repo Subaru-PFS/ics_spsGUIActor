@@ -69,11 +69,3 @@ class RexmPanel(ControlPanel):
         self.grid.addWidget(self.steps, 1, 3)
 
         self.grid.addWidget(self.commands, 0, 4, 4, 3)
-
-    @property
-    def actorName(self):
-        return self.controlDialog.moduleRow.actorName
-
-    @property
-    def customWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons
