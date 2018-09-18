@@ -26,6 +26,8 @@ class Module(QGroupBox):
         for i, row in enumerate(self.rows):
             row.setLine(i)
             for j, widget in enumerate(row.widgets):
+                if widget is None:
+                    continue
                 self.grid.addWidget(widget, i, j)
 
 
@@ -42,7 +44,7 @@ class Aitmodule(Module):
 
     @property
     def rows(self):
-        return [self.dcb]
+        return [self.dcb.rowone, self.dcb.rowtwo]
 
 
 class Specmodule(Module):

@@ -8,6 +8,24 @@ from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlDialog
 
 
+class RowOne:
+    def __init__(self, dcbRow):
+        self.widgets = [dcbRow.actorStatus, dcbRow.state, dcbRow.substate, dcbRow.labsphere, dcbRow.attenuator,
+                        dcbRow.photodiode, dcbRow.halogen, dcbRow.neon, dcbRow.xenon]
+
+    def setLine(self, lineNB):
+        self.lineNB = lineNB
+
+
+class RowTwo:
+    def __init__(self, dcbRow):
+        self.widgets = [None, None, None, dcbRow.mono, dcbRow.powarc, dcbRow.monoshutter, dcbRow.wavelength,
+                        dcbRow.hgar, dcbRow.krypton]
+
+    def setLine(self, lineNB):
+        self.lineNB = lineNB
+
+
 class DcbRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='dcb', actorLabel='DCB')
@@ -15,17 +33,28 @@ class DcbRow(ModuleRow):
         self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=bigFont)
         self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=bigFont)
         self.labsphere = EnumGB(self, 'pow_labsphere', 'Labsphere', 0, '{:s}', fontSize=bigFont)
-        self.hgar = SwitchGB(self, 'hgar', 'Hg-Ar', 0, '{:g}', fontSize=bigFont)
+
         self.neon = SwitchGB(self, 'neon', 'Neon', 0, '{:g}', fontSize=bigFont)
         self.xenon = SwitchGB(self, 'xenon', 'Xenon', 0, '{:g}', fontSize=bigFont)
+        self.hgar = SwitchGB(self, 'hgar', 'Hg-Ar', 0, '{:g}', fontSize=bigFont)
+        self.krypton = SwitchGB(self, 'krypton', 'Krypton', 0, '{:g}', fontSize=bigFont)
+
         self.halogen = SwitchGB(self, 'halogen', 'Halogen', 0, '{:g}', fontSize=bigFont)
         self.photodiode = ValueGB(self, 'photodiode', 'photodiode', 0, '{:g}', fontSize=bigFont)
         self.attenuator = ValueGB(self, 'attenuator', 'attenuator', 0, '{:g}', fontSize=bigFont)
 
+        self.mono = SwitchGB(self, 'pow_mono', 'Monochromator', 0, '{:g}', fontSize=bigFont)
+        self.powarc = SwitchGB(self, 'powarc', 'Mono-Sources', 0, '{:g}', fontSize=bigFont)
+        self.monoshutter = ValueGB(self, 'monochromator', 'Mono-Shutter', 0, '{:s}', fontSize=bigFont)
+        self.wavelength = ValueGB(self, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}', fontSize=bigFont)
+
+        self.rowone = RowOne(self)
+        self.rowtwo = RowTwo(self)
+
     @property
     def customWidgets(self):
-        return [self.state, self.substate, self.labsphere, self.hgar, self.neon, self.xenon, self.halogen,
-                self.photodiode, self.attenuator]
+        return [self.state, self.substate, self.labsphere, self.attenuator, self.photodiode, self.halogen, self.neon,
+                self.xenon, self.hgar, self.krypton, self.mono, self.powarc, self.monoshutter, self.wavelength]
 
     def showDetails(self):
         self.controlDialog = DcbDialog(self)

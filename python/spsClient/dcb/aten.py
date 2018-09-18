@@ -12,16 +12,17 @@ class AtenPanel(ControlPanel):
         self.substate = ValueGB(self.moduleRow, 'atenFSM', '', 1, '{:s}')
 
         self.labsphere = EnumGB(self.moduleRow, 'pow_labsphere', 'Labsphere', 0, '{:s}')
-        self.sac = SwitchGB(self.moduleRow, 'sac', 'Sac', 0, '{:g}')
-        self.breva = SwitchGB(self.moduleRow, 'breva', 'Breva', 0, '{:g}')
+        self.mono = SwitchGB(self.moduleRow, 'pow_mono', 'Monochromator', 0, '{:g}')
+        self.roughpump = SwitchGB(self.moduleRow, 'roughpump', 'Roughpump', 0, '{:g}')
 
-        self.hgar = SwitchGB(self.moduleRow, 'hgar', 'Hg-Ar', 0, '{:g}')
         self.neon = SwitchGB(self.moduleRow, 'neon', 'Neon', 0, '{:g}')
         self.xenon = SwitchGB(self.moduleRow, 'xenon', 'Xenon', 0, '{:g}')
+        self.hgar = SwitchGB(self.moduleRow, 'hgar', 'Hg-Ar', 0, '{:g}')
         self.krypton = SwitchGB(self.moduleRow, 'krypton', 'Krypton', 0, '{:g}')
 
-        self.bakeout = SwitchGB(self.moduleRow, 'bakeout', 'Bakeout', 0, '{:g}')
-        self.roughpump = SwitchGB(self.moduleRow, 'roughpump', 'Roughpump', 0, '{:g}')
+        # self.sac = SwitchGB(self.moduleRow, 'sac', 'Sac', 0, '{:g}')
+        # self.breva = SwitchGB(self.moduleRow, 'breva', 'Breva', 0, '{:g}')
+        # self.bakeout = SwitchGB(self.moduleRow, 'bakeout', 'Bakeout', 0, '{:g}')
 
         self.voltage = ValueGB(self.moduleRow, 'atenVAW', 'Voltage', 0, '{:.2f}')
         self.current = ValueGB(self.moduleRow, 'atenVAW', 'Current', 1, '{:.2f}')
@@ -38,16 +39,13 @@ class AtenPanel(ControlPanel):
         self.grid.addWidget(self.power, 1, 2)
 
         self.grid.addWidget(self.labsphere, 2, 0)
-        self.grid.addWidget(self.sac, 2, 1)
-        self.grid.addWidget(self.breva, 2, 2)
+        self.grid.addWidget(self.mono, 3, 0)
+        self.grid.addWidget(self.roughpump, 4, 0)
 
-        self.grid.addWidget(self.hgar, 3, 0)
-        self.grid.addWidget(self.neon, 3, 1)
-        self.grid.addWidget(self.xenon, 3, 2)
-
-        self.grid.addWidget(self.krypton, 4, 0)
-        self.grid.addWidget(self.bakeout, 4, 1)
-        self.grid.addWidget(self.roughpump, 4, 2)
+        self.grid.addWidget(self.neon, 2, 1)
+        self.grid.addWidget(self.xenon, 2, 2)
+        self.grid.addWidget(self.hgar, 3, 1)
+        self.grid.addWidget(self.krypton, 3, 2)
 
         self.grid.addWidget(self.commands, 0, 3, 5, 4)
 
@@ -99,34 +97,33 @@ class AtenCommands(CommandsGB):
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT', cmdStr='dcb connect controller=aten')
 
         self.switchLabsphere = SwitchLabsphere(controlPanel=controlPanel)
-        self.switchSac = SwitchButton(controlPanel=controlPanel, key='sac', label='Sac')
-        self.switchBreva = SwitchButton(controlPanel=controlPanel, key='breva', label='Breva')
+        self.switchMono = SwitchButton(controlPanel=controlPanel, key='pow_mono', label='Monochromator')
+        self.switchRoughpump = SwitchButton(controlPanel=controlPanel, key='roughpump', label='RoughPump')
 
-        self.switchHgar = SwitchButton(controlPanel=controlPanel, key='hgar', label='Hg-Ar')
         self.switchNeon = SwitchButton(controlPanel=controlPanel, key='neon', label='Neon', )
         self.switchXenon = SwitchButton(controlPanel=controlPanel, key='xenon', label='Xenon')
+        self.switchHgar = SwitchButton(controlPanel=controlPanel, key='hgar', label='Hg-Ar')
         self.switchKrypton = SwitchButton(controlPanel=controlPanel, key='krypton', label='Krypton')
 
-        self.switchBakeout = SwitchButton(controlPanel=controlPanel, key='bakeout', label='Bakeout')
-        self.switchRoughpump = SwitchButton(controlPanel=controlPanel, key='roughpump', label='RoughPump')
+        # self.switchSac = SwitchButton(controlPanel=controlPanel, key='sac', label='Sac')
+        # self.switchBreva = SwitchButton(controlPanel=controlPanel, key='breva', label='Breva')
+        # self.switchBakeout = SwitchButton(controlPanel=controlPanel, key='bakeout', label='Bakeout')
 
         self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addWidget(self.connectButton, 0, 1)
 
         self.switchLabsphere.setGrid(self.grid, 1, 0)
-        self.switchSac.setGrid(self.grid, 1, 1)
-        self.switchBreva.setGrid(self.grid, 1, 2)
+        self.switchMono.setGrid(self.grid, 2, 0)
+        self.switchRoughpump.setGrid(self.grid, 3, 0)
 
-        self.switchHgar.setGrid(self.grid, 2, 0)
-        self.switchNeon.setGrid(self.grid, 2, 1)
-        self.switchXenon.setGrid(self.grid, 2, 2)
+        self.switchNeon.setGrid(self.grid, 1, 1)
+        self.switchXenon.setGrid(self.grid, 1, 2)
 
-        self.switchKrypton.setGrid(self.grid, 3, 0)
-        self.switchBakeout.setGrid(self.grid, 3, 1)
-        self.switchRoughpump.setGrid(self.grid, 3, 2)
+        self.switchHgar.setGrid(self.grid, 2, 1)
+        self.switchKrypton.setGrid(self.grid, 2, 2)
 
     @property
     def buttons(self):
-        return [self.statusButton, self.connectButton] + self.switchLabsphere.buttons + self.switchSac.buttons + \
-               self.switchBreva.buttons + self.switchBakeout.buttons + self.switchHgar.buttons + \
-               self.switchNeon.buttons + self.switchXenon.buttons + self.switchKrypton.buttons
+        return [self.statusButton, self.connectButton] + self.switchLabsphere.buttons + self.switchMono.buttons + \
+               self.switchRoughpump.buttons + self.switchNeon.buttons + self.switchXenon.buttons + \
+               self.switchHgar.buttons + self.switchKrypton.buttons
