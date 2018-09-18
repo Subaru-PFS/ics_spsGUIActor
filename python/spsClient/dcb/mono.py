@@ -1,7 +1,8 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QComboBox
-from spsClient.widgets import ValueGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, DoubleSpinBoxGB
+from spsClient.dcb.aten import SwitchButton
+from spsClient.widgets import ValueGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, SwitchGB
 
 
 class Error(ValueGB):
@@ -31,6 +32,11 @@ class MonoPanel(ControlPanel):
         self.outport = ValueGB(self.moduleRow, 'monochromator', 'Outport', 1, '{:d}')
         self.wavelength = ValueGB(self.moduleRow, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}')
 
+        self.powarc = SwitchGB(self.moduleRow, 'powarc', 'Sources', 0, '{:g}')
+        self.volts = ValueGB(self.moduleRow, 'powarcVAW', 'Voltage', 0, '{:.2f}')
+        self.current = ValueGB(self.moduleRow, 'powarcVAW', 'Current', 1, '{:.2f}')
+        self.power = ValueGB(self.moduleRow, 'powarcVAW', 'Power', 2, '{:.2f}')
+
         self.commands = MonoCommands(self)
 
         self.grid.addWidget(self.mode, 0, 0)
@@ -46,7 +52,13 @@ class MonoPanel(ControlPanel):
         self.grid.addWidget(self.outport, 3, 1)
         self.grid.addWidget(self.wavelength, 3, 2)
 
-        self.grid.addWidget(self.commands, 0, 3, 4, 10)
+        self.grid.addWidget(self.powarc, 4, 0)
+
+        self.grid.addWidget(self.volts, 5, 0)
+        self.grid.addWidget(self.current, 5, 1)
+        self.grid.addWidget(self.power, 5, 2)
+
+        self.grid.addWidget(self.commands, 0, 3, 6, 10)
 
 
 class ShutterCmd(CustomedCmd):
@@ -111,6 +123,9 @@ class MonoCommands(CommandsGB):
         self.outportCmd = OutportCmd(controlPanel=controlPanel)
         self.waveCmd = WaveCmd(controlPanel=controlPanel)
 
+        self.switchSources = SwitchButton(controlPanel=controlPanel, key='powarc', label='SOURCES',
+                                          cmdHead='dcb powarc', cmdTail=' ')
+
         self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addWidget(self.connectButton, 0, 1)
 
@@ -118,6 +133,8 @@ class MonoCommands(CommandsGB):
         self.grid.addLayout(self.shutterCmd, 2, 0, 1, 2)
         self.grid.addLayout(self.outportCmd, 3, 0, 1, 2)
         self.grid.addLayout(self.waveCmd, 4, 0, 1, 2)
+
+        self.switchSources.setGrid(self.grid, 5, 0)
 
     @property
     def buttons(self):
