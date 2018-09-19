@@ -180,14 +180,11 @@ class BrevaRow(ModuleRow):
         self.motorState = MotorState(self)
         self.error = ValueGB(self, 'error', 'ERROR', 0, '{:g}', fontSize=bigFont)
         self.fiberTargeted = ValueGB(self, 'targetedFiber', 'Fiber', 0, '{:s}', fontSize=bigFont)
+        self.controlDialog = BrevaDialog(self)
 
     @property
     def customWidgets(self):
         return [self.state, self.substate, self.motorState, self.error, self.fiberTargeted]
-
-    def showDetails(self):
-        self.controlDialog = BrevaDialog(self)
-        self.controlDialog.show()
 
 
 class MotorState(SwitchGB):

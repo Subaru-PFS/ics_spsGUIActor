@@ -2,6 +2,7 @@ __author__ = 'alefur'
 
 from functools import partial
 
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QPushButton, QGroupBox, QGridLayout
 from spsClient import bigFont
 from spsClient.widgets import ValueGB
@@ -40,22 +41,21 @@ class ModuleRow(object):
 
     @property
     def allWidgets(self):
-        widgets = self.customWidgets
-        try:
-            widgets += self.controlDialog.customWidgets
-        except AttributeError:
-            pass
-        return widgets
+        return self.customWidgets + self.controlDialog.customWidgets
 
-    def setOnline(self):
+    def setOnline(self, isOnline=None):
+        isOnline = isOnline if isOnline is not None else self.isOnline
+
+        self.actorStatus.setOnline(isOnline=isOnline)
+
         for widget in self.allWidgets:
-            widget.setEnabled(self.isOnline)
+            widget.setEnabled(isOnline)
 
     def setLine(self, lineNB):
         self.lineNB = lineNB
 
     def showDetails(self):
-        pass
+        self.controlDialog.setVisible(True)
 
 
 class ActorGB(ValueGB, QGroupBox):
@@ -72,17 +72,21 @@ class ActorGB(ValueGB, QGroupBox):
         self.button.setFlat(True)
         self.setLayout(self.grid)
 
-        self.cb = partial(self.updateVals, 0, '{:s}')
-        self.keyvar.addCallback(self.cb, callNow=False)
-
         self.setText(moduleRow.actorLabel)
         self.grid.addWidget(self.button, 0, 0)
 
-    def updateVals(self, ind, fmt, keyvar):
-        background, color = ('green', 'white') if self.moduleRow.isOnline else ('red', 'white')
-        self.setColor(background, color)
+        QTimer.singleShot(1000, self.attachCallback)
 
+    def attachCallback(self):
+        self.cb = partial(self.newConnection)
+        self.keyvar.addCallback(self.cb, callNow=True)
+
+    def newConnection(self, keyvar):
         self.moduleRow.setOnline()
+
+    def setOnline(self, isOnline):
+        background, color = ('green', 'white') if isOnline else ('red', 'white')
+        self.setColor(background, color)
 
     def setColor(self, background, police='white'):
         bckColor = ValueGB.setBackground(self, background=background)

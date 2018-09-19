@@ -32,7 +32,7 @@ class MonoPanel(ControlPanel):
         self.outport = ValueGB(self.moduleRow, 'monochromator', 'Outport', 1, '{:d}')
         self.wavelength = ValueGB(self.moduleRow, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}')
 
-        self.powarc = SwitchGB(self.moduleRow, 'powarc', 'Sources', 0, '{:g}')
+        self.powarc = SwitchGB(self.moduleRow, 'powarc', 'Lamps', 0, '{:g}')
         self.volts = ValueGB(self.moduleRow, 'powarcVAW', 'Voltage', 0, '{:.2f}')
         self.current = ValueGB(self.moduleRow, 'powarcVAW', 'Current', 1, '{:.2f}')
         self.power = ValueGB(self.moduleRow, 'powarcVAW', 'Power', 2, '{:.2f}')
@@ -58,7 +58,7 @@ class MonoPanel(ControlPanel):
         self.grid.addWidget(self.current, 5, 1)
         self.grid.addWidget(self.power, 5, 2)
 
-        self.grid.addWidget(self.commands, 0, 3, 6, 10)
+        self.grid.addWidget(self.commands, 0, 3, 6, 3)
 
 
 class ShutterCmd(CustomedCmd):
@@ -102,7 +102,7 @@ class WaveCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel, buttonLabel='SET VALUE')
 
-        self.value = DoubleSpinBoxGB('Wavelength', 300, 1200, 3)
+        self.value = DoubleSpinBoxGB('Wavelength(nm)', 300, 1200, 3)
 
         self.addWidget(self.value, 0, 1)
 
@@ -114,7 +114,8 @@ class WaveCmd(CustomedCmd):
 class MonoCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='dcb mono status')
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
+                                      cmdStr='dcb status controllers=mono,powarc')
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
                                        cmdStr='dcb connect controller=mono')
 
@@ -123,8 +124,8 @@ class MonoCommands(CommandsGB):
         self.outportCmd = OutportCmd(controlPanel=controlPanel)
         self.waveCmd = WaveCmd(controlPanel=controlPanel)
 
-        self.switchSources = SwitchButton(controlPanel=controlPanel, key='powarc', label='SOURCES',
-                                          cmdHead='dcb powarc', cmdTail=' ')
+        self.switchLamps = SwitchButton(controlPanel=controlPanel, key='powarc', label='LAMPS',
+                                        cmdHead='dcb powarc', cmdTail=' ')
 
         self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addWidget(self.connectButton, 0, 1)
@@ -134,9 +135,9 @@ class MonoCommands(CommandsGB):
         self.grid.addLayout(self.outportCmd, 3, 0, 1, 2)
         self.grid.addLayout(self.waveCmd, 4, 0, 1, 2)
 
-        self.switchSources.setGrid(self.grid, 5, 0)
+        self.grid.addWidget(self.switchLamps, 5, 0)
 
     @property
     def buttons(self):
-        return [self.statusButton, self.connectButton, self.shutterCmd.button, self.gratingCmd.button,
-                self.outportCmd.button, self.waveCmd.button]
+        return [self.statusButton, self.connectButton, self.gratingCmd.button, self.shutterCmd.button,
+                self.outportCmd.button, self.waveCmd.button] + self.switchLamps.buttons

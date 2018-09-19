@@ -47,6 +47,8 @@ class CamRow(object):
         self.ccd = CcdRow(camRow=self)
         self.xcu = XcuRow(camRow=self)
 
+        self.controlDialog = CamDialog(self)
+
     @property
     def mwindow(self):
         return self.specModule.mwindow
@@ -65,8 +67,7 @@ class CamRow(object):
         self.specModule.grid.addWidget(self.ccd.readRows, self.lineNB, 1)
 
     def showDetails(self):
-        self.controlDialog = CamDialog(self)
-        self.controlDialog.show()
+        self.controlDialog.setVisible(True)
 
 
 class CamDialog(ControlDialog):
@@ -87,7 +88,6 @@ class CamDialog(ControlDialog):
         self.vbox.addWidget(buttonBox)
 
         self.setLayout(self.vbox)
-        self.setVisible(True)
         self.setWindowTitle(title)
 
         self.xcuGB = XcuGB(camRow.xcu)

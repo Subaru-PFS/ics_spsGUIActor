@@ -56,10 +56,17 @@ class SwitchButton(SwitchGB):
         cmdStrOn = '%s on %s' % (cmdHead, cmdTail)
         cmdStrOff = '%s off %s' % (cmdHead, cmdTail)
 
-        self.buttonOn = CmdButton(controlPanel=controlPanel, label='%s ON' % label, cmdStr=cmdStrOn)
-        self.buttonOff = CmdButton(controlPanel=controlPanel, label='%s OFF' % label, cmdStr=cmdStrOff)
+        self.buttonOn = CmdButton(controlPanel=controlPanel, label='ON', cmdStr=cmdStrOn)
+        self.buttonOff = CmdButton(controlPanel=controlPanel, label='OFF', cmdStr=cmdStrOff)
 
         SwitchGB.__init__(self, controlPanel.moduleRow, key=key, title='', ind=ind, fmt=fmt)
+
+        self.grid.removeWidget(self.value)
+        self.grid.addWidget(self.buttonOn, 0, 0)
+        self.grid.addWidget(self.buttonOff, 0, 0)
+
+        self.setTitle(label)
+        self.setFixedHeight(50)
 
     @property
     def buttons(self):
@@ -72,11 +79,6 @@ class SwitchButton(SwitchGB):
 
         except ValueError:
             pass
-
-    def setGrid(self, grid, row, col):
-        grid.addWidget(self.buttonOn, row, col)
-        grid.addWidget(self.buttonOff, row, col)
-
 
 class SwitchLabsphere(SwitchButton):
     def __init__(self, controlPanel):
@@ -112,15 +114,15 @@ class AtenCommands(CommandsGB):
         self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addWidget(self.connectButton, 0, 1)
 
-        self.switchLabsphere.setGrid(self.grid, 1, 0)
-        self.switchMono.setGrid(self.grid, 2, 0)
-        self.switchRoughpump.setGrid(self.grid, 3, 0)
+        self.grid.addWidget(self.switchLabsphere, 1, 0)
+        self.grid.addWidget(self.switchMono, 2, 0)
+        self.grid.addWidget(self.switchRoughpump, 3, 0)
 
-        self.switchNeon.setGrid(self.grid, 1, 1)
-        self.switchXenon.setGrid(self.grid, 1, 2)
+        self.grid.addWidget(self.switchNeon, 1, 1)
+        self.grid.addWidget(self.switchXenon, 1, 2)
 
-        self.switchHgar.setGrid(self.grid, 2, 1)
-        self.switchKrypton.setGrid(self.grid, 2, 2)
+        self.grid.addWidget(self.switchHgar, 2, 1)
+        self.grid.addWidget(self.switchKrypton, 2, 2)
 
     @property
     def buttons(self):

@@ -59,7 +59,7 @@ class LabsphereCommands(CommandsGB):
         self.grid.addWidget(self.initButton, 1, 0)
         self.grid.addLayout(self.attenuatorCmd, 2, 0, 1, 2)
 
-        self.switchHalogen.setGrid(self.grid, 3, 0)
+        self.grid.addWidget(self.switchHalogen, 3, 0)
 
     @property
     def buttons(self):

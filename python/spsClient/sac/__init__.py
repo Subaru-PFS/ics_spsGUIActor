@@ -15,15 +15,12 @@ class SacRow(ModuleRow):
 
         self.pentaPosition = ValueGB(self, 'lsPenta', 'Penta', 2, '{:.3f}', fontSize=bigFont)
         self.detectorPosition = ValueGB(self, 'lsDetector', 'Detector', 2, '{:.3f}', fontSize=bigFont)
+        self.controlDialog = SacDialog(self)
 
     @property
     def customWidgets(self):
 
         return [self.state, self.substate, self.pentaPosition, self.detectorPosition]
-
-    def showDetails(self):
-        self.controlDialog = SacDialog(self)
-        self.controlDialog.show()
 
 
 class SacDialog(ControlDialog):

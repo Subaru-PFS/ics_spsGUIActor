@@ -76,9 +76,9 @@ class BiaCommands(CommandsGB):
 
         self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addWidget(self.connectButton, 0, 1)
+        self.grid.addWidget(self.switchBia, 1, 0)
+        self.grid.addWidget(self.switchStrobe, 1, 1)
 
-        self.switchBia.setGrid(self.grid, 1, 0)
-        self.switchStrobe.setGrid(self.grid, 1, 1)
         self.grid.addLayout(self.setBiaParam, 2, 0, 1, 3)
 
     @property

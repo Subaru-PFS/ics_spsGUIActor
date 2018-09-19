@@ -49,26 +49,6 @@ class ElapsedTime(QProgressBar):
         self.enuRow.substate.show()
 
 
-class EnuDialog(ControlDialog):
-    def __init__(self, enuRow):
-        ControlDialog.__init__(self, moduleRow=enuRow, title='Entrance Unit SM%i' % enuRow.module.smId)
-
-        self.slitPanel = SlitPanel(self)
-        self.shuttersPanel = ShuttersPanel(self)
-        self.biaPanel = BiaPanel(self)
-        self.rexmPanel = RexmPanel(self)
-
-        self.tabWidget.addTab(self.slitPanel, 'FCA')
-        self.tabWidget.addTab(self.shuttersPanel, 'SHUTTERS')
-        self.tabWidget.addTab(self.biaPanel, 'BIA')
-        self.tabWidget.addTab(self.rexmPanel, 'RDA')
-
-    @property
-    def customWidgets(self):
-        return [self.reload] + self.slitPanel.allWidgets + self.shuttersPanel.allWidgets \
-               + self.biaPanel.allWidgets + self.rexmPanel.allWidgets
-
-
 class EnuRow(ModuleRow):
     def __init__(self, specModule):
         ModuleRow.__init__(self, module=specModule, actorName='enu_sm%i' % specModule.smId, actorLabel='ENU')
@@ -83,6 +63,8 @@ class EnuRow(ModuleRow):
         self.elapsedTime = ElapsedTime(self)
 
         self.keyVarDict['integratingTime'].addCallback(self.setExptime, callNow=False)
+
+        self.controlDialog = EnuDialog(self)
 
     @property
     def customWidgets(self):
@@ -105,6 +87,22 @@ class EnuRow(ModuleRow):
         self.module.grid.removeWidget(widget)
         widget.deleteLater()
 
-    def showDetails(self):
-        self.controlDialog = EnuDialog(self)
-        self.controlDialog.show()
+
+class EnuDialog(ControlDialog):
+    def __init__(self, enuRow):
+        ControlDialog.__init__(self, moduleRow=enuRow, title='Entrance Unit SM%i' % enuRow.module.smId)
+
+        self.slitPanel = SlitPanel(self)
+        self.shuttersPanel = ShuttersPanel(self)
+        self.biaPanel = BiaPanel(self)
+        self.rexmPanel = RexmPanel(self)
+
+        self.tabWidget.addTab(self.slitPanel, 'FCA')
+        self.tabWidget.addTab(self.shuttersPanel, 'SHUTTERS')
+        self.tabWidget.addTab(self.biaPanel, 'BIA')
+        self.tabWidget.addTab(self.rexmPanel, 'RDA')
+
+    @property
+    def customWidgets(self):
+        return [self.reload] + self.slitPanel.allWidgets + self.shuttersPanel.allWidgets \
+               + self.biaPanel.allWidgets + self.rexmPanel.allWidgets

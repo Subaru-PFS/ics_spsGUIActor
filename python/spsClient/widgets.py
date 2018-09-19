@@ -37,7 +37,7 @@ convertText = {'on': 'ON', 'off': 'OFF'}
 
 
 class ValueGB(QGroupBox):
-    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=smallFont, callNow=True):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=smallFont, callNow=False):
         self.moduleRow = moduleRow
         self.keyvar = moduleRow.keyVarDict[key]
         self.title = title
@@ -209,8 +209,8 @@ class ControlDialog(QDialog):
         self.vbox.addWidget(buttonBox)
 
         self.setLayout(self.vbox)
-        self.setVisible(True)
         self.setWindowTitle(title)
+        self.setVisible(False)
 
     def addCommand(self, button, cmdStr):
         self.cmdBuffer[button] = cmdStr
@@ -227,6 +227,9 @@ class ControlDialog(QDialog):
 
     def cancelCommands(self):
         self.cmdBuffer.clear()
+
+    def close(self):
+        self.setVisible(False)
 
 
 class DoubleSpinBoxGB(QGroupBox):
