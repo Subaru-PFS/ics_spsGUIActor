@@ -19,7 +19,7 @@ class RowOne:
 
 class RowTwo:
     def __init__(self, dcbRow):
-        self.widgets = [None, None, None, dcbRow.mono, dcbRow.powarc, dcbRow.monoshutter, dcbRow.wavelength,
+        self.widgets = [None, None, None, dcbRow.mono, dcbRow.monoqth, dcbRow.monoshutter, dcbRow.wavelength,
                         dcbRow.hgar, dcbRow.krypton]
 
     def setLine(self, lineNB):
@@ -44,7 +44,7 @@ class DcbRow(ModuleRow):
         self.attenuator = ValueGB(self, 'attenuator', 'attenuator', 0, '{:g}', fontSize=bigFont)
 
         self.mono = SwitchGB(self, 'pow_mono', 'Monochromator', 0, '{:g}', fontSize=bigFont)
-        self.powarc = SwitchGB(self, 'powarc', 'Mono-Lamps', 0, '{:g}', fontSize=bigFont)
+        self.monoqth = SwitchGB(self, 'monoqth', 'Mono-Lamps', 0, '{:g}', fontSize=bigFont)
         self.monoshutter = ValueGB(self, 'monochromator', 'Mono-Shutter', 0, '{:s}', fontSize=bigFont)
         self.wavelength = ValueGB(self, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}', fontSize=bigFont)
 
@@ -56,7 +56,7 @@ class DcbRow(ModuleRow):
     @property
     def customWidgets(self):
         return [self.state, self.substate, self.labsphere, self.attenuator, self.photodiode, self.halogen, self.neon,
-                self.xenon, self.hgar, self.krypton, self.mono, self.powarc, self.monoshutter, self.wavelength]
+                self.xenon, self.hgar, self.krypton, self.mono, self.monoqth, self.monoshutter, self.wavelength]
 
 
 class DcbDialog(ControlDialog):
