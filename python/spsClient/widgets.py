@@ -4,7 +4,7 @@ from functools import partial
 
 from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import QPlainTextEdit, QLabel, QPushButton, QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
-    QDialogButtonBox, QDoubleSpinBox, QSpinBox, QTabWidget
+    QDialogButtonBox, QDoubleSpinBox, QSpinBox, QTabWidget, QMessageBox
 from spsClient import smallFont
 
 state2color = {"WIPING": ('blue', 'white'),
@@ -297,9 +297,10 @@ class SpinBoxGB(QGroupBox):
 
 
 class CmdButton(QPushButton):
-    def __init__(self, controlPanel, label, cmdStr=False):
+    def __init__(self, controlPanel, label, cmdStr=False, safetyCheck=False):
         self.controlPanel = controlPanel
         self.cmdStr = cmdStr
+        self.safetyCheck = safetyCheck
         QPushButton.__init__(self, label)
         self.setCheckable(True)
         self.clicked.connect(self.getCommand)
@@ -315,6 +316,12 @@ class CmdButton(QPushButton):
     def getCommand(self):
         if self.isChecked():
             cmdStr = self.buildCmd()
+            if self.safetyCheck:
+                msg = 'Are you sure you want to send the following command ? \n\r\n %s' % cmdStr
+                if QMessageBox.critical(self, 'Warning', msg, QMessageBox.Ok, QMessageBox.Cancel) != QMessageBox.Ok:
+                    self.setChecked(False)
+                    return
+
             self.controlDialog.addCommand(button=self, cmdStr=cmdStr)
         else:
             self.controlDialog.clearCommand(button=self)

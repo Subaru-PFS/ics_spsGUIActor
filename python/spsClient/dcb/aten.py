@@ -51,13 +51,13 @@ class AtenPanel(ControlPanel):
 
 
 class SwitchButton(SwitchGB):
-    def __init__(self, controlPanel, key, label, ind=0, fmt='{:g}', cmdHead='dcb power', cmdTail=''):
+    def __init__(self, controlPanel, key, label, ind=0, fmt='{:g}', cmdHead='dcb power', cmdTail='', safetyCheck=False):
         cmdTail = 'channel=%s' % key if not cmdTail else cmdTail
         cmdStrOn = '%s on %s' % (cmdHead, cmdTail)
         cmdStrOff = '%s off %s' % (cmdHead, cmdTail)
 
-        self.buttonOn = CmdButton(controlPanel=controlPanel, label='ON', cmdStr=cmdStrOn)
-        self.buttonOff = CmdButton(controlPanel=controlPanel, label='OFF', cmdStr=cmdStrOff)
+        self.buttonOn = CmdButton(controlPanel=controlPanel, label='ON', cmdStr=cmdStrOn, safetyCheck=safetyCheck)
+        self.buttonOff = CmdButton(controlPanel=controlPanel, label='OFF', cmdStr=cmdStrOff, safetyCheck=safetyCheck)
 
         SwitchGB.__init__(self, controlPanel.moduleRow, key=key, title='', ind=ind, fmt=fmt)
 
@@ -100,7 +100,8 @@ class AtenCommands(CommandsGB):
 
         self.switchLabsphere = SwitchLabsphere(controlPanel=controlPanel)
         self.switchMono = SwitchButton(controlPanel=controlPanel, key='pow_mono', label='Monochromator')
-        self.switchRoughpump = SwitchButton(controlPanel=controlPanel, key='roughpump', label='RoughPump')
+        self.switchRoughpump = SwitchButton(controlPanel=controlPanel, key='roughpump', label='RoughPump',
+                                            safetyCheck=True)
 
         self.switchNeon = SwitchButton(controlPanel=controlPanel, key='neon', label='Neon', )
         self.switchXenon = SwitchButton(controlPanel=controlPanel, key='xenon', label='Xenon')
