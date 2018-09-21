@@ -19,7 +19,7 @@ class FeeCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.statusButton, self.connectButton]
+        return [self.statusButton, self.connectButton, self.monitorCmd.button]
 
 
 class FeePanel(ControlPanel):

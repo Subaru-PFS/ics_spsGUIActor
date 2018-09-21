@@ -126,4 +126,4 @@ class MotorsPanel(ControlPanel):
 
     @property
     def customWidgets(self):
-        return self.motorA.widgets + self.motorB.widgets + self.motorC.widgets
+        return self.motorA.widgets + self.motorB.widgets + self.motorC.widgets + self.commands.buttons

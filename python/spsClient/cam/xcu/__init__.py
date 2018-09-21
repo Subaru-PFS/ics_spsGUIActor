@@ -61,4 +61,4 @@ class XcuGB(QGroupBox, ControlDialog):
 
     @property
     def customWidgets(self):
-        return [self.reload] + self.motorsPanel.customWidgets + self.gaugePanel.customWidgets
+        return [self.reload] + self.motorsPanel.allWidgets + self.gaugePanel.allWidgets
