@@ -80,6 +80,7 @@ class BiaCommands(CommandsGB):
         self.grid.addWidget(self.switchStrobe, 1, 1)
 
         self.grid.addLayout(self.setBiaParam, 2, 0, 1, 3)
+        #self.grid.addWidget(self.empty, 3, 0, 1, 3)
 
     @property
     def buttons(self):
@@ -108,7 +109,9 @@ class BiaPanel(ControlPanel):
 
         self.grid.addWidget(self.bia, 1, 0)
         self.grid.addWidget(self.biaStrobe, 1, 1)
+
         self.grid.addWidget(self.biaPeriod, 2, 0)
         self.grid.addWidget(self.biaDuty, 2, 1)
 
-        self.grid.addWidget(self.commands, 0, 4, 6, 3)
+        self.grid.addWidget(self.empty, 3, 0, 2, 3)
+        self.grid.addWidget(self.commands, 0, 3, 3.6, 3)

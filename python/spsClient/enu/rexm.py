@@ -36,6 +36,7 @@ class RexmCommands(CommandsGB):
         self.grid.addWidget(self.initButton, 1, 0)
         self.grid.addWidget(self.abortButton, 1, 1)
         self.grid.addLayout(self.moveCmd, 2, 0, 1, 2)
+        #self.grid.addWidget(self.empty, 3, 0, 1, 3)
 
     @property
     def buttons(self):
@@ -68,4 +69,5 @@ class RexmPanel(ControlPanel):
         self.grid.addWidget(self.speed, 1, 2)
         self.grid.addWidget(self.steps, 1, 3)
 
-        self.grid.addWidget(self.commands, 0, 4, 4, 3)
+        self.grid.addWidget(self.empty, 2, 0, 3, 4)
+        self.grid.addWidget(self.commands, 0, 4, 2.5, 3)

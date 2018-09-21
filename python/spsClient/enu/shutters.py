@@ -88,6 +88,7 @@ class ShuttersCommands(CommandsGB):
         self.grid.addWidget(self.abortButton, 1, 0)
         self.grid.addLayout(self.shutterCmd, 2, 0, 1, 3)
         self.grid.addLayout(self.exposeCmd, 3, 0, 1, 3)
+        #self.grid.addWidget(self.empty, 4, 0, 1, 3)
 
     @property
     def buttons(self):
@@ -121,7 +122,8 @@ class ShuttersPanel(ControlPanel):
         self.grid.addWidget(self.blueShutter, 2, 0, 1, 3)
         self.grid.addWidget(self.redShutter, 3, 0, 1, 3)
 
-        self.grid.addWidget(self.commands, 0, 4, 5, 3)
+        self.grid.addWidget(self.empty, 4, 0, 1, 3)
+        self.grid.addWidget(self.commands, 0, 4, 4, 3)
 
     @property
     def customWidgets(self):
