@@ -4,6 +4,7 @@ from spsClient import bigFont
 from spsClient.dcb.aten import AtenPanel
 from spsClient.dcb.labsphere import LabspherePanel
 from spsClient.dcb.mono import MonoPanel
+from spsClient.dcb.monoqth import MonoQthPanel
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlDialog
 
@@ -39,12 +40,12 @@ class DcbRow(ModuleRow):
         self.hgar = SwitchGB(self, 'hgar', 'Hg-Ar', 0, '{:g}', fontSize=bigFont)
         self.krypton = SwitchGB(self, 'krypton', 'Krypton', 0, '{:g}', fontSize=bigFont)
 
-        self.halogen = SwitchGB(self, 'halogen', 'Halogen', 0, '{:g}', fontSize=bigFont)
+        self.halogen = SwitchGB(self, 'halogen', 'Halogen', 0, '{:s}', fontSize=bigFont)
         self.photodiode = ValueGB(self, 'photodiode', 'photodiode', 0, '{:g}', fontSize=bigFont)
         self.attenuator = ValueGB(self, 'attenuator', 'attenuator', 0, '{:g}', fontSize=bigFont)
 
         self.mono = SwitchGB(self, 'pow_mono', 'Monochromator', 0, '{:g}', fontSize=bigFont)
-        self.monoqth = SwitchGB(self, 'monoqth', 'Mono-Lamps', 0, '{:g}', fontSize=bigFont)
+        self.monoqth = SwitchGB(self, 'monoqth', 'MonoQTH', 0, '{:g}', fontSize=bigFont)
         self.monoshutter = ValueGB(self, 'monochromator', 'Mono-Shutter', 0, '{:s}', fontSize=bigFont)
         self.wavelength = ValueGB(self, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}', fontSize=bigFont)
 
@@ -66,11 +67,14 @@ class DcbDialog(ControlDialog):
         self.atenPanel = AtenPanel(self)
         self.labspherePanel = LabspherePanel(self)
         self.monoPanel = MonoPanel(self)
+        self.monoQthPanel = MonoQthPanel(self)
 
         self.tabWidget.addTab(self.atenPanel, 'Aten')
         self.tabWidget.addTab(self.labspherePanel, 'Labsphere')
         self.tabWidget.addTab(self.monoPanel, 'Monochromator')
+        self.tabWidget.addTab(self.monoQthPanel, 'MonoQTH')
 
     @property
     def customWidgets(self):
-        return [self.reload] + self.atenPanel.allWidgets + self.labspherePanel.allWidgets + self.monoPanel.allWidgets
+        return [self.reload] + self.atenPanel.allWidgets + self.labspherePanel.allWidgets + self.monoPanel.allWidgets \
+               + self.monoQthPanel.allWidgets

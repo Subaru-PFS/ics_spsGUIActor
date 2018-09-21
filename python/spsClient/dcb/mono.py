@@ -1,8 +1,8 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QComboBox
-from spsClient.dcb.aten import SwitchButton
-from spsClient.widgets import ValueGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, SwitchGB
+from spsClient.widgets import ValueGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, SwitchGB, \
+    SwitchButton
 
 
 class Error(ValueGB):
@@ -32,7 +32,7 @@ class MonoPanel(ControlPanel):
         self.outport = ValueGB(self.moduleRow, 'monochromator', 'Outport', 1, '{:d}')
         self.wavelength = ValueGB(self.moduleRow, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}')
 
-        self.monoqth = SwitchGB(self.moduleRow, 'monoqth', 'Qth', 0, '{:g}')
+        self.monoqth = SwitchGB(self.moduleRow, 'monoqth', 'QTH', 0, '{:g}')
         self.volts = ValueGB(self.moduleRow, 'monoqthVAW', 'Voltage', 0, '{:.2f}')
         self.current = ValueGB(self.moduleRow, 'monoqthVAW', 'Current', 1, '{:.2f}')
         self.power = ValueGB(self.moduleRow, 'monoqthVAW', 'Power', 2, '{:.2f}')
@@ -52,13 +52,14 @@ class MonoPanel(ControlPanel):
         self.grid.addWidget(self.outport, 3, 1)
         self.grid.addWidget(self.wavelength, 3, 2)
 
-        self.grid.addWidget(self.monoqth, 4, 0)
+        # self.grid.addWidget(self.monoqth, 4, 0)
+        #
+        # self.grid.addWidget(self.volts, 5, 0)
+        # self.grid.addWidget(self.current, 5, 1)
+        # self.grid.addWidget(self.power, 5, 2)
 
-        self.grid.addWidget(self.volts, 5, 0)
-        self.grid.addWidget(self.current, 5, 1)
-        self.grid.addWidget(self.power, 5, 2)
-
-        self.grid.addWidget(self.commands, 0, 3, 6, 3)
+        self.grid.addWidget(self.empty, 4, 0, 1, 3)
+        self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
 
 class ShutterCmd(CustomedCmd):
@@ -125,7 +126,7 @@ class MonoCommands(CommandsGB):
         self.waveCmd = WaveCmd(controlPanel=controlPanel)
 
         self.switchQth = SwitchButton(controlPanel=controlPanel, key='monoqth', label='QTH',
-                                        cmdHead='dcb monoqth', cmdTail=' ')
+                                      cmdHead='dcb monoqth')
 
         self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addWidget(self.connectButton, 0, 1)
@@ -135,7 +136,7 @@ class MonoCommands(CommandsGB):
         self.grid.addLayout(self.outportCmd, 3, 0, 1, 2)
         self.grid.addLayout(self.waveCmd, 4, 0, 1, 2)
 
-        self.grid.addWidget(self.switchQth, 5, 0)
+        # self.grid.addWidget(self.switchQth, 5, 0)
 
     @property
     def buttons(self):

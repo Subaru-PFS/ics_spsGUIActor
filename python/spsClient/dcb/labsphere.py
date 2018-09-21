@@ -1,7 +1,6 @@
 __author__ = 'alefur'
 
-from spsClient.dcb.aten import SwitchButton
-from spsClient.widgets import ValueGB, SwitchGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, SpinBoxGB
+from spsClient.widgets import ValueGB, SwitchGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, SpinBoxGB,SwitchButton
 
 
 class LabspherePanel(ControlPanel):
@@ -12,7 +11,7 @@ class LabspherePanel(ControlPanel):
         self.state = ValueGB(self.moduleRow, 'labsphereFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'labsphereFSM', '', 1, '{:s}')
 
-        self.halogen = SwitchGB(self.moduleRow, 'halogen', 'Halogen', 0, '{:g}')
+        self.halogen = SwitchGB(self.moduleRow, 'halogen', 'Halogen', 0, '{:s}')
         self.photodiode = ValueGB(self.moduleRow, 'photodiode', 'photodiode', 0, '{:g}')
         self.attenuator = ValueGB(self.moduleRow, 'attenuator', 'attenuator', 0, '{:g}')
 
@@ -26,7 +25,8 @@ class LabspherePanel(ControlPanel):
         self.grid.addWidget(self.photodiode, 1, 1)
         self.grid.addWidget(self.attenuator, 1, 2)
 
-        self.grid.addWidget(self.commands, 0, 3, 4, 3)
+        self.grid.addWidget(self.empty, 2, 0, 3, 3)
+        self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
 
 class AttenuatorCmd(CustomedCmd):
@@ -42,6 +42,18 @@ class AttenuatorCmd(CustomedCmd):
         return cmdStr
 
 
+class SwitchHalogen(SwitchButton):
+    def __init__(self, controlPanel):
+        SwitchButton.__init__(self, controlPanel=controlPanel, key='halogen', label='Halogen', fmt='{:s}',
+                              cmdHead='dcb labsphere halogen')
+
+    def setText(self, txt):
+        bool = True if txt in ['undef', 'on'] else False
+
+        self.buttonOn.setVisible(not bool)
+        self.buttonOff.setVisible(bool)
+
+
 class LabsphereCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
@@ -50,8 +62,7 @@ class LabsphereCommands(CommandsGB):
                                        cmdStr='dcb connect controller=labsphere')
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='dcb labsphere init')
         self.attenuatorCmd = AttenuatorCmd(controlPanel=controlPanel)
-        self.switchHalogen = SwitchButton(controlPanel=controlPanel, key='halogen', label='Halogen',
-                                          cmdHead='dcb labsphere switch', cmdTail=' ')
+        self.switchHalogen = SwitchHalogen(controlPanel=controlPanel)
 
         self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addWidget(self.connectButton, 0, 1)

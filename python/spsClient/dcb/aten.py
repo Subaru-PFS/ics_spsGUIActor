@@ -1,6 +1,6 @@
 __author__ = 'alefur'
 
-from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlPanel, CommandsGB, CmdButton
+from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlPanel, CommandsGB, CmdButton, SwitchButton
 
 
 class AtenPanel(ControlPanel):
@@ -50,40 +50,20 @@ class AtenPanel(ControlPanel):
         self.grid.addWidget(self.commands, 0, 3, 5, 4)
 
 
-class SwitchButton(SwitchGB):
-    def __init__(self, controlPanel, key, label, ind=0, fmt='{:g}', cmdHead='dcb power', cmdTail='', safetyCheck=False):
-        cmdTail = 'channel=%s' % key if not cmdTail else cmdTail
-        cmdStrOn = '%s on %s' % (cmdHead, cmdTail)
-        cmdStrOff = '%s off %s' % (cmdHead, cmdTail)
+class AtenButton(SwitchButton):
+    def __init__(self, controlPanel, key, label, safetyCheck=False):
+        cmdStrOn = 'dcb power on=%s' % key
+        cmdStrOff = 'dcb power off=%s' % key
+        SwitchButton.__init__(self, controlPanel=controlPanel, key=key, label=label, cmdHead='', cmdStrOn=cmdStrOn,
+                              cmdStrOff=cmdStrOff, safetyCheck=safetyCheck)
 
-        self.buttonOn = CmdButton(controlPanel=controlPanel, label='ON', cmdStr=cmdStrOn, safetyCheck=safetyCheck)
-        self.buttonOff = CmdButton(controlPanel=controlPanel, label='OFF', cmdStr=cmdStrOff, safetyCheck=safetyCheck)
-
-        SwitchGB.__init__(self, controlPanel.moduleRow, key=key, title='', ind=ind, fmt=fmt)
-
-        self.grid.removeWidget(self.value)
-        self.grid.addWidget(self.buttonOn, 0, 0)
-        self.grid.addWidget(self.buttonOff, 0, 0)
-
-        self.setTitle(label)
-        self.setFixedHeight(50)
-
-    @property
-    def buttons(self):
-        return [self.buttonOn, self.buttonOff]
-
-    def setText(self, txt):
-        try:
-            self.buttonOn.setVisible(not int(txt))
-            self.buttonOff.setVisible(int(txt))
-
-        except ValueError:
-            pass
 
 class SwitchLabsphere(SwitchButton):
     def __init__(self, controlPanel):
+        cmdStrOn = 'dcb power on=labsphere'
+        cmdStrOff = 'dcb power off=labsphere'
         SwitchButton.__init__(self, controlPanel=controlPanel, key='pow_labsphere', label='Labsphere', fmt='{:s}',
-                              cmdTail='labsphere')
+                              cmdHead='', cmdStrOn=cmdStrOn, cmdStrOff=cmdStrOff, safetyCheck=False)
 
     def setText(self, txt):
         bool = True if txt in ['undef', 'on'] else False
@@ -99,14 +79,14 @@ class AtenCommands(CommandsGB):
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT', cmdStr='dcb connect controller=aten')
 
         self.switchLabsphere = SwitchLabsphere(controlPanel=controlPanel)
-        self.switchMono = SwitchButton(controlPanel=controlPanel, key='pow_mono', label='Monochromator')
-        self.switchRoughpump = SwitchButton(controlPanel=controlPanel, key='roughpump', label='RoughPump',
-                                            safetyCheck=True)
+        self.switchMono = AtenButton(controlPanel=controlPanel, key='pow_mono', label='Monochromator')
+        self.switchRoughpump = AtenButton(controlPanel=controlPanel, key='roughpump', label='RoughPump',
+                                          safetyCheck=True)
 
-        self.switchNeon = SwitchButton(controlPanel=controlPanel, key='neon', label='Neon', )
-        self.switchXenon = SwitchButton(controlPanel=controlPanel, key='xenon', label='Xenon')
-        self.switchHgar = SwitchButton(controlPanel=controlPanel, key='hgar', label='Hg-Ar')
-        self.switchKrypton = SwitchButton(controlPanel=controlPanel, key='krypton', label='Krypton')
+        self.switchNeon = AtenButton(controlPanel=controlPanel, key='neon', label='Neon', )
+        self.switchXenon = AtenButton(controlPanel=controlPanel, key='xenon', label='Xenon')
+        self.switchHgar = AtenButton(controlPanel=controlPanel, key='hgar', label='Hg-Ar')
+        self.switchKrypton = AtenButton(controlPanel=controlPanel, key='krypton', label='Krypton')
 
         # self.switchSac = SwitchButton(controlPanel=controlPanel, key='sac', label='Sac')
         # self.switchBreva = SwitchButton(controlPanel=controlPanel, key='breva', label='Breva')
