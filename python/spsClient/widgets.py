@@ -4,7 +4,7 @@ from functools import partial
 
 from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import QPlainTextEdit, QLabel, QPushButton, QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
-    QDialogButtonBox, QDoubleSpinBox, QSpinBox, QTabWidget, QMessageBox
+    QDialogButtonBox, QDoubleSpinBox, QSpinBox, QTabWidget, QMessageBox, QWidget, QSizePolicy
 from spsClient import smallFont
 
 state2color = {"WIPING": ('blue', 'white'),
@@ -19,6 +19,8 @@ state2color = {"WIPING": ('blue', 'white'),
                "MOVING": ('orange', 'white'),
                "OPENING": ('orange', 'white'),
                "CLOSING": ('orange', 'white'),
+               "TURNING_OFF": ('orange', 'white'),
+               "SWITCHING": ('orange', 'white'),
                "BUSY": ('orange', 'white'),
                "NAN": ('red', 'white'),
                "FAILED": ('red', 'white'),
@@ -33,7 +35,7 @@ state2color = {"WIPING": ('blue', 'white'),
                "undef": ('red', 'white'),
                }
 
-convertText = {'on': 'ON', 'off': 'OFF'}
+convertText = {'on': 'ON', 'off': 'OFF', 'nan': 'nan', 'undef': 'undef'}
 
 
 class ValueGB(QGroupBox):
@@ -141,11 +143,18 @@ class Coordinates(QGroupBox):
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
 
+class EmptyWidget(QWidget):
+    def __init__(self, *args, **kwargs):
+        QWidget.__init__(self, *args, **kwargs)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+
 class CommandsGB(QGroupBox):
     def __init__(self, controlPanel, fontSize=smallFont):
         self.controlPanel = controlPanel
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
+        self.empty = EmptyWidget()
 
         self.setTitle('Commands')
         self.setLayout(self.grid)
@@ -163,6 +172,7 @@ class ControlPanel(QGroupBox):
         QGroupBox.__init__(self)
         self.controlDialog = controlDialog
         self.grid = QGridLayout()
+        self.empty = EmptyWidget()
         self.setLayout(self.grid)
 
         self.commands = CommandsGB(self)
@@ -374,12 +384,43 @@ class SwitchGB(ValueGB):
     def setText(self, txt):
         try:
             txt = 'ON' if int(txt) else 'OFF'
-
         except ValueError:
-            pass
+            txt = convertText[txt]
 
         self.value.setText(txt)
         self.customize()
+
+
+class SwitchButton(SwitchGB):
+    def __init__(self, controlPanel, key, label, cmdHead, ind=0, fmt='{:g}', cmdStrOn='', cmdStrOff='',
+                 safetyCheck=False):
+
+        cmdStrOn = '%s on' % cmdHead if not cmdStrOn else cmdStrOn
+        cmdStrOff = '%s off' % cmdHead if not cmdStrOff else cmdStrOff
+
+        self.buttonOn = CmdButton(controlPanel=controlPanel, label='ON', cmdStr=cmdStrOn, safetyCheck=safetyCheck)
+        self.buttonOff = CmdButton(controlPanel=controlPanel, label='OFF', cmdStr=cmdStrOff, safetyCheck=safetyCheck)
+
+        SwitchGB.__init__(self, controlPanel.moduleRow, key=key, title='', ind=ind, fmt=fmt)
+
+        self.grid.removeWidget(self.value)
+        self.grid.addWidget(self.buttonOn, 0, 0)
+        self.grid.addWidget(self.buttonOff, 0, 0)
+
+        self.setTitle(label)
+        self.setFixedHeight(50)
+
+    @property
+    def buttons(self):
+        return [self.buttonOn, self.buttonOff]
+
+    def setText(self, txt):
+        try:
+            self.buttonOn.setVisible(not int(txt))
+            self.buttonOff.setVisible(int(txt))
+
+        except ValueError:
+            pass
 
 
 class EnumGB(ValueGB):

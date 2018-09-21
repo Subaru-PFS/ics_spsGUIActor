@@ -50,7 +50,7 @@ class SetBiaParamCmd(CustomedCmd):
 class SwitchBia(SwitchButton):
     def __init__(self, controlPanel):
         SwitchButton.__init__(self, controlPanel=controlPanel, key='bia', label='BIA', fmt='{:s}',
-                              cmdHead='%s bia' % controlPanel.actorName, cmdTail=' ')
+                              cmdHead='%s bia' % controlPanel.actorName)
 
     def setText(self, txt):
         bool = True if txt in ['undef', 'on'] else False
@@ -70,7 +70,7 @@ class BiaCommands(CommandsGB):
         self.switchBia = SwitchBia(controlPanel=controlPanel)
 
         self.switchStrobe = SwitchButton(controlPanel=controlPanel, key='biaStrobe', label='STROBE',
-                                         cmdHead='%s bia strobe' % controlPanel.actorName, cmdTail=' ')
+                                         cmdHead='%s bia strobe' % controlPanel.actorName)
 
         self.setBiaParam = SetBiaParamCmd(controlPanel=controlPanel)
 
