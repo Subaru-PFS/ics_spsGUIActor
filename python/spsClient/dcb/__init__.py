@@ -2,7 +2,7 @@ __author__ = 'alefur'
 
 from spsClient import bigFont
 from spsClient.dcb.aten import AtenPanel
-from spsClient.dcb.labsphere import LabspherePanel
+from spsClient.dcb.labsphere import LabspherePanel, AttenuatorValue
 from spsClient.dcb.mono import MonoPanel
 from spsClient.dcb.monoqth import MonoQthPanel
 from spsClient.modulerow import ModuleRow
@@ -27,6 +27,7 @@ class RowTwo:
         self.lineNB = lineNB
 
 
+
 class DcbRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='dcb', actorLabel='DCB')
@@ -42,7 +43,7 @@ class DcbRow(ModuleRow):
 
         self.halogen = SwitchGB(self, 'halogen', 'Halogen', 0, '{:s}', fontSize=bigFont)
         self.photodiode = ValueGB(self, 'photodiode', 'photodiode', 0, '{:g}', fontSize=bigFont)
-        self.attenuator = ValueGB(self, 'attenuator', 'attenuator', 0, '{:g}', fontSize=bigFont)
+        self.attenuator = AttenuatorValue(self, fontSize=bigFont)
 
         self.mono = SwitchGB(self, 'pow_mono', 'Monochromator', 0, '{:g}', fontSize=bigFont)
         self.monoqth = SwitchGB(self, 'monoqth', 'MonoQTH', 0, '{:g}', fontSize=bigFont)
