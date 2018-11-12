@@ -46,7 +46,7 @@ class SpsWidget(QWidget):
         self.logArea.newLine('cmdIn=%s %s' % (actor, cmdStr))
         self.actor.cmdr.bgCall(**dict(actor=actor,
                                       cmdStr=cmdStr,
-                                      timeLim=600,
+                                      timeLim=1600,
                                       callFunc=self.printResponse,
                                       callCodes=keyvar.AllCodes))
 

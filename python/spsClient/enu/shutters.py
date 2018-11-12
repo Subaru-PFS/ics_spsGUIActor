@@ -92,7 +92,7 @@ class ShuttersCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.statusButton, self.connectButton, self.shutterCmd.button]
+        return [self.statusButton, self.connectButton, self.shutterCmd.button, self.exposeCmd.button]
 
 
 class ShuttersPanel(ControlPanel):
