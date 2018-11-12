@@ -50,7 +50,7 @@ def main():
 
     import miniActor
 
-    specIds = [i + 1 for i in range(1)]
+    specIds = [i + 1 for i in range(2)]
     allcams = ['b%i' % i for i in specIds] + ['r%i' % i for i in specIds] + ['n%i' % i for i in specIds]
 
     ccds = ['ccd_%s' % cam for cam in allcams]

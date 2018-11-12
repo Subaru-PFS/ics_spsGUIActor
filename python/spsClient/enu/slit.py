@@ -56,7 +56,7 @@ class SetRepCmd(CustomedCmd):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SET')
 
         self.combo = QComboBox()
-        self.combo.addItems(['home', 'tool'])
+        self.combo.addItems(['work', 'tool'])
         self.combo.currentIndexChanged.connect(self.resetCoords)
 
         self.addWidget(self.combo, 0, 1)
@@ -122,7 +122,7 @@ class SlitPanel(ControlPanel):
         self.location = ValueGB(self.moduleRow, 'slitLocation', 'Location', 0, '{:s}')
 
         self.coordinates = Coordinates(self.moduleRow, 'slit', title='Position')
-        self.home = Coordinates(self.moduleRow, 'slitHome', title='Home')
+        self.work = Coordinates(self.moduleRow, 'slitWork', title='Work')
         self.tool = Coordinates(self.moduleRow, 'slitTool', title='Tool')
 
         self.commands = SlitCommands(self)
@@ -134,11 +134,11 @@ class SlitPanel(ControlPanel):
 
         self.grid.addWidget(self.info, 1, 0, 1, 6)
         self.grid.addWidget(self.coordinates, 2, 0, 1, 6)
-        self.grid.addWidget(self.home, 3, 0, 1, 6)
+        self.grid.addWidget(self.work, 3, 0, 1, 6)
         self.grid.addWidget(self.tool, 4, 0, 1, 6)
 
         self.grid.addWidget(self.commands, 0, 7, 5, 4)
 
     @property
     def customWidgets(self):
-        return self.coordinates.widgets + self.home.widgets + self.tool.widgets
+        return self.coordinates.widgets + self.work.widgets + self.tool.widgets
