@@ -1,6 +1,7 @@
 __author__ = 'alefur'
-
-from spsClient.widgets import ValueGB, SwitchGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, SpinBoxGB,SwitchButton
+from spsClient import smallFont
+from spsClient.widgets import ValueGB, SwitchGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, SpinBoxGB, \
+    SwitchButton
 
 
 class LabspherePanel(ControlPanel):
@@ -13,7 +14,7 @@ class LabspherePanel(ControlPanel):
 
         self.halogen = SwitchGB(self.moduleRow, 'halogen', 'Halogen', 0, '{:s}')
         self.photodiode = ValueGB(self.moduleRow, 'photodiode', 'photodiode', 0, '{:g}')
-        self.attenuator = ValueGB(self.moduleRow, 'attenuator', 'attenuator', 0, '{:g}')
+        self.attenuator = AttenuatorValue(self.moduleRow)
 
         self.commands = LabsphereCommands(self)
 
@@ -27,6 +28,25 @@ class LabspherePanel(ControlPanel):
 
         self.grid.addWidget(self.empty, 2, 0, 3, 3)
         self.grid.addWidget(self.commands, 0, 3, 5, 3)
+
+
+class AttenuatorValue(ValueGB):
+    def __init__(self, moduleRow, fontSize=smallFont):
+        ValueGB.__init__(self, moduleRow, 'attenuator', 'attenuator', 0, '{:g}', fontSize=fontSize)
+
+    def setText(self, txt):
+        try:
+            txt = int(txt)
+        except ValueError:
+            txt = 'nan'
+
+        if txt == 0:
+            txt = 'open'
+        elif txt == 255:
+            txt = 'closed'
+
+        self.value.setText(txt)
+        self.customize()
 
 
 class AttenuatorCmd(CustomedCmd):
