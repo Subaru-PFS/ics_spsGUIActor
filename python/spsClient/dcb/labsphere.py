@@ -35,14 +35,9 @@ class AttenuatorValue(ValueGB):
         ValueGB.__init__(self, moduleRow, 'attenuator', 'attenuator', 0, '{:g}', fontSize=fontSize)
 
     def setText(self, txt):
-        try:
-            txt = int(txt)
-        except ValueError:
-            txt = 'nan'
-
-        if txt == 0:
+        if txt == '0':
             txt = 'open'
-        elif txt == 255:
+        elif txt == '255':
             txt = 'closed'
 
         self.value.setText(txt)
@@ -54,7 +49,6 @@ class AttenuatorCmd(CustomedCmd):
         CustomedCmd.__init__(self, controlPanel, buttonLabel='SET VALUE')
 
         self.value = SpinBoxGB('attenuator', 0, 255)
-
         self.addWidget(self.value, 0, 1)
 
     def buildCmd(self):
