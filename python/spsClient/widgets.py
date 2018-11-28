@@ -2,44 +2,16 @@ __author__ = 'alefur'
 from datetime import datetime as dt
 from functools import partial
 
+import spsClient.styles as styles
 from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import QPlainTextEdit, QLabel, QPushButton, QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
     QDialogButtonBox, QDoubleSpinBox, QSpinBox, QTabWidget, QMessageBox, QWidget, QSizePolicy
-from spsClient import smallFont
-
-state2color = {"WIPING": ('blue', 'white'),
-               "INTEGRATING": ('yellow', 'black'),
-               "READING": ('orange', 'white'),
-               "EXPOSING": ('yellow', 'black'),
-               "IDLE": ('green', 'white'),
-               "LOADING": ('blue', 'white'),
-               "LOADED": ('blue', 'white'),
-               "INITIALISING": ('yellow', 'black'),
-               "WARMING": ('orange', 'white'),
-               "MOVING": ('orange', 'white'),
-               "OPENING": ('orange', 'white'),
-               "CLOSING": ('orange', 'white'),
-               "TURNING_OFF": ('orange', 'white'),
-               "SWITCHING": ('orange', 'white'),
-               "BUSY": ('orange', 'white'),
-               "NAN": ('red', 'white'),
-               "FAILED": ('red', 'white'),
-               "ONLINE": ('green', 'white'),
-               "OFFLINE": ('red', 'white'),
-               "ON": ('green', 'white'),
-               "OFF": ('red', 'white'),
-               "CONNECTED": ('green', 'white'),
-               "operation": ('green', 'white'),
-               "simulation": ('orange', 'white'),
-               "nan": ('red', 'white'),
-               "undef": ('red', 'white'),
-               }
 
 convertText = {'on': 'ON', 'off': 'OFF', 'nan': 'nan', 'undef': 'undef'}
 
 
 class ValueGB(QGroupBox):
-    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=smallFont, callNow=False):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=styles.smallFont, callNow=False):
         self.moduleRow = moduleRow
         self.keyvar = moduleRow.keyVarDict[key]
         self.title = title
@@ -74,23 +46,8 @@ class ValueGB(QGroupBox):
         self.setText(strValue)
 
     def setBackground(self, background):
-        if background == "red":
-            bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #f43131, stop: 1 #5e1414)'
-
-        elif background == "green":
-            bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #45f42e, stop: 1 #195511)'
-
-        elif background == "blue":
-            bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #3168f4, stop: 1 #14195e)'
-
-        elif background == "yellow":
-            bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #edf431, stop: 1 #5e5b14)'
-
-        elif background == "orange":
-            bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #f4a431, stop: 1 #5e4a14)'
-
-        else:
-            bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  #dfdfdf, stop: 1 #000000)'
+        col1, col2 = styles.colormap(background)
+        bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  %s, stop: 1 %s)' % (col1, col2)
 
         self.setStyleSheet(
             "QGroupBox {font-size: %ipt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " % (
@@ -111,22 +68,22 @@ class ValueGB(QGroupBox):
         text = self.value.text()
 
         try:
-            background, police = state2color[text]
+            background, police = styles.colorWidget(text)
         except KeyError:
-            background, police = 'green', 'white'
+            background, police = styles.colorWidget('default')
 
         self.setColor(background=background, police=police)
         self.setEnabled(self.moduleRow.isOnline)
 
     def setEnabled(self, isOnline):
         if not isOnline:
-            self.setColor(background='black')
+            self.setColor(*styles.colorWidget('offline'))
 
 
 class Coordinates(QGroupBox):
     posName = ['X', 'Y', 'Z', 'U', 'V', 'W']
 
-    def __init__(self, moduleRow, key, title, fontSize=smallFont):
+    def __init__(self, moduleRow, key, title, fontSize=styles.smallFont):
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
 
@@ -150,7 +107,7 @@ class EmptyWidget(QWidget):
 
 
 class CommandsGB(QGroupBox):
-    def __init__(self, controlPanel, fontSize=smallFont):
+    def __init__(self, controlPanel, fontSize=styles.smallFont):
         self.controlPanel = controlPanel
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
@@ -343,7 +300,7 @@ class CmdButton(QPushButton):
 class AbortButton(CmdButton):
     def __init__(self, controlPanel, cmdStr):
         CmdButton.__init__(self, controlPanel=controlPanel, label='ABORT', cmdStr=cmdStr)
-        self.setColor('red')
+        self.setColor(*styles.colorWidget('abort'))
 
 
 class ReloadButton(QPushButton):
@@ -377,7 +334,7 @@ class InnerButton(CmdButton):
 
 
 class SwitchGB(ValueGB):
-    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=smallFont):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=styles.smallFont):
         self.moduleRow = moduleRow
         ValueGB.__init__(self, moduleRow, key=key, title=title, ind=ind, fmt=fmt, fontSize=fontSize)
 
@@ -424,7 +381,7 @@ class SwitchButton(SwitchGB):
 
 
 class EnumGB(ValueGB):
-    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=smallFont):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=styles.smallFont):
         self.moduleRow = moduleRow
         ValueGB.__init__(self, moduleRow, key=key, title=title, ind=ind, fmt=fmt, fontSize=fontSize)
 

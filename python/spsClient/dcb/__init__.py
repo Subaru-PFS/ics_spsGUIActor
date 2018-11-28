@@ -1,6 +1,6 @@
 __author__ = 'alefur'
 
-from spsClient import bigFont
+import spsClient.styles as styles
 from spsClient.dcb.aten import AtenPanel
 from spsClient.dcb.labsphere import LabspherePanel, AttenuatorValue
 from spsClient.dcb.mono import MonoPanel
@@ -32,23 +32,23 @@ class DcbRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='dcb', actorLabel='DCB')
 
-        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=bigFont)
-        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=bigFont)
-        self.labsphere = EnumGB(self, 'pow_labsphere', 'Labsphere', 0, '{:s}', fontSize=bigFont)
+        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=styles.bigFont)
+        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=styles.bigFont)
+        self.labsphere = EnumGB(self, 'pow_labsphere', 'Labsphere', 0, '{:s}', fontSize=styles.bigFont)
 
-        self.neon = SwitchGB(self, 'neon', 'Neon', 0, '{:g}', fontSize=bigFont)
-        self.xenon = SwitchGB(self, 'xenon', 'Xenon', 0, '{:g}', fontSize=bigFont)
-        self.hgar = SwitchGB(self, 'hgar', 'Hg-Ar', 0, '{:g}', fontSize=bigFont)
-        self.krypton = SwitchGB(self, 'krypton', 'Krypton', 0, '{:g}', fontSize=bigFont)
+        self.neon = SwitchGB(self, 'neon', 'Neon', 0, '{:g}', fontSize=styles.bigFont)
+        self.xenon = SwitchGB(self, 'xenon', 'Xenon', 0, '{:g}', fontSize=styles.bigFont)
+        self.hgar = SwitchGB(self, 'hgar', 'Hg-Ar', 0, '{:g}', fontSize=styles.bigFont)
+        self.krypton = SwitchGB(self, 'krypton', 'Krypton', 0, '{:g}', fontSize=styles.bigFont)
 
-        self.halogen = SwitchGB(self, 'halogen', 'Halogen', 0, '{:s}', fontSize=bigFont)
-        self.photodiode = ValueGB(self, 'photodiode', 'photodiode', 0, '{:g}', fontSize=bigFont)
-        self.attenuator = AttenuatorValue(self, fontSize=bigFont)
+        self.halogen = SwitchGB(self, 'halogen', 'Halogen', 0, '{:s}', fontSize=styles.bigFont)
+        self.photodiode = ValueGB(self, 'photodiode', 'photodiode', 0, '{:g}', fontSize=styles.bigFont)
+        self.attenuator = AttenuatorValue(self, fontSize=styles.bigFont)
 
-        self.mono = SwitchGB(self, 'pow_mono', 'Monochromator', 0, '{:g}', fontSize=bigFont)
-        self.monoqth = SwitchGB(self, 'monoqth', 'MonoQTH', 0, '{:g}', fontSize=bigFont)
-        self.monoshutter = ValueGB(self, 'monochromator', 'Mono-Shutter', 0, '{:s}', fontSize=bigFont)
-        self.wavelength = ValueGB(self, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}', fontSize=bigFont)
+        self.mono = SwitchGB(self, 'pow_mono', 'Monochromator', 0, '{:g}', fontSize=styles.bigFont)
+        self.monoqth = SwitchGB(self, 'monoqth', 'MonoQTH', 0, '{:g}', fontSize=styles.bigFont)
+        self.monoshutter = ValueGB(self, 'monochromator', 'Mono-Shutter', 0, '{:s}', fontSize=styles.bigFont)
+        self.wavelength = ValueGB(self, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}', fontSize=styles.bigFont)
 
         self.rowone = RowOne(self)
         self.rowtwo = RowTwo(self)

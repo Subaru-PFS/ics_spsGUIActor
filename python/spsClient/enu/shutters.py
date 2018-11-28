@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QComboBox, QGroupBox, QGridLayout
-from spsClient import smallFont
+import spsClient.styles as styles
 from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CustomedCmd, CommandsGB, DoubleSpinBoxGB, AbortButton
 
 
@@ -61,7 +61,7 @@ class Shutter(QGroupBox):
 
         self.setStyleSheet(
             "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (
-                smallFont) +
+                styles.smallFont) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
     @property

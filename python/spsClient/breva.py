@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QComboBox, QGridLayout
-from spsClient import bigFont
+import spsClient.styles as styles
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import Coordinates, ValueGB, SwitchGB, CommandsGB, ControlDialog, ControlPanel, CmdButton, \
     DoubleSpinBoxGB, CustomedCmd
@@ -175,11 +175,11 @@ class BrevaRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='breva', actorLabel='BREVA')
 
-        self.state = ValueGB(self, 'hexaFSM', '', 0, '{:s}', fontSize=bigFont)
-        self.substate = ValueGB(self, 'hexaFSM', '', 1, '{:s}', fontSize=bigFont)
+        self.state = ValueGB(self, 'hexaFSM', '', 0, '{:s}', fontSize=styles.bigFont)
+        self.substate = ValueGB(self, 'hexaFSM', '', 1, '{:s}', fontSize=styles.bigFont)
         self.motorState = MotorState(self)
-        self.error = ValueGB(self, 'error', 'ERROR', 0, '{:g}', fontSize=bigFont)
-        self.fiberTargeted = ValueGB(self, 'targetedFiber', 'Fiber', 0, '{:s}', fontSize=bigFont)
+        self.error = ValueGB(self, 'error', 'ERROR', 0, '{:g}', fontSize=styles.bigFont)
+        self.fiberTargeted = ValueGB(self, 'targetedFiber', 'Fiber', 0, '{:s}', fontSize=styles.bigFont)
         self.controlDialog = BrevaDialog(self)
 
     @property
@@ -190,7 +190,7 @@ class BrevaRow(ModuleRow):
 class MotorState(SwitchGB):
     def __init__(self, moduleRow):
         self.moduleRow = moduleRow
-        SwitchGB.__init__(self, moduleRow, key='motors_on', title='MOTORS', ind=0, fmt='{:g}', fontSize=bigFont)
+        SwitchGB.__init__(self, moduleRow, key='motors_on', title='MOTORS', ind=0, fmt='{:g}', fontSize=styles.bigFont)
 
     def setText(self, txt):
         SwitchGB.setText(self, txt)

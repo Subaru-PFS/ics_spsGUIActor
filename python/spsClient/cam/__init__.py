@@ -2,7 +2,7 @@ __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QPushButton, QDialog, QVBoxLayout, QDialogButtonBox, QGroupBox, QGridLayout
 
-from spsClient import bigFont
+import spsClient.styles as styles
 from spsClient.cam.ccd import CcdRow, CcdGB
 from spsClient.cam.xcu import XcuRow, XcuGB
 from spsClient.modulerow import ActorGB
@@ -12,7 +12,7 @@ from spsClient.widgets import ControlDialog
 class CamStatus(ActorGB, QGroupBox):
     def __init__(self, cam):
         self.cam = cam
-        self.fontSize = bigFont
+        self.fontSize = styles.bigFont
         QGroupBox.__init__(self)
         self.setTitle('Actor')
 
@@ -23,16 +23,16 @@ class CamStatus(ActorGB, QGroupBox):
         self.grid.addWidget(self.button, 0, 0)
         self.setLayout(self.grid)
 
-        self.setColor('black')
+        self.setColor(*styles.colorWidget('offline'))
         self.setText(cam.label)
 
     def setStatus(self, status):
         if status == 0:
-            self.setColor('red')
+            self.setColor(*styles.colorWidget('offline'))
         if status == 1:
-            self.setColor('orange')
+            self.setColor(*styles.colorWidget('midstate'))
         if status == 2:
-            self.setColor('green')
+            self.setColor(*styles.colorWidget('online'))
 
 
 class CamRow(object):

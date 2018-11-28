@@ -1,5 +1,5 @@
 __author__ = 'alefur'
-from spsClient import bigFont
+import spsClient.styles as styles
 from spsClient.modulerow import ModuleRow
 from spsClient.sac.ccd import CcdPanel
 from spsClient.sac.stage import StagePanel
@@ -10,11 +10,11 @@ class SacRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='sac', actorLabel='SAC')
 
-        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=bigFont)
-        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=bigFont)
+        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=styles.bigFont)
+        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=styles.bigFont)
 
-        self.pentaPosition = ValueGB(self, 'lsPenta', 'Penta', 2, '{:.3f}', fontSize=bigFont)
-        self.detectorPosition = ValueGB(self, 'lsDetector', 'Detector', 2, '{:.3f}', fontSize=bigFont)
+        self.pentaPosition = ValueGB(self, 'lsPenta', 'Penta', 2, '{:.3f}', fontSize=styles.bigFont)
+        self.detectorPosition = ValueGB(self, 'lsDetector', 'Detector', 2, '{:.3f}', fontSize=styles.bigFont)
         self.controlDialog = SacDialog(self)
 
     @property

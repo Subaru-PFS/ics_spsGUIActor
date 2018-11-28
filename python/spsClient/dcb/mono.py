@@ -1,5 +1,6 @@
 __author__ = 'alefur'
 
+import spsClient.styles as styles
 from PyQt5.QtWidgets import QComboBox
 from spsClient.widgets import ValueGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, SwitchGB, \
     SwitchButton
@@ -11,8 +12,7 @@ class Error(ValueGB):
 
     def customize(self):
         text = self.value.text()
-        background = 'green' if text == 'OK' else 'red'
-        self.setColor(background=background)
+        self.setColor(*styles.colorWidget('default' if text == 'OK' else 'failed'))
         self.setEnabled(self.moduleRow.isOnline)
 
 

@@ -1,5 +1,5 @@
 __author__ = 'alefur'
-from spsClient import smallFont
+import spsClient.styles as styles
 from spsClient.widgets import ValueGB, SwitchGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, SpinBoxGB, \
     SwitchButton
 
@@ -31,7 +31,7 @@ class LabspherePanel(ControlPanel):
 
 
 class AttenuatorValue(ValueGB):
-    def __init__(self, moduleRow, fontSize=smallFont):
+    def __init__(self, moduleRow, fontSize=styles.smallFont):
         ValueGB.__init__(self, moduleRow, 'attenuator', 'attenuator', 0, '{:g}', fontSize=fontSize)
 
     def setText(self, txt):
