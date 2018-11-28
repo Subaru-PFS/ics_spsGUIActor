@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QProgressBar, QTabWidget, QGridLayout, QGroupBox
-from spsClient import bigFont, smallFont
+import spsClient.styles as styles
 from spsClient.cam.ccd.fee import FeePanel
 from spsClient.cam.ccd.ccd import CcdPanel
 from spsClient.modulerow import ModuleRow
@@ -50,7 +50,7 @@ class ReadRows(QProgressBar):
 class CcdState(ValueGB):
     def __init__(self, moduleRow):
         self.moduleRow = moduleRow
-        ValueGB.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}', fontSize=bigFont)
+        ValueGB.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}', fontSize=styles.bigFont)
 
     def setText(self, txt):
         txt = txt.upper()
@@ -64,10 +64,10 @@ class CcdRow(ModuleRow):
         ModuleRow.__init__(self, module=camRow.specModule,
                            actorName='ccd_%s%i' % (camRow.arm, camRow.specModule.smId),
                            actorLabel='CCD',
-                           fontSize=smallFont)
+                           fontSize=styles.smallFont)
 
         self.substate = CcdState(self)
-        self.temperature = ValueGB(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', fontSize=bigFont)
+        self.temperature = ValueGB(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', fontSize=styles.bigFont)
         self.readRows = ReadRows(self)
 
     @property
@@ -87,6 +87,8 @@ class CcdRow(ModuleRow):
         ModuleRow.setOnline(self)
         self.camRow.setOnline()
 
+    def showDetails(self):
+        pass
 
 class CcdGB(QGroupBox, ControlDialog):
     def __init__(self, ccdRow):

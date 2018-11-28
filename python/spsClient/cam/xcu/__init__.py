@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QGroupBox, QTabWidget, QGridLayout
-from spsClient import bigFont, smallFont
+import spsClient.styles as styles
 from spsClient.cam.xcu.motors import MotorsPanel
 from spsClient.cam.xcu.gauge import GaugePanel
 from spsClient.modulerow import ModuleRow
@@ -14,9 +14,9 @@ class XcuRow(ModuleRow):
         ModuleRow.__init__(self, module=camRow.specModule,
                            actorName='xcu_%s%i' % (camRow.arm, camRow.specModule.smId),
                            actorLabel='XCU',
-                           fontSize=smallFont)
+                           fontSize=styles.smallFont)
 
-        self.pressure = ValueGB(self, 'pressure', 'Pressure(Torr)', 0, '{:g}', fontSize=bigFont)
+        self.pressure = ValueGB(self, 'pressure', 'Pressure(Torr)', 0, '{:g}', fontSize=styles.bigFont)
 
     @property
     def customWidgets(self):
@@ -34,6 +34,9 @@ class XcuRow(ModuleRow):
     def setOnline(self):
         ModuleRow.setOnline(self)
         self.camRow.setOnline()
+
+    def showDetails(self):
+        pass
 
 
 class XcuGB(QGroupBox, ControlDialog):

@@ -4,12 +4,12 @@ from functools import partial
 
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QPushButton, QGroupBox, QGridLayout
-from spsClient import bigFont
+import spsClient.styles as styles
 from spsClient.widgets import ValueGB
 
 
 class ModuleRow(object):
-    def __init__(self, module, actorName, actorLabel, fontSize=bigFont):
+    def __init__(self, module, actorName, actorLabel, fontSize=styles.bigFont):
         object.__init__(self)
         self.module = module
         self.actorName = actorName
@@ -59,7 +59,7 @@ class ModuleRow(object):
 
 
 class ActorGB(ValueGB, QGroupBox):
-    def __init__(self, moduleRow, fontSize=bigFont):
+    def __init__(self, moduleRow, fontSize=styles.bigFont):
         self.moduleRow = moduleRow
         self.keyvar = moduleRow.models['hub'].keyVarDict['actors']
         self.fontSize = fontSize
@@ -85,8 +85,7 @@ class ActorGB(ValueGB, QGroupBox):
         self.moduleRow.setOnline()
 
     def setOnline(self, isOnline):
-        background, color = ('green', 'white') if isOnline else ('red', 'white')
-        self.setColor(background, color)
+        self.setColor(*styles.colorWidget('online' if isOnline else 'offline'))
 
     def setColor(self, background, police='white'):
         bckColor = ValueGB.setBackground(self, background=background)

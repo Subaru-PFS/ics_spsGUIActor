@@ -1,6 +1,6 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QProgressBar
-from spsClient import bigFont
+import spsClient.styles as styles
 from spsClient.enu.shutters import ShuttersPanel
 from spsClient.enu.bia import BiaPanel
 from spsClient.enu.rexm import RexmPanel
@@ -53,13 +53,13 @@ class EnuRow(ModuleRow):
     def __init__(self, specModule):
         ModuleRow.__init__(self, module=specModule, actorName='enu_sm%i' % specModule.smId, actorLabel='ENU')
 
-        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=bigFont)
-        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=bigFont)
+        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=styles.bigFont)
+        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=styles.bigFont)
 
-        self.rexm = ValueGB(self, 'rexm', 'Red Resolution', 0, '{:s}', fontSize=bigFont)
-        self.slit = ValueGB(self, 'slitLocation', 'FCA_Position', 0, '{:s}', fontSize=bigFont)
-        self.shutters = ValueGB(self, 'shutters', 'SHA_Position', 0, '{:s}', fontSize=bigFont)
-        self.bia = ValueGB(self, 'bia', 'BIA_State', 0, '{:s}', fontSize=bigFont)
+        self.rexm = ValueGB(self, 'rexm', 'Red Resolution', 0, '{:s}', fontSize=styles.bigFont)
+        self.slit = ValueGB(self, 'slitLocation', 'FCA_Position', 0, '{:s}', fontSize=styles.bigFont)
+        self.shutters = ValueGB(self, 'shutters', 'SHA_Position', 0, '{:s}', fontSize=styles.bigFont)
+        self.bia = ValueGB(self, 'bia', 'BIA_State', 0, '{:s}', fontSize=styles.bigFont)
         self.elapsedTime = ElapsedTime(self)
 
         self.keyVarDict['integratingTime'].addCallback(self.setExptime, callNow=False)
