@@ -37,6 +37,8 @@ class AttenuatorValue(ValueGB):
     def setText(self, txt):
         if txt == '0':
             txt = 'open'
+        elif txt in ['127', '128']:
+            txt = 'mid-open'
         elif txt == '255':
             txt = 'closed'
 

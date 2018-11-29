@@ -24,7 +24,7 @@ class ExposeCmd(CustomedCmd):
         self.combo = QComboBox()
         self.combo.addItems(['object', 'background'])
 
-        self.exptime = DoubleSpinBoxGB('exptime', 0, 300, 2)
+        self.exptime = DoubleSpinBoxGB('exptime', 0, 3000, 2)
 
         self.addWidget(self.combo, 0, 1)
         self.addWidget(self.exptime, 0, 2)

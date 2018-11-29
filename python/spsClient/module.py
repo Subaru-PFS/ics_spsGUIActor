@@ -37,14 +37,14 @@ class Aitmodule(Module):
 
         self.dcb = DcbRow(self)
         # self.seqno = SeqnoRow(self)
-        # self.sac = SacRow(self)
+        self.sac = SacRow(self)
         # self.breva = BrevaRow(self)
 
         self.populateLayout()
 
     @property
     def rows(self):
-        return [self.dcb.rowone, self.dcb.rowtwo]
+        return [self.dcb.rowone, self.dcb.rowtwo, self.sac]
 
 
 class Specmodule(Module):
