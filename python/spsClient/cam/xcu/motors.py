@@ -1,19 +1,19 @@
 __author__ = 'alefur'
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QComboBox, QGroupBox, QGridLayout, QCheckBox
+from PyQt5.QtWidgets import QGroupBox, QGridLayout
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, AbortButton
-
+from spsClient.common import ComboBox, CheckBox
 
 class MoveCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MOVE')
 
-        self.comboMotors = QComboBox()
+        self.comboMotors = ComboBox()
         self.comboMotors.addItems(['piston', 'a', 'b', 'c'])
         self.distance = DoubleSpinBoxGB('Dist', -300, 300, 3)
-        self.microns = QCheckBox('microns')
-        self.abs = QCheckBox('abs')
+        self.microns = CheckBox('microns')
+        self.abs = CheckBox('abs')
 
         self.microns.setChecked(True)
         self.abs.setChecked(True)
@@ -40,7 +40,7 @@ class HomeCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='HOME')
 
-        self.comboMotors = QComboBox()
+        self.comboMotors = ComboBox()
         self.comboMotors.addItems(['All', 'Motor A', 'Motor B', 'Motor C'])
 
         self.addWidget(self.comboMotors, 0, 1)

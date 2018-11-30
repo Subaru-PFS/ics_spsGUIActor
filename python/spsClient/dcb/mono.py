@@ -1,11 +1,9 @@
 __author__ = 'alefur'
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QComboBox
 from spsClient.control import ControlPanel, CommandsGB
-from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, SwitchGB, \
-    SwitchButton
-
+from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, SwitchGB, SwitchButton
+from spsClient.common import ComboBox
 
 class Error(ValueGB):
     def __init__(self, moduleRow):
@@ -53,13 +51,6 @@ class MonoPanel(ControlPanel):
         self.grid.addWidget(self.outport, 3, 1)
         self.grid.addWidget(self.wavelength, 3, 2)
 
-        # self.grid.addWidget(self.monoqth, 4, 0)
-        #
-        # self.grid.addWidget(self.volts, 5, 0)
-        # self.grid.addWidget(self.current, 5, 1)
-        # self.grid.addWidget(self.power, 5, 2)
-
-        self.grid.addWidget(self.empty, 4, 0, 1, 3)
         self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
 
@@ -67,7 +58,7 @@ class ShutterCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SHUTTER')
 
-        self.comboMove = QComboBox()
+        self.comboMove = ComboBox()
         self.comboMove.addItems(['open', 'close'])
         self.addWidget(self.comboMove, 0, 1)
 
@@ -79,7 +70,7 @@ class ShutterCmd(CustomedCmd):
 class GratingCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel, buttonLabel='SET GRATING')
-        self.combo = QComboBox()
+        self.combo = ComboBox()
         self.combo.addItems(['1', '2', '3'])
         self.addWidget(self.combo, 0, 1)
 
@@ -91,7 +82,7 @@ class GratingCmd(CustomedCmd):
 class OutportCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel, buttonLabel='SET OUTPORT')
-        self.combo = QComboBox()
+        self.combo = ComboBox()
         self.combo.addItems(['1', '2'])
         self.addWidget(self.combo, 0, 1)
 
@@ -137,7 +128,6 @@ class MonoCommands(CommandsGB):
         self.grid.addLayout(self.outportCmd, 3, 0, 1, 2)
         self.grid.addLayout(self.waveCmd, 4, 0, 1, 2)
 
-        # self.grid.addWidget(self.switchQth, 5, 0)
 
     @property
     def buttons(self):

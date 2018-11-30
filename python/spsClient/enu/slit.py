@@ -1,9 +1,9 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QGridLayout, QComboBox
+from PyQt5.QtWidgets import QGridLayout
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import Coordinates, ValueGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, \
     AbortButton
-
+from spsClient.common import ComboBox
 
 class CoordBoxes(QGridLayout):
     def __init__(self):
@@ -23,7 +23,7 @@ class MoveCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MOVE')
 
-        self.combo = QComboBox()
+        self.combo = ComboBox()
         self.combo.addItems(['absolute', 'relative'])
         self.combo.currentIndexChanged.connect(self.resetCoords)
 
@@ -56,7 +56,7 @@ class SetRepCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SET')
 
-        self.combo = QComboBox()
+        self.combo = ComboBox()
         self.combo.addItems(['work', 'tool'])
         self.combo.currentIndexChanged.connect(self.resetCoords)
 

@@ -1,8 +1,7 @@
 __author__ = 'alefur'
 import spsClient.styles as styles
 from spsClient.control import ControlPanel, CommandsGB
-from spsClient.widgets import ValueGB, SwitchGB, CmdButton, CustomedCmd, SpinBoxGB, \
-    SwitchButton
+from spsClient.widgets import ValueGB, SwitchGB, CmdButton, CustomedCmd, SpinBoxGB, SwitchButton
 
 
 class LabspherePanel(ControlPanel):
@@ -27,7 +26,6 @@ class LabspherePanel(ControlPanel):
         self.grid.addWidget(self.photodiode, 1, 1)
         self.grid.addWidget(self.attenuator, 1, 2)
 
-        self.grid.addWidget(self.empty, 2, 0, 3, 3)
         self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
 
@@ -88,6 +86,7 @@ class LabsphereCommands(CommandsGB):
         self.grid.addLayout(self.attenuatorCmd, 2, 0, 1, 2)
 
         self.grid.addWidget(self.switchHalogen, 3, 0)
+        self.grid.addWidget(self.emptySpace(), 4, 0, 2, 1)
 
     @property
     def buttons(self):

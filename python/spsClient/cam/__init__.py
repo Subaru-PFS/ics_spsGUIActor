@@ -1,13 +1,13 @@
 __author__ = 'alefur'
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QPushButton, QDialog, QVBoxLayout, QGroupBox, QGridLayout, QTabWidget
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QGroupBox, QGridLayout, QTabWidget
 from spsClient.cam.ccd import CcdRow, CcdGB
 from spsClient.cam.xcu import XcuRow, XcuGB
 from spsClient.logs import CmdLogArea, RawLogArea
 from spsClient.modulerow import ActorGB
 from spsClient.control import ControlDialog, ButtonBox
-
+from spsClient.common import PushButton
 
 class CamStatus(ActorGB, QGroupBox):
     def __init__(self, cam):
@@ -16,11 +16,12 @@ class CamStatus(ActorGB, QGroupBox):
         QGroupBox.__init__(self)
         self.setTitle('Actor')
 
-        self.button = QPushButton()
+        self.button = PushButton()
         self.button.setFlat(True)
 
         self.grid = QGridLayout()
         self.grid.addWidget(self.button, 0, 0)
+        self.grid.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.grid)
 
         self.setColor(*styles.colorWidget('offline'))

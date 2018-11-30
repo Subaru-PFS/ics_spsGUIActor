@@ -1,14 +1,14 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QComboBox
+
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, AbortButton
-
+from spsClient.common import ComboBox
 
 class MoveCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MOVE')
 
-        self.combo = QComboBox()
+        self.combo = ComboBox()
         self.combo.addItems(['low', 'mid'])
 
         self.addWidget(self.combo, 0, 1)
@@ -37,7 +37,7 @@ class RexmCommands(CommandsGB):
         self.grid.addWidget(self.initButton, 1, 0)
         self.grid.addWidget(self.abortButton, 1, 1)
         self.grid.addLayout(self.moveCmd, 2, 0, 1, 2)
-        # self.grid.addWidget(self.empty, 3, 0, 1, 3)
+        self.grid.addWidget(self.emptySpace(100), 3, 0)
 
     @property
     def buttons(self):
@@ -70,5 +70,4 @@ class RexmPanel(ControlPanel):
         self.grid.addWidget(self.speed, 1, 2)
         self.grid.addWidget(self.steps, 1, 3)
 
-        self.grid.addWidget(self.empty, 2, 0, 3, 4)
-        self.grid.addWidget(self.commands, 0, 4, 2.5, 3)
+        self.grid.addWidget(self.commands, 0, 4, 5, 4)

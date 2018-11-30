@@ -3,10 +3,10 @@ __author__ = 'alefur'
 from functools import partial
 
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QPushButton, QGroupBox, QGridLayout
+from PyQt5.QtWidgets import  QGroupBox, QGridLayout
 import spsClient.styles as styles
 from spsClient.widgets import ValueGB
-
+from spsClient.common import PushButton
 
 class ModuleRow(object):
     def __init__(self, module, actorName, actorLabel, fontSize=styles.bigFont):
@@ -67,12 +67,13 @@ class ActorGB(ValueGB, QGroupBox):
         QGroupBox.__init__(self)
         self.setTitle('Actor')
 
-        self.grid = QGridLayout()
-        self.button = QPushButton()
+        self.button = PushButton()
         self.button.setFlat(True)
-        self.setLayout(self.grid)
-
         self.setText(moduleRow.actorLabel)
+
+        self.grid = QGridLayout()
+        self.grid.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(self.grid)
         self.grid.addWidget(self.button, 0, 0)
 
         QTimer.singleShot(1000, self.attachCallback)

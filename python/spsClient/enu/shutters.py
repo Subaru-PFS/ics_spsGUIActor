@@ -1,7 +1,8 @@
 __author__ = 'alefur'
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QComboBox, QGroupBox, QGridLayout
+from PyQt5.QtWidgets import QGroupBox, QGridLayout
+from spsClient.common import ComboBox
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, AbortButton
 
@@ -10,10 +11,10 @@ class ShutterCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SHUTTERS')
 
-        self.comboMove = QComboBox()
+        self.comboMove = ComboBox()
         self.comboMove.addItems(['open', 'close'])
 
-        self.comboShut = QComboBox()
+        self.comboShut = ComboBox()
         self.comboShut.addItems(['', 'blue', 'red'])
 
         self.addWidget(self.comboMove, 0, 1)
@@ -32,7 +33,7 @@ class ExposeCmd(CustomedCmd):
 
         self.exptime = DoubleSpinBoxGB('Exptime', 1, 10000, 1)
 
-        self.comboShut = QComboBox()
+        self.comboShut = ComboBox()
         self.comboShut.addItems(['', 'blue', 'red'])
 
         self.addWidget(self.exptime, 0, 1)
@@ -89,7 +90,8 @@ class ShuttersCommands(CommandsGB):
         self.grid.addWidget(self.abortButton, 1, 0)
         self.grid.addLayout(self.shutterCmd, 2, 0, 1, 3)
         self.grid.addLayout(self.exposeCmd, 3, 0, 1, 3)
-        # self.grid.addWidget(self.empty, 4, 0, 1, 3)
+
+        self.grid.addWidget(self.emptySpace(20), 4, 0, 1, 3)
 
     @property
     def buttons(self):
@@ -108,6 +110,7 @@ class ShuttersPanel(ControlPanel):
         self.exptime = ValueGB(self.moduleRow, 'integratingTime', 'Exptime', 0, '{:.1f}')
         self.elapsedTime = ValueGB(self.moduleRow, 'elapsedTime', 'elapsedTime', 0, '{:.1f}')
 
+
         self.blueShutter = Shutter(self.moduleRow, 'shb')
         self.redShutter = Shutter(self.moduleRow, 'shr')
 
@@ -123,8 +126,7 @@ class ShuttersPanel(ControlPanel):
         self.grid.addWidget(self.blueShutter, 2, 0, 1, 3)
         self.grid.addWidget(self.redShutter, 3, 0, 1, 3)
 
-        self.grid.addWidget(self.empty, 4, 0, 1, 3)
-        self.grid.addWidget(self.commands, 0, 4, 4, 3)
+        self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
     @property
     def customWidgets(self):

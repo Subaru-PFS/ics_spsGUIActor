@@ -1,11 +1,11 @@
 __author__ = 'alefur'
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QComboBox, QGridLayout
+from PyQt5.QtWidgets import QGridLayout
 from spsClient.control import ControlPanel, CommandsGB, ControlDialog
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import Coordinates, ValueGB, SwitchGB, DoubleSpinBoxGB, CustomedCmd, CmdButton
-
+from spsClient.common import ComboBox
 
 class BrevaCommands(CommandsGB):
     def __init__(self, controlPanel):
@@ -69,7 +69,7 @@ class MoveCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MOVE')
 
-        self.combo = QComboBox()
+        self.combo = ComboBox()
         self.combo.addItems(['abs', 'relo', 'relu'])
         self.combo.currentIndexChanged.connect(self.resetCoords)
 
@@ -102,7 +102,7 @@ class SetRepCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SET')
 
-        self.combo = QComboBox()
+        self.combo = ComboBox()
         self.combo.addItems(['REPOBJ', 'REPUTIL'])
         self.combo.currentIndexChanged.connect(self.resetCoords)
 
@@ -130,7 +130,7 @@ class GotoCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='GO TO')
 
-        self.comboFiber = QComboBox()
+        self.comboFiber = ComboBox()
         self.comboFiber.addItems(['engtopend', 'engtopmid', 'engbotmid', 'engbotend',
                                   'scitopend', 'scitopmid', 'scibotmid', 'scibotend'])
 

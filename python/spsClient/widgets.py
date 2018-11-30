@@ -2,8 +2,8 @@ __author__ = 'alefur'
 from functools import partial
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QLabel, QPushButton, QGroupBox, QGridLayout, \
-    QDoubleSpinBox, QSpinBox, QMessageBox, QWidget, QSizePolicy, QLayout
+from PyQt5.QtWidgets import QLabel, QGroupBox, QGridLayout, QMessageBox, QWidget, QSizePolicy
+from spsClient.common import PushButton, DoubleSpinBox, SpinBox
 
 convertText = {'on': 'ON', 'off': 'OFF', 'nan': 'nan', 'undef': 'undef'}
 
@@ -19,6 +19,8 @@ class ValueGB(QGroupBox):
         self.setTitle('%s' % self.title)
 
         self.grid = QGridLayout()
+        self.grid.setContentsMargins(*((fontSize - 1,) * 4))
+        # self.grid.setContentsMargins(*((fontSize-1,)*4))
         self.value = QLabel()
 
         self.grid.addWidget(self.value, 0, 0)
@@ -50,7 +52,7 @@ class ValueGB(QGroupBox):
         self.setStyleSheet(
             "QGroupBox {font-size: %ipt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " % (
                 self.fontSize - 1, bckColor) +
-            "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
+            "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 1px;}")
         return bckColor
 
     def setColor(self, background, police='white'):
@@ -91,6 +93,7 @@ class Coordinates(QGroupBox):
         for i, widget in enumerate(self.widgets):
             self.grid.addWidget(widget, 0, i)
 
+        self.grid.setContentsMargins(1, 8, 1, 1)
         self.setTitle(title)
         self.setLayout(self.grid)
         self.setStyleSheet(
@@ -99,24 +102,31 @@ class Coordinates(QGroupBox):
 
 
 class EmptyWidget(QWidget):
-    def __init__(self, *args, **kwargs):
-        QWidget.__init__(self, *args, **kwargs)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-
+    def __init__(self, height=False):
+        QWidget.__init__(self)
+        if height:
+            self.setFixedHeight(height)
+        #self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
 
 class DoubleSpinBoxGB(QGroupBox):
-    def __init__(self, title, vmin, vmax, decimals):
+    def __init__(self, title, vmin, vmax, decimals, fontSize=styles.smallFont):
         QGroupBox.__init__(self)
         self.setTitle('%s' % title)
 
         self.grid = QGridLayout()
-        self.value = QDoubleSpinBox()
+        self.value = DoubleSpinBox()
         self.value.setValue(0)
         self.value.setDecimals(decimals)
         self.value.setRange(vmin, vmax)
         self.grid.addWidget(self.value, 0, 0)
 
+        self.grid.setContentsMargins(1, 8, 1, 1)
         self.setLayout(self.grid)
+
+        self.setStyleSheet(
+            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (
+                    fontSize - 1) +
+            "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
     def setValue(self, value):
         self.value.setValue(float(value))
@@ -125,22 +135,22 @@ class DoubleSpinBoxGB(QGroupBox):
         return float(self.value.value())
 
 
-class LockSpinBox(QSpinBox):
+class LockSpinBox(SpinBox):
     def __init__(self):
         self.locked = False
-        QSpinBox.__init__(self)
+        SpinBox.__init__(self)
 
     def focusInEvent(self, event):
         self.locked = True
-        QSpinBox.focusInEvent(self, event)
+        SpinBox.focusInEvent(self, event)
 
     def focusOutEvent(self, event):
         self.locked = False
-        QSpinBox.focusOutEvent(self, event)
+        SpinBox.focusOutEvent(self, event)
 
 
 class SpinBoxGB(QGroupBox):
-    def __init__(self, title, vmin, vmax):
+    def __init__(self, title, vmin, vmax, fontSize=styles.smallFont):
         QGroupBox.__init__(self)
         self.setTitle('%s' % title)
 
@@ -150,7 +160,13 @@ class SpinBoxGB(QGroupBox):
         self.value.setRange(vmin, vmax)
         self.grid.addWidget(self.value, 0, 0)
 
+        self.grid.setContentsMargins(1, 8, 1, 1)
         self.setLayout(self.grid)
+
+        self.setStyleSheet(
+            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (
+                    fontSize - 1) +
+            "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
     @property
     def locked(self):
@@ -168,12 +184,12 @@ class SpinBoxGB(QGroupBox):
         return int(self.value.value())
 
 
-class CmdButton(QPushButton):
+class CmdButton(PushButton):
     def __init__(self, controlPanel, label, cmdStr=False, safetyCheck=False):
         self.controlPanel = controlPanel
         self.cmdStr = cmdStr
         self.safetyCheck = safetyCheck
-        QPushButton.__init__(self, label)
+        PushButton.__init__(self, label)
         self.setCheckable(True)
         self.clicked.connect(self.getCommand)
         self.setEnabled(controlPanel.moduleRow.isOnline)
@@ -199,7 +215,8 @@ class CmdButton(QPushButton):
             self.controlDialog.clearCommand(button=self)
 
     def setColor(self, background, color="white"):
-        self.setStyleSheet("QPushButton {font: 9pt; background-color: %s;color : %s ;}" % (background, color))
+        self.setStyleSheet(
+            "QPushButton {font: %dpt; background-color: %s;color : %s ;}" % (styles.smallFont, background, color))
 
 
 class AbortButton(CmdButton):
@@ -208,11 +225,12 @@ class AbortButton(CmdButton):
         self.setColor(*styles.colorWidget('abort'))
 
 
-class ReloadButton(QPushButton):
+class ReloadButton(PushButton):
     def __init__(self, controlDialog):
         self.controlDialog = controlDialog
         self.cmdStr = '%s reloadConfiguration' % controlDialog.moduleRow.actorName
-        QPushButton.__init__(self, 'Reload Config')
+
+        PushButton.__init__(self, 'Reload Config')
         self.setCheckable(True)
         self.clicked.connect(self.getCommand)
         self.setEnabled(controlDialog.moduleRow.isOnline)
@@ -242,6 +260,10 @@ class SwitchGB(ValueGB):
     def __init__(self, moduleRow, key, title, ind, fmt, fontSize=styles.smallFont):
         self.moduleRow = moduleRow
         ValueGB.__init__(self, moduleRow, key=key, title=title, ind=ind, fmt=fmt, fontSize=fontSize)
+        self.setStyleSheet(
+            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (
+                    fontSize - 1) +
+            "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
     def setText(self, txt):
         try:
@@ -270,7 +292,8 @@ class SwitchButton(SwitchGB):
         self.grid.addWidget(self.buttonOff, 0, 0)
 
         self.setTitle(label)
-        self.setFixedHeight(50)
+        self.grid.setContentsMargins(1, 8, 1, 1)
+        # self.setFixedHeight(50)
 
     @property
     def buttons(self):

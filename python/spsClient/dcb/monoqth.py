@@ -29,7 +29,7 @@ class MonoQthPanel(ControlPanel):
         self.grid.addWidget(self.current, 2, 1)
         self.grid.addWidget(self.power, 2, 2)
 
-        self.grid.addWidget(self.empty, 3, 0, 2, 3)
+        self.grid.addWidget(self.emptySpace(), 3, 0, 2, 3)
         self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
 
@@ -49,7 +49,7 @@ class MonoQthCommands(CommandsGB):
 
         self.grid.addWidget(self.switchQth, 1, 0)
 
-        self.grid.addWidget(self.empty, 2, 0, 3, 2)
+        self.grid.addWidget(self.emptySpace(), 2, 0, 3, 2)
 
     @property
     def buttons(self):

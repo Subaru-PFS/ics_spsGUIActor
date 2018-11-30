@@ -1,8 +1,8 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QComboBox
+
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import ValueGB, DoubleSpinBoxGB, CmdButton, CustomedCmd
-
+from spsClient.common import ComboBox
 
 class MoveCmd(CustomedCmd):
     limits = dict(penta=(-450, 450),
@@ -14,7 +14,7 @@ class MoveCmd(CustomedCmd):
         self.stage = stage
         l_bound, u_bound = MoveCmd.limits[stage]
 
-        self.combo = QComboBox()
+        self.combo = ComboBox()
         self.combo.addItems(['abs', 'rel'])
 
         self.distSpinbox = DoubleSpinBoxGB('Dist', l_bound, u_bound, 3)

@@ -1,8 +1,8 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QComboBox
+
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import ValueGB, DoubleSpinBoxGB, CmdButton, CustomedCmd
-
+from spsClient.common import ComboBox
 
 class Looptime(ValueGB):
     def __init__(self, ccdCmd):
@@ -22,7 +22,7 @@ class ExposeCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel, buttonLabel='EXPOSE')
 
-        self.combo = QComboBox()
+        self.combo = ComboBox()
         self.combo.addItems(['object', 'background'])
 
         self.exptime = DoubleSpinBoxGB('exptime', 0, 3000, 2)

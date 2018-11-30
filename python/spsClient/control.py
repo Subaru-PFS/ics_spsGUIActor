@@ -2,10 +2,11 @@ __author__ = 'alefur'
 from functools import partial
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QPushButton, QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
+from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
     QTabWidget, QLayout
 from spsClient.logs import CmdLogArea, RawLogArea
 from spsClient.widgets import EmptyWidget, ReloadButton
+from spsClient.common import PushButton
 
 
 class CommandsGB(QGroupBox):
@@ -13,7 +14,6 @@ class CommandsGB(QGroupBox):
         self.controlPanel = controlPanel
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
-        self.empty = EmptyWidget()
 
         self.setTitle('Commands')
         self.setLayout(self.grid)
@@ -25,13 +25,15 @@ class CommandsGB(QGroupBox):
     def buttons(self):
         return []
 
+    def emptySpace(self, height=False):
+        return EmptyWidget(height=height)
+
 
 class ControlPanel(QGroupBox):
     def __init__(self, controlDialog):
         QGroupBox.__init__(self)
         self.controlDialog = controlDialog
         self.grid = QGridLayout()
-        self.empty = EmptyWidget()
         self.setLayout(self.grid)
 
         self.commands = CommandsGB(self)
@@ -56,19 +58,22 @@ class ControlPanel(QGroupBox):
     def allWidgets(self):
         return self.basicWidgets + self.customWidgets
 
+    def emptySpace(self):
+        return EmptyWidget()
+
 
 class ButtonBox(QGridLayout):
     def __init__(self, controlDialog):
         QGridLayout.__init__(self)
         self.controlDialog = controlDialog
-        self.apply = QPushButton('Apply')
+        self.apply = PushButton('Apply')
         self.apply.clicked.connect(controlDialog.sendCommands)
 
-        self.discard = QPushButton('Discard')
+        self.discard = PushButton('Discard')
         self.discard.clicked.connect(controlDialog.cancelCommands)
 
-        self.showLogs = QPushButton('Show Logs')
-        self.hideLogs = QPushButton('Hide Logs')
+        self.showLogs = PushButton('Show Logs')
+        self.hideLogs = PushButton('Hide Logs')
         self.showLogs.clicked.connect(partial(self.show, True))
         self.hideLogs.clicked.connect(partial(self.show, False))
         self.show(False)
