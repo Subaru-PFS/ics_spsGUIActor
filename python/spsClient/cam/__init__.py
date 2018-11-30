@@ -1,12 +1,12 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QPushButton, QDialog, QVBoxLayout, QDialogButtonBox, QGroupBox, QGridLayout
-
 import spsClient.styles as styles
+from PyQt5.QtWidgets import QPushButton, QDialog, QVBoxLayout, QGroupBox, QGridLayout, QTabWidget
 from spsClient.cam.ccd import CcdRow, CcdGB
 from spsClient.cam.xcu import XcuRow, XcuGB
+from spsClient.logs import CmdLogArea, RawLogArea
 from spsClient.modulerow import ActorGB
-from spsClient.widgets import ControlDialog
+from spsClient.widgets import ControlDialog, ButtonBox
 
 
 class CamStatus(ActorGB, QGroupBox):
@@ -80,12 +80,19 @@ class CamDialog(ControlDialog):
         self.cmdBuffer = dict()
         self.moduleRow = camRow
 
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Apply | QDialogButtonBox.Discard)
-        buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.sendCommands)
-        buttonBox.button(QDialogButtonBox.Discard).clicked.connect(self.cancelCommands)
+        self.logArea = QTabWidget(self)
+        self.cmdLog = CmdLogArea()
+        self.rawXcuLog = RawLogArea(camRow.xcu.actorName)
+        self.rawCcdLog = RawLogArea(camRow.ccd.actorName)
+        self.logArea.addTab(self.cmdLog, 'cmdLog')
+        self.logArea.addTab(self.rawXcuLog, 'xcuLog')
+        self.logArea.addTab(self.rawCcdLog, 'ccdLog')
+
+        buttonBox = ButtonBox(self)
 
         self.vbox.addLayout(self.hbox)
-        self.vbox.addWidget(buttonBox)
+        self.vbox.addLayout(buttonBox)
+        self.vbox.addWidget(self.logArea)
 
         self.setLayout(self.vbox)
         self.setWindowTitle(title)
