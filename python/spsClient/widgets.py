@@ -1,11 +1,10 @@
 __author__ = 'alefur'
-from datetime import datetime as dt
 from functools import partial
 
 import spsClient.styles as styles
-from PyQt5.QtGui import QFont, QTextCursor
-from PyQt5.QtWidgets import QPlainTextEdit, QLabel, QPushButton, QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
-    QDialogButtonBox, QDoubleSpinBox, QSpinBox, QTabWidget, QMessageBox, QWidget, QSizePolicy
+from PyQt5.QtWidgets import QLabel, QPushButton, QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
+    QDoubleSpinBox, QSpinBox, QTabWidget, QMessageBox, QWidget, QSizePolicy, QLayout
+from spsClient.logs import CmdLogArea, RawLogArea
 
 convertText = {'on': 'ON', 'off': 'OFF', 'nan': 'nan', 'undef': 'undef'}
 
@@ -155,25 +154,60 @@ class ControlPanel(QGroupBox):
         return self.basicWidgets + self.customWidgets
 
 
+class ButtonBox(QGridLayout):
+    def __init__(self, controlDialog):
+        QGridLayout.__init__(self)
+        self.controlDialog = controlDialog
+        self.apply = QPushButton('Apply')
+        self.apply.clicked.connect(controlDialog.sendCommands)
+
+        self.discard = QPushButton('Discard')
+        self.discard.clicked.connect(controlDialog.cancelCommands)
+
+        self.showLogs = QPushButton('Show Logs')
+        self.hideLogs = QPushButton('Hide Logs')
+        self.showLogs.clicked.connect(partial(self.show, True))
+        self.hideLogs.clicked.connect(partial(self.show, False))
+        self.show(False)
+
+        self.addWidget(self.showLogs, 0, 0)
+        self.addWidget(self.hideLogs, 0, 0)
+        self.addWidget(EmptyWidget(), 0, 1)
+        self.addWidget(self.apply, 0, 9)
+        self.addWidget(self.discard, 0, 10)
+
+    def show(self, bool):
+        self.showLogs.setVisible(not bool)
+        self.hideLogs.setVisible(bool)
+        self.controlDialog.logArea.setVisible(bool)
+        self.controlDialog.adjustSize()
+
+
 class ControlDialog(QDialog):
     def __init__(self, moduleRow, title=False):
         title = moduleRow.actorLabel if not title else title
         QDialog.__init__(self, parent=moduleRow.mwindow.spsClient)
-
         self.vbox = QVBoxLayout()
+        self.vbox.setSizeConstraint(QLayout.SetMinimumSize)
         self.tabWidget = QTabWidget(self)
         self.cmdBuffer = dict()
 
         self.moduleRow = moduleRow
 
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Apply | QDialogButtonBox.Discard)
-        buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.sendCommands)
-        buttonBox.button(QDialogButtonBox.Discard).clicked.connect(self.cancelCommands)
-
         self.reload = ReloadButton(self)
+
+        self.logArea = QTabWidget(self)
+        self.cmdLog = CmdLogArea()
+        self.rawLog = RawLogArea(moduleRow.actorName)
+        self.logArea.addTab(self.cmdLog, 'cmdLog')
+        self.logArea.addTab(self.rawLog, 'rawLog')
+
+        buttonBox = ButtonBox(self)
+
         self.vbox.addWidget(self.reload)
         self.vbox.addWidget(self.tabWidget)
-        self.vbox.addWidget(buttonBox)
+        self.vbox.addLayout(buttonBox)
+        self.vbox.addWidget(self.logArea)
 
         self.setLayout(self.vbox)
         self.setWindowTitle(title)
@@ -186,8 +220,10 @@ class ControlDialog(QDialog):
         self.cmdBuffer.pop(button, None)
 
     def sendCommands(self):
-        for button, cmdStr in self.cmdBuffer.items():
-            self.moduleRow.mwindow.sendCommand(fullCmd=cmdStr)
+        for button, fullCmd in self.cmdBuffer.items():
+            [actor, cmdStr] = fullCmd.split(' ', 1)
+            self.cmdLog.newLine('cmdIn=%s %s' % (actor, cmdStr))
+            self.moduleRow.mwindow.sendCommand(actor=actor, cmdStr=cmdStr, callFunc=self.cmdLog.printResponse)
             button.setChecked(0)
 
         self.cmdBuffer.clear()
@@ -417,22 +453,3 @@ class MonitorCmd(CustomedCmd):
                                                           self.period.getValue())
 
         return cmdStr
-
-
-class LogArea(QPlainTextEdit):
-    def __init__(self):
-        QPlainTextEdit.__init__(self)
-        self.logArea = QPlainTextEdit()
-        self.setMaximumBlockCount(10000)
-        self.setReadOnly(True)
-
-        self.setStyleSheet("background-color: black;color:white;")
-        self.setFont(QFont("Monospace", 8))
-
-    def newLine(self, line):
-        self.insertPlainText("\n%s  %s" % (dt.now().strftime("%H:%M:%S.%f"), line))
-        self.moveCursor(QTextCursor.End)
-        self.ensureCursorVisible()
-
-    def trick(self, qlineedit):
-        self.newLine(qlineedit.text())

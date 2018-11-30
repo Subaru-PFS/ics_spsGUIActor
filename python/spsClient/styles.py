@@ -195,6 +195,9 @@ state2color = {"default": ('green', 'white'),
                "operation": ('green', 'white'),
                "simulation": ('plum', 'white'),
                "abort": ('red', 'white'),
+               "regular": ('white', 'black'),
+               "success": ('chartreuse', 'white'),
+               "warning": ('orange', 'white'),
                }
 
 
