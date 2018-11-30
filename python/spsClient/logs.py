@@ -93,7 +93,7 @@ class RawLogArea(QPlainTextEdit):
         try:
             logs = self.tail(actor=self.actor, nbline=nbline)
 
-        except subprocess.CalledProcessError:
+        except FileExistsError:
             return
 
         ind = logs.find(self.logs[-100:])
@@ -110,6 +110,8 @@ class RawLogArea(QPlainTextEdit):
 
     def tail(self, actor, nbline=1000):
         logfile = os.path.expandvars('$ICS_MHS_LOGS_ROOT/actors/%s/current.log' % actor)
+        if not (os.path.isfile(logfile)):
+            raise FileExistsError
         args = ['tail', '-n', '%d' % nbline, logfile]
         output = subprocess.check_output(args)
         return output.decode('utf8')
