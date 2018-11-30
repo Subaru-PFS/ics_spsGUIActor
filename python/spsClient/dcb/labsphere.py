@@ -1,6 +1,7 @@
 __author__ = 'alefur'
 import spsClient.styles as styles
-from spsClient.widgets import ValueGB, SwitchGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, SpinBoxGB, \
+from spsClient.control import ControlPanel, CommandsGB
+from spsClient.widgets import ValueGB, SwitchGB, CmdButton, CustomedCmd, SpinBoxGB, \
     SwitchButton
 
 

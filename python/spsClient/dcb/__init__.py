@@ -1,12 +1,13 @@
 __author__ = 'alefur'
 
 import spsClient.styles as styles
+from spsClient.control import ControlDialog
 from spsClient.dcb.aten import AtenPanel
 from spsClient.dcb.labsphere import LabspherePanel, AttenuatorValue
 from spsClient.dcb.mono import MonoPanel
 from spsClient.dcb.monoqth import MonoQthPanel
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB, SwitchGB, EnumGB, ControlDialog
+from spsClient.widgets import ValueGB, SwitchGB, EnumGB
 
 
 class RowOne:
@@ -25,7 +26,6 @@ class RowTwo:
 
     def setLine(self, lineNB):
         self.lineNB = lineNB
-
 
 
 class DcbRow(ModuleRow):

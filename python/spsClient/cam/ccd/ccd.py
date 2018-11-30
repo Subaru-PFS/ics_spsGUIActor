@@ -1,5 +1,6 @@
 __author__ = 'alefur'
-from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CommandsGB, MonitorCmd, CustomedCmd,DoubleSpinBoxGB, SpinBoxGB
+from spsClient.control import ControlPanel, CommandsGB
+from spsClient.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, SpinBoxGB
 
 
 class BiasCmd(CustomedCmd):
@@ -15,6 +16,7 @@ class BiasCmd(CustomedCmd):
         cmdStr = 'spsait bias duplicate=%d cam=%s name="Functional Test" comments="took from spsClient"' % \
                  (self.value.getValue(), self.cam)
         return cmdStr
+
 
 class DarksCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -59,11 +61,12 @@ class CcdState(ValueGB):
 
         ValueGB.setText(self, txt)
 
+
 class CcdPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog)
 
-        self.state = CcdState(self.moduleRow,)
+        self.state = CcdState(self.moduleRow, )
         self.rootDir = ValueGB(self.moduleRow, 'filepath', 'rootDir', 0, '{:s}')
         self.nightDir = ValueGB(self.moduleRow, 'filepath', 'nightDir', 1, '{:s}')
         self.filename = ValueGB(self.moduleRow, 'filepath', 'filename', 2, '{:s}')

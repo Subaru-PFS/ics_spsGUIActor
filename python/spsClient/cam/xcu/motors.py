@@ -1,7 +1,8 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QComboBox, QGroupBox, QGridLayout, QCheckBox
 import spsClient.styles as styles
-from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CommandsGB, CustomedCmd, DoubleSpinBoxGB, AbortButton
+from PyQt5.QtWidgets import QComboBox, QGroupBox, QGridLayout, QCheckBox
+from spsClient.control import ControlPanel, CommandsGB
+from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, AbortButton
 
 
 class MoveCmd(CustomedCmd):
@@ -118,7 +119,6 @@ class MotorsPanel(ControlPanel):
         self.commands = MotorsCommands(self)
 
         self.grid.addWidget(self.commands, 0, 5, 4, 3)
-
 
     @property
     def motors(self):

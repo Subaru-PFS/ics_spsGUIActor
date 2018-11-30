@@ -1,7 +1,8 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QGridLayout, QComboBox
-
-from spsClient.widgets import Coordinates, ValueGB, ControlPanel, CommandsGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, AbortButton
+from spsClient.control import ControlPanel, CommandsGB
+from spsClient.widgets import Coordinates, ValueGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, \
+    AbortButton
 
 
 class CoordBoxes(QGridLayout):

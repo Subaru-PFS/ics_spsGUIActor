@@ -1,11 +1,12 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QGroupBox, QTabWidget, QGridLayout
 import spsClient.styles as styles
-from spsClient.cam.xcu.motors import MotorsPanel
+from PyQt5.QtWidgets import QGroupBox, QTabWidget, QGridLayout
 from spsClient.cam.xcu.gauge import GaugePanel
+from spsClient.cam.xcu.motors import MotorsPanel
+from spsClient.control import ControlDialog
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ControlDialog, ValueGB, ReloadButton
+from spsClient.widgets import ValueGB, ReloadButton
 
 
 class XcuRow(ModuleRow):

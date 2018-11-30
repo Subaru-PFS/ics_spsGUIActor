@@ -6,7 +6,7 @@ from spsClient.cam.ccd import CcdRow, CcdGB
 from spsClient.cam.xcu import XcuRow, XcuGB
 from spsClient.logs import CmdLogArea, RawLogArea
 from spsClient.modulerow import ActorGB
-from spsClient.widgets import ControlDialog, ButtonBox
+from spsClient.control import ControlDialog, ButtonBox
 
 
 class CamStatus(ActorGB, QGroupBox):

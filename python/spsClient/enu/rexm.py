@@ -1,6 +1,7 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QComboBox
-from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CustomedCmd, CommandsGB, AbortButton
+from spsClient.control import ControlPanel, CommandsGB
+from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, AbortButton
 
 
 class MoveCmd(CustomedCmd):
@@ -36,7 +37,7 @@ class RexmCommands(CommandsGB):
         self.grid.addWidget(self.initButton, 1, 0)
         self.grid.addWidget(self.abortButton, 1, 1)
         self.grid.addLayout(self.moveCmd, 2, 0, 1, 2)
-        #self.grid.addWidget(self.empty, 3, 0, 1, 3)
+        # self.grid.addWidget(self.empty, 3, 0, 1, 3)
 
     @property
     def buttons(self):

@@ -2,7 +2,8 @@ __author__ = 'alefur'
 
 import spsClient.styles as styles
 from PyQt5.QtWidgets import QComboBox
-from spsClient.widgets import ValueGB, ControlPanel, CommandsGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, SwitchGB, \
+from spsClient.control import ControlPanel, CommandsGB
+from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, SwitchGB, \
     SwitchButton
 
 

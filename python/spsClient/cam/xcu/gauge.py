@@ -1,5 +1,6 @@
 __author__ = 'alefur'
-from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CommandsGB, MonitorCmd
+from spsClient.control import ControlPanel, CommandsGB
+from spsClient.widgets import ValueGB, CmdButton, MonitorCmd
 
 
 class GaugeCommands(CommandsGB):

@@ -1,12 +1,13 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QProgressBar
 import spsClient.styles as styles
-from spsClient.enu.shutters import ShuttersPanel
+from PyQt5.QtWidgets import QProgressBar
+from spsClient.control import ControlDialog
 from spsClient.enu.bia import BiaPanel
 from spsClient.enu.rexm import RexmPanel
+from spsClient.enu.shutters import ShuttersPanel
 from spsClient.enu.slit import SlitPanel
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB, ControlDialog
+from spsClient.widgets import ValueGB
 
 
 class ElapsedTime(QProgressBar):

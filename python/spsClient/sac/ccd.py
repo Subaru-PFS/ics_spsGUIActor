@@ -1,6 +1,7 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QComboBox
-from spsClient.widgets import ValueGB, CommandsGB, ControlPanel, DoubleSpinBoxGB, CmdButton, CustomedCmd
+from spsClient.control import ControlPanel, CommandsGB
+from spsClient.widgets import ValueGB, DoubleSpinBoxGB, CmdButton, CustomedCmd
 
 
 class Looptime(ValueGB):

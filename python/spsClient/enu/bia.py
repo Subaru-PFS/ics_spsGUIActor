@@ -1,7 +1,8 @@
 __author__ = 'alefur'
 
+from spsClient.control import ControlPanel, CommandsGB
 from spsClient.dcb.aten import SwitchButton
-from spsClient.widgets import ValueGB, ControlPanel, CmdButton, CustomedCmd, CommandsGB, SwitchGB, SpinBoxGB
+from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, SwitchGB, SpinBoxGB
 
 
 class BiaPeriod(ValueGB):
@@ -80,7 +81,7 @@ class BiaCommands(CommandsGB):
         self.grid.addWidget(self.switchStrobe, 1, 1)
 
         self.grid.addLayout(self.setBiaParam, 2, 0, 1, 3)
-        #self.grid.addWidget(self.empty, 3, 0, 1, 3)
+        # self.grid.addWidget(self.empty, 3, 0, 1, 3)
 
     @property
     def buttons(self):

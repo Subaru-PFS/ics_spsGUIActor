@@ -1,11 +1,12 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QProgressBar, QTabWidget, QGridLayout, QGroupBox
 import spsClient.styles as styles
-from spsClient.cam.ccd.fee import FeePanel
+from PyQt5.QtWidgets import QProgressBar, QTabWidget, QGridLayout, QGroupBox
 from spsClient.cam.ccd.ccd import CcdPanel
+from spsClient.cam.ccd.fee import FeePanel
+from spsClient.control import ControlDialog
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB, ReloadButton, ControlDialog
+from spsClient.widgets import ValueGB, ReloadButton
 
 
 class ReadRows(QProgressBar):
@@ -89,6 +90,7 @@ class CcdRow(ModuleRow):
 
     def showDetails(self):
         pass
+
 
 class CcdGB(QGroupBox, ControlDialog):
     def __init__(self, ccdRow):

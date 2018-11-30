@@ -1,10 +1,10 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QComboBox, QGridLayout
 import spsClient.styles as styles
+from PyQt5.QtWidgets import QComboBox, QGridLayout
+from spsClient.control import ControlPanel, CommandsGB, ControlDialog
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import Coordinates, ValueGB, SwitchGB, CommandsGB, ControlDialog, ControlPanel, CmdButton, \
-    DoubleSpinBoxGB, CustomedCmd
+from spsClient.widgets import Coordinates, ValueGB, SwitchGB, DoubleSpinBoxGB, CustomedCmd, CmdButton
 
 
 class BrevaCommands(CommandsGB):
@@ -46,7 +46,8 @@ class BrevaCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.statusButton, self.connectButton, self.initButton, self.motorsOn, self.motorsOff, self.moveCmd.button,
+        return [self.statusButton, self.connectButton, self.initButton, self.motorsOn, self.motorsOff,
+                self.moveCmd.button,
                 self.setRepCmd.button, self.gotoCmd.button]
 
 
