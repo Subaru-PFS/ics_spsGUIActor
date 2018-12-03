@@ -4,6 +4,7 @@ import spsClient.styles as styles
 from PyQt5.QtWidgets import QGroupBox, QTabWidget, QGridLayout
 from spsClient.cam.xcu.gauge import GaugePanel
 from spsClient.cam.xcu.motors import MotorsPanel
+from spsClient.cam.xcu.turbo import TurboPanel
 from spsClient.control import ControlDialog
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB, ReloadButton
@@ -51,9 +52,13 @@ class XcuGB(QGroupBox, ControlDialog):
         self.reload = ReloadButton(self)
         self.motorsPanel = MotorsPanel(self)
         self.gaugePanel = GaugePanel(self)
+        self.turboPanel = TurboPanel(self)
 
-        self.tabWidget.addTab(self.motorsPanel, 'Motors')
+        self.tabWidget.addTab(self.turboPanel, 'Turbo')
         self.tabWidget.addTab(self.gaugePanel, 'Gauge')
+        self.tabWidget.addTab(self.motorsPanel, 'Motors')
+
+
 
         self.grid.addWidget(xcuRow.actorStatus, 0, 0)
         self.grid.addWidget(self.reload, 0, 1)
@@ -65,4 +70,4 @@ class XcuGB(QGroupBox, ControlDialog):
 
     @property
     def customWidgets(self):
-        return [self.reload] + self.motorsPanel.allWidgets + self.gaugePanel.allWidgets
+        return [self.reload] + self.motorsPanel.allWidgets + self.gaugePanel.allWidgets + self.turboPanel.allWidgets

@@ -2,7 +2,7 @@ __author__ = 'alefur'
 from functools import partial
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QLabel, QGroupBox, QGridLayout, QMessageBox, QWidget, QSizePolicy
+from PyQt5.QtWidgets import QLabel, QGroupBox, QGridLayout, QMessageBox, QWidget
 from spsClient.common import PushButton, DoubleSpinBox, SpinBox
 
 convertText = {'on': 'ON', 'off': 'OFF', 'nan': 'nan', 'undef': 'undef'}
@@ -20,7 +20,6 @@ class ValueGB(QGroupBox):
 
         self.grid = QGridLayout()
         self.grid.setContentsMargins(*((fontSize - 1,) * 4))
-        # self.grid.setContentsMargins(*((fontSize-1,)*4))
         self.value = QLabel()
 
         self.grid.addWidget(self.value, 0, 0)
@@ -80,6 +79,40 @@ class ValueGB(QGroupBox):
             self.setColor(*styles.colorWidget('offline'))
 
 
+class NullValue(ValueGB):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=styles.smallFont):
+        ValueGB.__init__(self, moduleRow, key, title, ind, fmt, fontSize=fontSize)
+
+    def customize(self):
+        text = self.value.text()
+        try:
+            value = int(float(text))
+        except ValueError:
+            return ValueGB.customize(self)
+
+        colors = styles.colorWidget('default') if float(text) == 0 else styles.colorWidget('notnominal')
+
+        self.setColor(*colors)
+        self.setEnabled(self.moduleRow.isOnline)
+
+
+class PositiveValue(ValueGB):
+    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=styles.smallFont):
+        ValueGB.__init__(self, moduleRow, key, title, ind, fmt, fontSize=fontSize)
+
+    def customize(self):
+        text = self.value.text()
+        try:
+            value = int(float(text))
+        except ValueError:
+            return ValueGB.customize(self)
+
+        colors = styles.colorWidget('default') if float(value) > 0 else styles.colorWidget('off')
+
+        self.setColor(*colors)
+        self.setEnabled(self.moduleRow.isOnline)
+
+
 class Coordinates(QGroupBox):
     posName = ['X', 'Y', 'Z', 'U', 'V', 'W']
 
@@ -106,7 +139,8 @@ class EmptyWidget(QWidget):
         QWidget.__init__(self)
         if height:
             self.setFixedHeight(height)
-        #self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
+        # self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
+
 
 class DoubleSpinBoxGB(QGroupBox):
     def __init__(self, title, vmin, vmax, decimals, fontSize=styles.smallFont):
@@ -276,14 +310,14 @@ class SwitchGB(ValueGB):
 
 
 class SwitchButton(SwitchGB):
-    def __init__(self, controlPanel, key, label, cmdHead, ind=0, fmt='{:g}', cmdStrOn='', cmdStrOff='',
-                 safetyCheck=False):
+    def __init__(self, controlPanel, key, label, cmdHead, ind=0, fmt='{:g}', cmdStrOn='', cmdStrOff='', labelOn='ON',
+                 labelOff='OFF', safetyCheck=False):
 
         cmdStrOn = '%s on' % cmdHead if not cmdStrOn else cmdStrOn
         cmdStrOff = '%s off' % cmdHead if not cmdStrOff else cmdStrOff
 
-        self.buttonOn = CmdButton(controlPanel=controlPanel, label='ON', cmdStr=cmdStrOn, safetyCheck=safetyCheck)
-        self.buttonOff = CmdButton(controlPanel=controlPanel, label='OFF', cmdStr=cmdStrOff, safetyCheck=safetyCheck)
+        self.buttonOn = CmdButton(controlPanel=controlPanel, label=labelOn, cmdStr=cmdStrOn, safetyCheck=safetyCheck)
+        self.buttonOff = CmdButton(controlPanel=controlPanel, label=labelOff, cmdStr=cmdStrOff, safetyCheck=safetyCheck)
 
         SwitchGB.__init__(self, controlPanel.moduleRow, key=key, title='', ind=ind, fmt=fmt)
 
@@ -293,7 +327,6 @@ class SwitchButton(SwitchGB):
 
         self.setTitle(label)
         self.grid.setContentsMargins(1, 8, 1, 1)
-        # self.setFixedHeight(50)
 
     @property
     def buttons(self):
