@@ -2,10 +2,11 @@ __author__ = 'alefur'
 
 import spsClient.styles as styles
 from PyQt5.QtWidgets import QGroupBox, QTabWidget, QGridLayout
+from spsClient.cam.xcu.cooler import CoolerPanel
+from spsClient.cam.xcu.gatevalve import GVPanel
 from spsClient.cam.xcu.gauge import GaugePanel
 from spsClient.cam.xcu.motors import MotorsPanel
 from spsClient.cam.xcu.turbo import TurboPanel
-from spsClient.cam.xcu.gatevalve import GVPanel
 from spsClient.control import ControlDialog
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueGB, ReloadButton
@@ -52,12 +53,14 @@ class XcuGB(QGroupBox, ControlDialog):
 
         self.reload = ReloadButton(self)
         self.GVPanel = GVPanel(self)
-        self.motorsPanel = MotorsPanel(self)
-        self.gaugePanel = GaugePanel(self)
         self.turboPanel = TurboPanel(self)
+        self.gaugePanel = GaugePanel(self)
+        self.coolerPanel = CoolerPanel(self)
+        self.motorsPanel = MotorsPanel(self)
 
         self.tabWidget.addTab(self.GVPanel, 'Gatevalve')
         self.tabWidget.addTab(self.turboPanel, 'Turbo')
+        self.tabWidget.addTab(self.coolerPanel, 'Cooler')
         self.tabWidget.addTab(self.gaugePanel, 'Gauge')
         self.tabWidget.addTab(self.motorsPanel, 'Motors')
 
@@ -72,4 +75,4 @@ class XcuGB(QGroupBox, ControlDialog):
     @property
     def customWidgets(self):
         return [self.reload] + self.motorsPanel.allWidgets + self.gaugePanel.allWidgets + self.turboPanel.allWidgets + \
-               self.GVPanel.allWidgets
+               self.GVPanel.allWidgets + self.coolerPanel.allWidgets
