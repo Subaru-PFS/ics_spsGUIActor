@@ -118,7 +118,7 @@ class MotorsPanel(ControlPanel):
 
         self.commands = MotorsCommands(self)
 
-        self.grid.addWidget(self.commands, 0, 5, 4, 3)
+        self.grid.addWidget(self.commands, 0, 5, 3, 3)
 
     @property
     def motors(self):

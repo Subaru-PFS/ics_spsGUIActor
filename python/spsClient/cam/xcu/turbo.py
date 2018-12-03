@@ -39,10 +39,14 @@ class TurboCommands(CommandsGB):
         CommandsGB.__init__(self, controlPanel)
         self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
                                       cmdStr='%s turbo status' % controlPanel.actorName)
+        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
+                                       cmdStr='%s connect controller=turbo' % controlPanel.actorName)
+
         self.monitorCmd = MonitorCmd(controlPanel=controlPanel, controllerName='turbo')
         self.turboSwitch = TurboSwitch(controlPanel=controlPanel)
 
         self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
         self.grid.addLayout(self.monitorCmd, 1, 0, 1, 2)
         self.grid.addWidget(self.turboSwitch.buttonOn, 2, 0)
         self.grid.addWidget(self.turboSwitch.buttonOff, 2, 0)
@@ -50,18 +54,18 @@ class TurboCommands(CommandsGB):
 
     @property
     def buttons(self):
-        return [self.statusButton, self.monitorCmd.button] + self.turboSwitch.buttons
+        return [self.statusButton, self.connectButton, self.monitorCmd.button] + self.turboSwitch.buttons
 
 
 class TurboPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog)
 
-        self.speed = NullValue(self.moduleRow, 'turboSpeed', 'Speed(RPM)', 0, '{:g}')
+        self.speed = ValueGB(self.moduleRow, 'turboSpeed', 'Speed(RPM)', 0, '{:g}')
         self.status = Status(self.moduleRow)
-        self.volt = NullValue(self.moduleRow, 'turboVAW', 'Voltage(V)', 0, '{:g}')
-        self.current = NullValue(self.moduleRow, 'turboVAW', 'Current(A)', 1, '{:g}')
-        self.power = NullValue(self.moduleRow, 'turboVAW', 'Power(W)', 2, '{:g}')
+        self.volt = ValueGB(self.moduleRow, 'turboVAW', 'Voltage(V)', 0, '{:g}')
+        self.current = ValueGB(self.moduleRow, 'turboVAW', 'Current(A)', 1, '{:g}')
+        self.power = ValueGB(self.moduleRow, 'turboVAW', 'Power(W)', 2, '{:g}')
         self.bodyTemp = ValueGB(self.moduleRow, 'turboTemps', 'bodyTemp(°C)', 0, '{:g}')
         self.controllerTemp = ValueGB(self.moduleRow, 'turboTemps', 'controllerTemp(°C)', 1, '{:g}')
 

@@ -29,4 +29,4 @@ class GaugePanel(ControlPanel):
 
         self.commands = GaugeCommands(self)
 
-        self.grid.addWidget(self.commands, 0, 4, 4, 3)
+        self.grid.addWidget(self.commands, 0, 5, 4, 3)

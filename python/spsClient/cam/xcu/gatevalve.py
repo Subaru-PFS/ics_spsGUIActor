@@ -40,21 +40,22 @@ class GVCommands(CommandsGB):
         CommandsGB.__init__(self, controlPanel)
         self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
                                       cmdStr='%s gatevalve status' % controlPanel.actorName)
+        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
+                                       cmdStr='%s connect controller=gatevalve' % controlPanel.actorName)
         self.monitorCmd = MonitorCmd(controlPanel=controlPanel, controllerName='gatevalve')
         self.openCmd = OpenCmd(controlPanel=controlPanel)
         self.closeButton = CmdButton(controlPanel=controlPanel, label='CLOSE',
                                      cmdStr='%s gatevalve close' % controlPanel.actorName, safetyCheck=True)
 
         self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
         self.grid.addLayout(self.monitorCmd, 1, 0, 1, 2)
         self.openCmd.addWidget(self.closeButton, 1, 0)
         self.grid.addLayout(self.openCmd, 2, 0, 1, 3)
 
-        # self.grid.addWidget(self.emptySpace(100), 2, 0)
-
     @property
     def buttons(self):
-        return [self.statusButton, self.monitorCmd.button, self.closeButton, self.openCmd.button]
+        return [self.statusButton, self.connectButton, self.monitorCmd.button, self.closeButton, self.openCmd.button]
 
 
 class GVPanel(ControlPanel):
