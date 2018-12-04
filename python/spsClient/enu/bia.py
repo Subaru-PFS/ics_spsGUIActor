@@ -3,7 +3,7 @@ __author__ = 'alefur'
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.dcb.aten import SwitchButton
 from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, SwitchGB, SpinBoxGB
-
+import spsClient.styles as styles
 
 class BiaPeriod(ValueGB):
     def __init__(self, moduleRow):
@@ -96,7 +96,7 @@ class BiaPanel(ControlPanel):
         self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}')
 
-        self.bia = ValueGB(self.moduleRow, 'bia', 'BIA', 0, '{:s}')
+        self.bia = BiaState(self.moduleRow)
         self.biaStrobe = SwitchGB(self.moduleRow, 'biaStrobe', 'Strobe', 0, '{:g}')
 
         self.biaPeriod = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Period', 0, '{:d}')
@@ -114,3 +114,19 @@ class BiaPanel(ControlPanel):
         self.grid.addWidget(self.biaDuty, 2, 1)
 
         self.grid.addWidget(self.commands, 0, 3, 5, 3)
+
+
+
+class BiaState(ValueGB):
+    def __init__(self, moduleRow, fontSize=styles.smallFont):
+        ValueGB.__init__(self, moduleRow, 'bia', 'BIA', 0, '{:s}', fontSize=fontSize)
+
+    def customize(self):
+        text = self.value.text()
+        if text in ['off', 'on']:
+            colors = styles.colorWidget('default')
+        else:
+            colors = styles.colorWidget('warning')
+
+        self.setColor(*colors)
+        self.setEnabled(self.moduleRow.isOnline)

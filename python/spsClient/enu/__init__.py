@@ -2,7 +2,7 @@ __author__ = 'alefur'
 import spsClient.styles as styles
 from PyQt5.QtWidgets import QProgressBar
 from spsClient.control import ControlDialog
-from spsClient.enu.bia import BiaPanel
+from spsClient.enu.bia import BiaPanel, BiaState
 from spsClient.enu.rexm import RexmPanel
 from spsClient.enu.shutters import ShuttersPanel
 from spsClient.enu.slit import SlitPanel
@@ -60,7 +60,7 @@ class EnuRow(ModuleRow):
         self.rexm = ValueGB(self, 'rexm', 'Red Resolution', 0, '{:s}', fontSize=styles.bigFont)
         self.slit = ValueGB(self, 'slitLocation', 'FCA_Position', 0, '{:s}', fontSize=styles.bigFont)
         self.shutters = ValueGB(self, 'shutters', 'SHA_Position', 0, '{:s}', fontSize=styles.bigFont)
-        self.bia = ValueGB(self, 'bia', 'BIA_State', 0, '{:s}', fontSize=styles.bigFont)
+        self.bia = BiaState(self, fontSize=styles.bigFont)
         self.elapsedTime = ElapsedTime(self)
 
         self.keyVarDict['integratingTime'].addCallback(self.setExptime, callNow=False)

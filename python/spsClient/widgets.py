@@ -282,9 +282,9 @@ class ReloadButton(PushButton):
 
 
 class InnerButton(CmdButton):
-    def __init__(self, upperCmd, label):
+    def __init__(self, upperCmd, label, safetyCheck=False):
         self.upperCmd = upperCmd
-        CmdButton.__init__(self, controlPanel=upperCmd.controlPanel, label=label)
+        CmdButton.__init__(self, controlPanel=upperCmd.controlPanel, label=label, safetyCheck=safetyCheck)
 
     def buildCmd(self):
         return self.upperCmd.buildCmd()
@@ -352,10 +352,10 @@ class EnumGB(ValueGB):
 
 
 class CustomedCmd(QGridLayout):
-    def __init__(self, controlPanel, buttonLabel):
+    def __init__(self, controlPanel, buttonLabel, safetyCheck=False):
         QGridLayout.__init__(self)
         self.controlPanel = controlPanel
-        self.button = InnerButton(self, label=buttonLabel)
+        self.button = InnerButton(self, label=buttonLabel, safetyCheck=safetyCheck)
         self.addWidget(self.button, 0, 0)
 
     def buildCmd(self):
