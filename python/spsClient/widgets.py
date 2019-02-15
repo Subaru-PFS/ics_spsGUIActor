@@ -264,11 +264,10 @@ class ReloadButton(PushButton):
         self.controlDialog = controlDialog
         self.cmdStr = '%s reloadConfiguration' % controlDialog.moduleRow.actorName
 
-        PushButton.__init__(self, 'Reload Config')
+        PushButton.__init__(self, ' Reload Config ')
         self.setCheckable(True)
         self.clicked.connect(self.getCommand)
         self.setEnabled(controlDialog.moduleRow.isOnline)
-        self.setMaximumWidth(200)
 
     def buildCmd(self):
         return self.cmdStr

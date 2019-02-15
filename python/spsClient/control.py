@@ -2,11 +2,11 @@ __author__ = 'alefur'
 from functools import partial
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, \
-    QTabWidget, QLayout
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, QTabWidget, QLayout, QHBoxLayout
+from spsClient.common import PushButton
 from spsClient.logs import CmdLogArea, RawLogArea
 from spsClient.widgets import EmptyWidget, ReloadButton
-from spsClient.common import PushButton
 
 
 class CommandsGB(QGroupBox):
@@ -96,6 +96,8 @@ class ControlDialog(QDialog):
         title = moduleRow.actorLabel if not title else title
         QDialog.__init__(self, parent=moduleRow.mwindow.spsClient)
         self.vbox = QVBoxLayout()
+        self.topbar = QHBoxLayout()
+        self.topbar.setAlignment(Qt.AlignLeft)
         self.vbox.setSizeConstraint(QLayout.SetMinimumSize)
         self.tabWidget = QTabWidget(self)
         self.cmdBuffer = dict()
@@ -112,7 +114,8 @@ class ControlDialog(QDialog):
 
         buttonBox = ButtonBox(self)
 
-        self.vbox.addWidget(self.reload)
+        self.vbox.addLayout(self.topbar)
+        self.topbar.addWidget(self.reload)
         self.vbox.addWidget(self.tabWidget)
         self.vbox.addLayout(buttonBox)
         self.vbox.addWidget(self.logArea)
