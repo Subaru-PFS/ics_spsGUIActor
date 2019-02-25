@@ -79,40 +79,6 @@ class ValueGB(QGroupBox):
             self.setColor(*styles.colorWidget('offline'))
 
 
-class NullValue(ValueGB):
-    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=styles.smallFont):
-        ValueGB.__init__(self, moduleRow, key, title, ind, fmt, fontSize=fontSize)
-
-    def customize(self):
-        text = self.value.text()
-        try:
-            value = int(float(text))
-        except ValueError:
-            return ValueGB.customize(self)
-
-        colors = styles.colorWidget('default') if float(text) == 0 else styles.colorWidget('notnominal')
-
-        self.setColor(*colors)
-        self.setEnabled(self.moduleRow.isOnline)
-
-
-class PositiveValue(ValueGB):
-    def __init__(self, moduleRow, key, title, ind, fmt, fontSize=styles.smallFont):
-        ValueGB.__init__(self, moduleRow, key, title, ind, fmt, fontSize=fontSize)
-
-    def customize(self):
-        text = self.value.text()
-        try:
-            value = int(float(text))
-        except ValueError:
-            return ValueGB.customize(self)
-
-        colors = styles.colorWidget('default') if float(value) > 0 else styles.colorWidget('off')
-
-        self.setColor(*colors)
-        self.setEnabled(self.moduleRow.isOnline)
-
-
 class Coordinates(QGroupBox):
     posName = ['X', 'Y', 'Z', 'U', 'V', 'W']
 

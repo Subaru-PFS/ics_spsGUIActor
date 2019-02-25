@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 import spsClient.styles as styles
 from spsClient.control import ControlPanel, CommandsGB
-from spsClient.widgets import ValueGB, CmdButton, MonitorCmd, NullValue, SwitchButton
+from spsClient.widgets import ValueGB, CmdButton, MonitorCmd, SwitchButton
 
 
 class Status(ValueGB):
