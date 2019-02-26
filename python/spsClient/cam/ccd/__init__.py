@@ -55,7 +55,6 @@ class CcdState(ValueGB):
 
     def setText(self, txt):
         txt = txt.upper()
-
         ValueGB.setText(self, txt)
 
 
@@ -115,7 +114,3 @@ class CcdGB(QGroupBox, ControlDialog):
     @property
     def cmdBuffer(self):
         return self.moduleRow.camRow.controlDialog.cmdBuffer
-
-    @property
-    def customWidgets(self):
-        return [self.reload] + self.feePanel.allWidgets + self.ccdPanel.allWidgets

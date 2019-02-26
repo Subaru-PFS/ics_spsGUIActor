@@ -124,6 +124,13 @@ class ControlDialog(QDialog):
         self.setWindowTitle(title)
         self.setVisible(False)
 
+    @property
+    def customWidgets(self):
+        topbar = [self.topbar.itemAt(i).widget() for i in range(self.topbar.count())]
+        pannels = sum([self.tabWidget.widget(i).allWidgets for i in range(self.tabWidget.count())], [])
+
+        return topbar + pannels
+
     def addCommand(self, button, cmdStr):
         self.cmdBuffer[button] = cmdStr
 

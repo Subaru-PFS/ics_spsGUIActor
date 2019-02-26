@@ -71,8 +71,3 @@ class XcuGB(QGroupBox, ControlDialog):
     @property
     def cmdBuffer(self):
         return self.moduleRow.camRow.controlDialog.cmdBuffer
-
-    @property
-    def customWidgets(self):
-        return [self.reload] + self.motorsPanel.allWidgets + self.gaugePanel.allWidgets + self.turboPanel.allWidgets + \
-               self.GVPanel.allWidgets + self.coolerPanel.allWidgets

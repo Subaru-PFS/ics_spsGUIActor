@@ -1,8 +1,9 @@
 __author__ = 'alefur'
 
+from spsClient.common import ComboBox
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import ValueGB, DoubleSpinBoxGB, CmdButton, CustomedCmd
-from spsClient.common import ComboBox
+
 
 class Looptime(ValueGB):
     def __init__(self, ccdCmd):

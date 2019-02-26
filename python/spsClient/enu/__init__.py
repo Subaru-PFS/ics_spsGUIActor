@@ -102,8 +102,3 @@ class EnuDialog(ControlDialog):
         self.tabWidget.addTab(self.shuttersPanel, 'SHUTTERS')
         self.tabWidget.addTab(self.biaPanel, 'BIA')
         self.tabWidget.addTab(self.rexmPanel, 'RDA')
-
-    @property
-    def customWidgets(self):
-        return [self.reload] + self.slitPanel.allWidgets + self.shuttersPanel.allWidgets \
-               + self.biaPanel.allWidgets + self.rexmPanel.allWidgets

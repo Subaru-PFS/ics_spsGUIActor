@@ -82,11 +82,6 @@ class DcbDialog(ControlDialog):
         self.tabWidget.addTab(self.monoPanel, 'Monochromator')
         self.tabWidget.addTab(self.monoQthPanel, 'MonoQTH')
 
-    @property
-    def customWidgets(self):
-        return [self.reload] + self.atenPanel.allWidgets + self.labspherePanel.allWidgets + self.monoPanel.allWidgets \
-               + self.monoQthPanel.allWidgets
-
 
 class FiberConfig(ValueGB):
     def __init__(self, controlDialog, key='fiberConfig', title='fiberConfig', fmt='{:s}', fontSize=styles.smallFont):

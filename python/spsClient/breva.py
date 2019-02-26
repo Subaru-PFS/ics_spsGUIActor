@@ -167,10 +167,6 @@ class BrevaDialog(ControlDialog):
         self.controlPanel = BrevaPanel(self)
         self.tabWidget.addTab(self.controlPanel, '')
 
-    @property
-    def customWidgets(self):
-        return [self.reload] + self.controlPanel.allWidgets
-
 
 class BrevaRow(ModuleRow):
     def __init__(self, aitModule):

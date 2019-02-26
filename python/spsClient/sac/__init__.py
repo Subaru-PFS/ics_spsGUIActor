@@ -34,7 +34,3 @@ class SacDialog(ControlDialog):
         self.tabWidget.addTab(self.detectorPanel, 'Detector Stage')
         self.tabWidget.addTab(self.pentaPanel, 'Penta Stage')
         self.tabWidget.addTab(self.ccdPanel, 'CCD')
-
-    @property
-    def customWidgets(self):
-        return [self.reload] + self.detectorPanel.allWidgets + self.pentaPanel.allWidgets + self.ccdPanel.allWidgets
