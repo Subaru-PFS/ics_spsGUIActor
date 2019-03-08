@@ -35,6 +35,25 @@ class OpenCmd(CustomedCmd):
         return '%s gatevalve open %s %s' % (self.controlPanel.actorName, atAtmosphere, underVacuum)
 
 
+class GVPanel(ControlPanel):
+    def __init__(self, controlDialog):
+        ControlPanel.__init__(self, controlDialog)
+
+    def createWidgets(self):
+        self.position = ValueGB(self.moduleRow, 'gatevalve', 'Position', 1, '{:s}')
+        self.controlState = ValueGB(self.moduleRow, 'gatevalve', 'controlState', 2, '{:s}')
+        self.samPOW = ValueGB(self.moduleRow, 'sampower', 'SAM POWER', 0, '{:g}')
+
+    def setInLayout(self):
+        self.grid.addWidget(self.position, 0, 0)
+        self.grid.addWidget(self.controlState, 0, 1)
+        self.grid.addWidget(self.samPOW, 1, 0)
+
+    def addCommandSet(self):
+        self.commands = GVCommands(self)
+        self.grid.addWidget(self.commands, 0, 4, 5, 3)
+
+
 class GVCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
@@ -52,24 +71,3 @@ class GVCommands(CommandsGB):
         self.grid.addLayout(self.monitorCmd, 1, 0, 1, 2)
         self.openCmd.addWidget(self.closeButton, 1, 0)
         self.grid.addLayout(self.openCmd, 2, 0, 1, 3)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.connectButton, self.monitorCmd.button, self.closeButton, self.openCmd.button]
-
-
-class GVPanel(ControlPanel):
-    def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
-
-        self.position = ValueGB(self.moduleRow, 'gatevalve', 'Position', 1, '{:s}')
-        self.controlState = ValueGB(self.moduleRow, 'gatevalve', 'controlState', 2, '{:s}')
-        self.samPOW = ValueGB(self.moduleRow, 'sampower', 'SAM POWER', 0, '{:g}')
-
-        self.grid.addWidget(self.position, 0, 0)
-        self.grid.addWidget(self.controlState, 0, 1)
-        self.grid.addWidget(self.samPOW, 1, 0)
-
-        self.commands = GVCommands(self)
-
-        self.grid.addWidget(self.commands, 0, 4, 5, 3)

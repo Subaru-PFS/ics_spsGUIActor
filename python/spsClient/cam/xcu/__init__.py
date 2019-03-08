@@ -1,7 +1,8 @@
 __author__ = 'alefur'
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QGroupBox, QTabWidget, QGridLayout
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QHBoxLayout
 from spsClient.cam.xcu.cooler import CoolerPanel
 from spsClient.cam.xcu.gatevalve import GVPanel
 from spsClient.cam.xcu.gauge import GaugePanel
@@ -43,31 +44,35 @@ class XcuRow(ModuleRow):
         pass
 
 
-class XcuGB(QGroupBox, ControlDialog):
+class XcuGB(ControlDialog):
     def __init__(self, xcuRow):
         self.moduleRow = xcuRow
-        QGroupBox.__init__(self)
-        self.grid = QGridLayout()
-        self.setLayout(self.grid)
-        self.tabWidget = QTabWidget(self)
 
+        self.topbar = QHBoxLayout()
+        self.topbar.setAlignment(Qt.AlignLeft)
         self.reload = ReloadButton(self)
+
+        self.topbar.addWidget(xcuRow.actorStatus)
+        self.topbar.addWidget(self.reload)
+
         self.GVPanel = GVPanel(self)
         self.turboPanel = TurboPanel(self)
         self.gaugePanel = GaugePanel(self)
         self.coolerPanel = CoolerPanel(self)
         self.motorsPanel = MotorsPanel(self)
 
-        self.tabWidget.addTab(self.GVPanel, 'Gatevalve')
-        self.tabWidget.addTab(self.turboPanel, 'Turbo')
-        self.tabWidget.addTab(self.coolerPanel, 'Cooler')
-        self.tabWidget.addTab(self.gaugePanel, 'Gauge')
-        self.tabWidget.addTab(self.motorsPanel, 'Motors')
-
-        self.grid.addWidget(xcuRow.actorStatus, 0, 0)
-        self.grid.addWidget(self.reload, 0, 1)
-        self.grid.addWidget(self.tabWidget, 1, 0, 6, 6)
-
     @property
     def cmdBuffer(self):
         return self.moduleRow.camRow.controlDialog.cmdBuffer
+
+    @property
+    def virtualTabs(self):
+        return dict(Gatevalve=self.GVPanel, Turbo=self.turboPanel, Cooler=self.coolerPanel, Gauge=self.gaugePanel,
+                    Motors=self.motorsPanel)
+
+    @property
+    def customWidgets(self):
+        topbar = [self.topbar.itemAt(i).widget() for i in range(self.topbar.count())]
+        pannels = sum([tab.allWidgets for tab in self.virtualTabs.values()], [])
+
+        return topbar + pannels

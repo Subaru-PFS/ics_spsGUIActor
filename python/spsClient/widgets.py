@@ -99,6 +99,11 @@ class Coordinates(QGroupBox):
             "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (fontSize) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
+    def setEnabled(self, a0: bool):
+        QGroupBox.setEnabled(self, a0)
+        for widget in [self.grid.itemAt(i).widget() for i in range(self.grid.count())]:
+            widget.setEnabled(a0)
+
 
 class EmptyWidget(QWidget):
     def __init__(self, height=False):
@@ -293,10 +298,6 @@ class SwitchButton(SwitchGB):
         self.setTitle(label)
         self.grid.setContentsMargins(1, 8, 1, 1)
 
-    @property
-    def buttons(self):
-        return [self.buttonOn, self.buttonOff]
-
     def setText(self, txt):
         try:
             self.buttonOn.setVisible(not int(txt))
@@ -304,6 +305,10 @@ class SwitchButton(SwitchGB):
 
         except ValueError:
             pass
+
+    def setEnabled(self, isOnline):
+        self.buttonOff.setEnabled(isOnline)
+        self.buttonOn.setEnabled(isOnline)
 
 
 class EnumGB(ValueGB):
@@ -325,6 +330,11 @@ class CustomedCmd(QGridLayout):
 
     def buildCmd(self):
         pass
+
+    def setEnabled(self, a0: bool):
+        QGridLayout.setEnabled(self, a0)
+        for button in [self.itemAt(i).widget() for i in range(self.count())]:
+            button.setEnabled(a0)
 
 
 class MonitorCmd(CustomedCmd):

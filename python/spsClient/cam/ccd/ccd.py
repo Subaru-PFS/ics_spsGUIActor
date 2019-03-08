@@ -36,6 +36,37 @@ class DarksCmd(CustomedCmd):
         return cmdStr
 
 
+class CcdState(ValueGB):
+    def __init__(self, moduleRow):
+        self.moduleRow = moduleRow
+        ValueGB.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}')
+
+    def setText(self, txt):
+        txt = txt.upper()
+        ValueGB.setText(self, txt)
+
+
+class CcdPanel(ControlPanel):
+    def __init__(self, controlDialog):
+        ControlPanel.__init__(self, controlDialog)
+
+    def createWidgets(self):
+        self.state = CcdState(self.moduleRow, )
+        self.rootDir = ValueGB(self.moduleRow, 'filepath', 'rootDir', 0, '{:s}')
+        self.nightDir = ValueGB(self.moduleRow, 'filepath', 'nightDir', 1, '{:s}')
+        self.filename = ValueGB(self.moduleRow, 'filepath', 'filename', 2, '{:s}')
+
+    def setInLayout(self):
+        self.grid.addWidget(self.state, 0, 0)
+        self.grid.addWidget(self.rootDir, 1, 0)
+        self.grid.addWidget(self.nightDir, 1, 1)
+        self.grid.addWidget(self.filename, 1, 2)
+
+    def addCommandSet(self):
+        self.commands = CcdCommands(self)
+        self.grid.addWidget(self.commands, 0, 3, 3, 3)
+
+
 class CcdCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
@@ -45,36 +76,3 @@ class CcdCommands(CommandsGB):
 
         self.grid.addLayout(self.biasCmd, 0, 0, 1, 2)
         self.grid.addLayout(self.darkCmd, 1, 0, 1, 3)
-
-    @property
-    def buttons(self):
-        return [self.biasCmd.button, self.darkCmd.button]
-
-
-class CcdState(ValueGB):
-    def __init__(self, moduleRow):
-        self.moduleRow = moduleRow
-        ValueGB.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}')
-
-    def setText(self, txt):
-        txt = txt.upper()
-
-        ValueGB.setText(self, txt)
-
-
-class CcdPanel(ControlPanel):
-    def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
-
-        self.state = CcdState(self.moduleRow, )
-        self.rootDir = ValueGB(self.moduleRow, 'filepath', 'rootDir', 0, '{:s}')
-        self.nightDir = ValueGB(self.moduleRow, 'filepath', 'nightDir', 1, '{:s}')
-        self.filename = ValueGB(self.moduleRow, 'filepath', 'filename', 2, '{:s}')
-
-        self.commands = CcdCommands(self)
-
-        self.grid.addWidget(self.state, 0, 0)
-        self.grid.addWidget(self.rootDir, 1, 0)
-        self.grid.addWidget(self.nightDir, 1, 1)
-        self.grid.addWidget(self.filename, 1, 2)
-        self.grid.addWidget(self.commands, 0, 3, 3, 3)

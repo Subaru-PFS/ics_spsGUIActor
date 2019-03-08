@@ -1,7 +1,6 @@
 __author__ = 'alefur'
 
 import spsClient.styles as styles
-import spsClient.styles as styles
 from PyQt5.QtWidgets import QLineEdit
 from spsClient.control import ControlDialog
 from spsClient.dcb.aten import AtenPanel
@@ -28,6 +27,28 @@ class RowTwo:
 
     def setLine(self, lineNB):
         self.lineNB = lineNB
+
+
+class FiberConfig(ValueGB):
+    def __init__(self, controlDialog, key='fiberConfig', title='fiberConfig', fmt='{:s}', fontSize=styles.smallFont):
+        self.controlDialog = controlDialog
+        ValueGB.__init__(self, controlDialog.moduleRow, key=key, title=title, ind=0, fmt=fmt, fontSize=fontSize)
+
+        self.fibers = QLineEdit()
+        self.fibers.editingFinished.connect(self.newConfig)
+        self.grid.removeWidget(self.value)
+
+        self.grid.addWidget(self.fibers, 0, 0)
+
+    def setText(self, txt):
+        txt = ','.join(txt.split(';'))
+        self.fibers.setText(txt)
+
+    def newConfig(self):
+        cmdStr = 'config fibers=%s' % ','.join([fib.strip() for fib in self.fibers.text().split(',')])
+        self.controlDialog.moduleRow.mwindow.sendCommand(actor='dcb',
+                                                         cmdStr=cmdStr,
+                                                         callFunc=self.controlDialog.cmdLog.printResponse)
 
 
 class DcbRow(ModuleRow):
@@ -81,25 +102,3 @@ class DcbDialog(ControlDialog):
         self.tabWidget.addTab(self.labspherePanel, 'Labsphere')
         self.tabWidget.addTab(self.monoPanel, 'Monochromator')
         self.tabWidget.addTab(self.monoQthPanel, 'MonoQTH')
-
-
-class FiberConfig(ValueGB):
-    def __init__(self, controlDialog, key='fiberConfig', title='fiberConfig', fmt='{:s}', fontSize=styles.smallFont):
-        self.controlDialog = controlDialog
-        ValueGB.__init__(self, controlDialog.moduleRow, key=key, title=title, ind=0, fmt=fmt, fontSize=fontSize)
-
-        self.fibers = QLineEdit()
-        self.fibers.editingFinished.connect(self.newConfig)
-        self.grid.removeWidget(self.value)
-
-        self.grid.addWidget(self.fibers, 0, 0)
-
-    def setText(self, txt):
-        txt = ','.join(txt.split(';'))
-        self.fibers.setText(txt)
-
-    def newConfig(self):
-        cmdStr = 'config fibers=%s' % ','.join([fib.strip() for fib in self.fibers.text().split(',')])
-        self.controlDialog.moduleRow.mwindow.sendCommand(actor='dcb',
-                                                         cmdStr=cmdStr,
-                                                         callFunc=self.controlDialog.cmdLog.printResponse)

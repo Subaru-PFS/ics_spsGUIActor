@@ -1,7 +1,8 @@
 __author__ = 'alefur'
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QProgressBar, QTabWidget, QGridLayout, QGroupBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QProgressBar, QHBoxLayout
 from spsClient.cam.ccd.ccd import CcdPanel
 from spsClient.cam.ccd.fee import FeePanel
 from spsClient.control import ControlDialog
@@ -76,12 +77,7 @@ class CcdRow(ModuleRow):
 
     @property
     def allWidgets(self):
-        widgets = self.customWidgets
-        try:
-            widgets += self.camRow.controlDialog.ccdGB.customWidgets
-        except AttributeError:
-            pass
-        return widgets
+        return self.customWidgets + self.camRow.controlDialog.ccdGB.customWidgets
 
     def setOnline(self):
         ModuleRow.setOnline(self)
@@ -91,26 +87,32 @@ class CcdRow(ModuleRow):
         pass
 
 
-class CcdGB(QGroupBox, ControlDialog):
+class CcdGB(ControlDialog):
     def __init__(self, ccdRow):
         self.moduleRow = ccdRow
-        QGroupBox.__init__(self)
-        self.grid = QGridLayout()
-        self.setLayout(self.grid)
-        self.tabWidget = QTabWidget(self)
+
+        self.topbar = QHBoxLayout()
+        self.topbar.setAlignment(Qt.AlignLeft)
         self.reload = ReloadButton(self)
+
+        self.topbar.addWidget(ccdRow.actorStatus)
+        self.topbar.addWidget(self.reload)
 
         self.feePanel = FeePanel(self)
         self.ccdPanel = CcdPanel(self)
 
-        self.tabWidget.addTab(self.feePanel, 'Fee')
-        self.tabWidget.addTab(self.ccdPanel, 'Ccd')
-
-        self.grid.addWidget(ccdRow.actorStatus, 0, 0)
-        self.grid.addWidget(self.reload, 0, 1)
-
-        self.grid.addWidget(self.tabWidget, 1, 0, 6, 6)
-
     @property
     def cmdBuffer(self):
         return self.moduleRow.camRow.controlDialog.cmdBuffer
+
+    @property
+    def virtualTabs(self):
+        return dict(Fee=self.feePanel,
+                    Ccd=self.ccdPanel)
+
+    @property
+    def customWidgets(self):
+        topbar = [self.topbar.itemAt(i).widget() for i in range(self.topbar.count())]
+        pannels = sum([tab.allWidgets for tab in self.virtualTabs.values()], [])
+
+        return topbar + pannels

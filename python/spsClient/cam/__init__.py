@@ -4,10 +4,11 @@ import spsClient.styles as styles
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QGroupBox, QGridLayout, QTabWidget
 from spsClient.cam.ccd import CcdRow, CcdGB
 from spsClient.cam.xcu import XcuRow, XcuGB
+from spsClient.common import PushButton
+from spsClient.control import ControlDialog, ButtonBox
 from spsClient.logs import CmdLogArea, RawLogArea
 from spsClient.modulerow import ActorGB
-from spsClient.control import ControlDialog, ButtonBox
-from spsClient.common import PushButton
+
 
 class CamStatus(ActorGB, QGroupBox):
     def __init__(self, cam):
@@ -77,9 +78,10 @@ class CamDialog(ControlDialog):
         QDialog.__init__(self, parent=camRow.mwindow.spsClient)
 
         self.vbox = QVBoxLayout()
-        self.hbox = QVBoxLayout()
         self.cmdBuffer = dict()
         self.moduleRow = camRow
+
+        self.tabWidget = QTabWidget(self)
 
         self.logArea = QTabWidget(self)
         self.cmdLog = CmdLogArea()
@@ -91,15 +93,21 @@ class CamDialog(ControlDialog):
 
         buttonBox = ButtonBox(self)
 
-        self.vbox.addLayout(self.hbox)
-        self.vbox.addLayout(buttonBox)
-        self.vbox.addWidget(self.logArea)
-
         self.setLayout(self.vbox)
         self.setWindowTitle(title)
 
         self.xcuGB = XcuGB(camRow.xcu)
         self.ccdGB = CcdGB(camRow.ccd)
 
-        self.hbox.addWidget(self.xcuGB)
-        self.hbox.addWidget(self.ccdGB)
+        self.vbox.addLayout(self.xcuGB.topbar)
+        self.vbox.addLayout(self.ccdGB.topbar)
+        self.vbox.addWidget(self.tabWidget)
+
+        for tabname, widget in self.xcuGB.virtualTabs.items():
+            self.tabWidget.addTab(widget, tabname)
+
+        for tabname, widget in self.ccdGB.virtualTabs.items():
+            self.tabWidget.addTab(widget, tabname)
+
+        self.vbox.addLayout(buttonBox)
+        self.vbox.addWidget(self.logArea)

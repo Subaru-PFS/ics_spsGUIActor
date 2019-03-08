@@ -1,9 +1,10 @@
 __author__ = 'alefur'
 
+import spsClient.styles as styles
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.dcb.aten import SwitchButton
 from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, SwitchGB, SpinBoxGB
-import spsClient.styles as styles
+
 
 class BiaPeriod(ValueGB):
     def __init__(self, moduleRow):
@@ -44,7 +45,6 @@ class SetBiaParamCmd(CustomedCmd):
     def buildCmd(self):
         cmdStr = '%s bia config period=%i duty=%i ' % (self.controlPanel.actorName, self.period.getValue(),
                                                        self.duty.getValue())
-
         return cmdStr
 
 
@@ -58,6 +58,52 @@ class SwitchBia(SwitchButton):
 
         self.buttonOn.setVisible(not bool)
         self.buttonOff.setVisible(bool)
+
+
+class BiaState(ValueGB):
+    def __init__(self, moduleRow, fontSize=styles.smallFont):
+        ValueGB.__init__(self, moduleRow, 'bia', 'BIA', 0, '{:s}', fontSize=fontSize)
+
+    def customize(self):
+        text = self.value.text()
+        if text in ['off', 'on']:
+            colors = styles.colorWidget('default')
+        else:
+            colors = styles.colorWidget('warning')
+
+        self.setColor(*colors)
+        self.setEnabled(self.moduleRow.isOnline)
+
+
+class BiaPanel(ControlPanel):
+    def __init__(self, controlDialog):
+        ControlPanel.__init__(self, controlDialog)
+
+    def createWidgets(self):
+        self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}')
+        self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}')
+
+        self.bia = BiaState(self.moduleRow)
+        self.biaStrobe = SwitchGB(self.moduleRow, 'biaStrobe', 'Strobe', 0, '{:g}')
+
+        self.biaPeriod = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Period', 0, '{:d}')
+        self.biaDuty = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Duty', 1, '{:d}')
+
+    def setInLayout(self):
+        self.grid.addWidget(self.mode, 0, 0)
+        self.grid.addWidget(self.state, 0, 1)
+        self.grid.addWidget(self.substate, 0, 2)
+
+        self.grid.addWidget(self.bia, 1, 0)
+        self.grid.addWidget(self.biaStrobe, 1, 1)
+
+        self.grid.addWidget(self.biaPeriod, 2, 0)
+        self.grid.addWidget(self.biaDuty, 2, 1)
+
+    def addCommandSet(self):
+        self.commands = BiaCommands(self)
+        self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
 
 class BiaCommands(CommandsGB):
@@ -79,54 +125,6 @@ class BiaCommands(CommandsGB):
         self.grid.addWidget(self.connectButton, 0, 1)
         self.grid.addWidget(self.switchBia, 1, 0)
         self.grid.addWidget(self.switchStrobe, 1, 1)
-
         self.grid.addLayout(self.setBiaParam, 2, 0, 1, 3)
+
         self.grid.addWidget(self.emptySpace(100), 3, 0, 1, 3)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.connectButton, self.setBiaParam.button] + self.switchBia.buttons + self.switchStrobe.buttons
-
-
-class BiaPanel(ControlPanel):
-    def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
-
-        self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}')
-        self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}')
-        self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}')
-
-        self.bia = BiaState(self.moduleRow)
-        self.biaStrobe = SwitchGB(self.moduleRow, 'biaStrobe', 'Strobe', 0, '{:g}')
-
-        self.biaPeriod = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Period', 0, '{:d}')
-        self.biaDuty = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Duty', 1, '{:d}')
-
-        self.commands = BiaCommands(self)
-        self.grid.addWidget(self.mode, 0, 0)
-        self.grid.addWidget(self.state, 0, 1)
-        self.grid.addWidget(self.substate, 0, 2)
-
-        self.grid.addWidget(self.bia, 1, 0)
-        self.grid.addWidget(self.biaStrobe, 1, 1)
-
-        self.grid.addWidget(self.biaPeriod, 2, 0)
-        self.grid.addWidget(self.biaDuty, 2, 1)
-
-        self.grid.addWidget(self.commands, 0, 3, 5, 3)
-
-
-
-class BiaState(ValueGB):
-    def __init__(self, moduleRow, fontSize=styles.smallFont):
-        ValueGB.__init__(self, moduleRow, 'bia', 'BIA', 0, '{:s}', fontSize=fontSize)
-
-    def customize(self):
-        text = self.value.text()
-        if text in ['off', 'on']:
-            colors = styles.colorWidget('default')
-        else:
-            colors = styles.colorWidget('warning')
-
-        self.setColor(*colors)
-        self.setEnabled(self.moduleRow.isOnline)

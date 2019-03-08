@@ -2,53 +2,24 @@ __author__ = 'alefur'
 
 import spsClient.styles as styles
 from PyQt5.QtWidgets import QGridLayout
+from spsClient.common import ComboBox
 from spsClient.control import ControlPanel, CommandsGB, ControlDialog
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import Coordinates, ValueGB, SwitchGB, DoubleSpinBoxGB, CustomedCmd, CmdButton
-from spsClient.common import ComboBox
 
-class BrevaCommands(CommandsGB):
-    def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='breva status')
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='breva connect controller=hexa')
-        self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='breva init')
-        self.motorsOn = CmdButton(controlPanel=controlPanel, label='MOTOR ON', cmdStr='breva motor on')
-        self.motorsOff = CmdButton(controlPanel=controlPanel, label='MOTOR OFF', cmdStr='breva motor off')
-        self.coordBoxes = CoordBoxes()
 
-        self.moveCmd = MoveCmd(controlPanel=controlPanel)
-        self.setRepCmd = SetRepCmd(controlPanel=controlPanel)
-        self.gotoCmd = GotoCmd(controlPanel=controlPanel)
+class MotorState(SwitchGB):
+    def __init__(self, moduleRow):
+        self.moduleRow = moduleRow
+        SwitchGB.__init__(self, moduleRow, key='motors_on', title='MOTORS', ind=0, fmt='{:g}', fontSize=styles.bigFont)
 
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
-        self.grid.addWidget(self.initButton, 1, 0)
-        self.grid.addWidget(self.motorsOn, 1, 1)
-        self.grid.addWidget(self.motorsOff, 1, 1)
-        self.grid.addLayout(self.moveCmd, 2, 0, 1, 2)
-        self.grid.addLayout(self.setRepCmd, 3, 0, 1, 2)
-        self.grid.addLayout(self.coordBoxes, 2, 2, 2, 3)
-        self.grid.addLayout(self.gotoCmd, 4, 0, 1, 2)
+    def setText(self, txt):
+        SwitchGB.setText(self, txt)
 
-        self.setMotorState()
-
-    def setMotorState(self):
-        state = self.controlPanel.controlDialog.moduleRow.motorState.value.text()
-
-        if state == 'ON':
-            self.motorsOn.setVisible(False)
-            self.motorsOff.setVisible(True)
-        else:
-            self.motorsOn.setVisible(True)
-            self.motorsOff.setVisible(False)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.connectButton, self.initButton, self.motorsOn, self.motorsOff,
-                self.moveCmd.button,
-                self.setRepCmd.button, self.gotoCmd.button]
+        try:
+            self.moduleRow.controlDialog.controlPanel.commands.setMotorState()
+        except AttributeError:
+            pass
 
 
 class CoordBoxes(QGridLayout):
@@ -138,34 +109,7 @@ class GotoCmd(CustomedCmd):
 
     def buildCmd(self):
         cmdStr = 'breva goto fiber=%s ' % self.comboFiber.currentText()
-
         return cmdStr
-
-
-class BrevaPanel(ControlPanel):
-    def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
-
-        self.coordinates = Coordinates(self.moduleRow, 'position', title='Position')
-        self.repobj = Coordinates(self.moduleRow, 'REPOBJ', title='REPOBJ')
-        self.reputil = Coordinates(self.moduleRow, 'REPUTIL', title='REPUTIL')
-        self.commands = BrevaCommands(self)
-
-        self.grid.addWidget(self.coordinates, 0, 0, 1, 6)
-        self.grid.addWidget(self.repobj, 1, 0, 1, 6)
-        self.grid.addWidget(self.reputil, 2, 0, 1, 6)
-        self.grid.addWidget(self.commands, 0, 7, 3, 6)
-
-    @property
-    def customWidgets(self):
-        return self.coordinates.widgets + self.repobj.widgets + self.reputil.widgets
-
-
-class BrevaDialog(ControlDialog):
-    def __init__(self, brevaRow):
-        ControlDialog.__init__(self, moduleRow=brevaRow)
-        self.controlPanel = BrevaPanel(self)
-        self.tabWidget.addTab(self.controlPanel, '')
 
 
 class BrevaRow(ModuleRow):
@@ -184,15 +128,65 @@ class BrevaRow(ModuleRow):
         return [self.state, self.substate, self.motorState, self.error, self.fiberTargeted]
 
 
-class MotorState(SwitchGB):
-    def __init__(self, moduleRow):
-        self.moduleRow = moduleRow
-        SwitchGB.__init__(self, moduleRow, key='motors_on', title='MOTORS', ind=0, fmt='{:g}', fontSize=styles.bigFont)
+class BrevaDialog(ControlDialog):
+    def __init__(self, brevaRow):
+        ControlDialog.__init__(self, moduleRow=brevaRow)
+        self.controlPanel = BrevaPanel(self)
+        self.tabWidget.addTab(self.controlPanel, '')
 
-    def setText(self, txt):
-        SwitchGB.setText(self, txt)
 
-        try:
-            self.moduleRow.controlDialog.controlPanel.commands.setMotorState()
-        except AttributeError:
-            pass
+class BrevaPanel(ControlPanel):
+    def __init__(self, controlDialog):
+        ControlPanel.__init__(self, controlDialog)
+
+    def createWidgets(self):
+        self.coordinates = Coordinates(self.moduleRow, 'position', title='Position')
+        self.repobj = Coordinates(self.moduleRow, 'REPOBJ', title='REPOBJ')
+        self.reputil = Coordinates(self.moduleRow, 'REPUTIL', title='REPUTIL')
+
+    def setInLayout(self):
+        self.grid.addWidget(self.coordinates, 0, 0, 1, 6)
+        self.grid.addWidget(self.repobj, 1, 0, 1, 6)
+        self.grid.addWidget(self.reputil, 2, 0, 1, 6)
+
+    def addCommandSet(self):
+        self.commands = BrevaCommands(self)
+        self.grid.addWidget(self.commands, 0, 7, 3, 6)
+
+
+class BrevaCommands(CommandsGB):
+    def __init__(self, controlPanel):
+        CommandsGB.__init__(self, controlPanel)
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='breva status')
+        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
+                                       cmdStr='breva connect controller=hexa')
+        self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='breva init')
+        self.motorsOn = CmdButton(controlPanel=controlPanel, label='MOTOR ON', cmdStr='breva motor on')
+        self.motorsOff = CmdButton(controlPanel=controlPanel, label='MOTOR OFF', cmdStr='breva motor off')
+        self.coordBoxes = CoordBoxes()
+
+        self.moveCmd = MoveCmd(controlPanel=controlPanel)
+        self.setRepCmd = SetRepCmd(controlPanel=controlPanel)
+        self.gotoCmd = GotoCmd(controlPanel=controlPanel)
+
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
+        self.grid.addWidget(self.initButton, 1, 0)
+        self.grid.addWidget(self.motorsOn, 1, 1)
+        self.grid.addWidget(self.motorsOff, 1, 1)
+        self.grid.addLayout(self.moveCmd, 2, 0, 1, 2)
+        self.grid.addLayout(self.setRepCmd, 3, 0, 1, 2)
+        self.grid.addLayout(self.coordBoxes, 2, 2, 2, 3)
+        self.grid.addLayout(self.gotoCmd, 4, 0, 1, 2)
+
+        self.setMotorState()
+
+    def setMotorState(self):
+        state = self.controlPanel.controlDialog.moduleRow.motorState.value.text()
+
+        if state == 'ON':
+            self.motorsOn.setVisible(False)
+            self.motorsOff.setVisible(True)
+        else:
+            self.motorsOn.setVisible(True)
+            self.motorsOff.setVisible(False)

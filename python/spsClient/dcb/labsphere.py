@@ -4,31 +4,6 @@ from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import ValueGB, SwitchGB, CmdButton, CustomedCmd, SpinBoxGB, SwitchButton
 
 
-class LabspherePanel(ControlPanel):
-    def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
-
-        self.mode = ValueGB(self.moduleRow, 'labsphereMode', '', 0, '{:s}')
-        self.state = ValueGB(self.moduleRow, 'labsphereFSM', '', 0, '{:s}')
-        self.substate = ValueGB(self.moduleRow, 'labsphereFSM', '', 1, '{:s}')
-
-        self.halogen = SwitchGB(self.moduleRow, 'halogen', 'Halogen', 0, '{:s}')
-        self.photodiode = ValueGB(self.moduleRow, 'photodiode', 'photodiode', 0, '{:g}')
-        self.attenuator = AttenuatorValue(self.moduleRow)
-
-        self.commands = LabsphereCommands(self)
-
-        self.grid.addWidget(self.mode, 0, 0)
-        self.grid.addWidget(self.state, 0, 1)
-        self.grid.addWidget(self.substate, 0, 2)
-
-        self.grid.addWidget(self.halogen, 1, 0)
-        self.grid.addWidget(self.photodiode, 1, 1)
-        self.grid.addWidget(self.attenuator, 1, 2)
-
-        self.grid.addWidget(self.commands, 0, 3, 5, 3)
-
-
 class AttenuatorValue(ValueGB):
     def __init__(self, moduleRow, fontSize=styles.smallFont):
         ValueGB.__init__(self, moduleRow, 'attenuator', 'attenuator', 0, '{:g}', fontSize=fontSize)
@@ -69,6 +44,33 @@ class SwitchHalogen(SwitchButton):
         self.buttonOff.setVisible(bool)
 
 
+class LabspherePanel(ControlPanel):
+    def __init__(self, controlDialog):
+        ControlPanel.__init__(self, controlDialog)
+
+    def createWidgets(self):
+        self.mode = ValueGB(self.moduleRow, 'labsphereMode', '', 0, '{:s}')
+        self.state = ValueGB(self.moduleRow, 'labsphereFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'labsphereFSM', '', 1, '{:s}')
+
+        self.halogen = SwitchGB(self.moduleRow, 'halogen', 'Halogen', 0, '{:s}')
+        self.photodiode = ValueGB(self.moduleRow, 'photodiode', 'photodiode', 0, '{:g}')
+        self.attenuator = AttenuatorValue(self.moduleRow)
+
+    def setInLayout(self):
+        self.grid.addWidget(self.mode, 0, 0)
+        self.grid.addWidget(self.state, 0, 1)
+        self.grid.addWidget(self.substate, 0, 2)
+
+        self.grid.addWidget(self.halogen, 1, 0)
+        self.grid.addWidget(self.photodiode, 1, 1)
+        self.grid.addWidget(self.attenuator, 1, 2)
+
+    def addCommandSet(self):
+        self.commands = LabsphereCommands(self)
+        self.grid.addWidget(self.commands, 0, 3, 5, 3)
+
+
 class LabsphereCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
@@ -87,8 +89,3 @@ class LabsphereCommands(CommandsGB):
 
         self.grid.addWidget(self.switchHalogen, 3, 0)
         self.grid.addWidget(self.emptySpace(), 4, 0, 2, 1)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.connectButton, self.initButton, self.attenuatorCmd.button] \
-               + self.switchHalogen.buttons

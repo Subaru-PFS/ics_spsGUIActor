@@ -1,8 +1,9 @@
 __author__ = 'alefur'
 
+from spsClient.common import ComboBox
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import ValueGB, DoubleSpinBoxGB, CmdButton, CustomedCmd
-from spsClient.common import ComboBox
+
 
 class MoveCmd(CustomedCmd):
     limits = dict(penta=(-450, 450),
@@ -25,8 +26,28 @@ class MoveCmd(CustomedCmd):
     def buildCmd(self):
         reference = '' if self.combo.currentText() == 'rel' else self.combo.currentText()
         cmdStr = 'sac move %s=%.2f %s' % (self.stage, self.distSpinbox.getValue(), reference)
-
         return cmdStr
+
+
+class StagePanel(ControlPanel):
+    def __init__(self, controlDialog, stage):
+        self.stage = stage
+        ControlPanel.__init__(self, controlDialog)
+
+    def createWidgets(self):
+        label = self.stage.capitalize()
+        self.state = ValueGB(self.moduleRow, 'ls%s' % label, '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'ls%s' % label, '', 1, '{:s}')
+        self.position = ValueGB(self.moduleRow, 'ls%s' % label, 'Position', 2, '{:.3f}')
+
+    def setInLayout(self):
+        self.grid.addWidget(self.state, 0, 0)
+        self.grid.addWidget(self.substate, 0, 1)
+        self.grid.addWidget(self.position, 0, 2)
+
+    def addCommandSet(self):
+        self.commands = StageCommands(self, self.stage)
+        self.grid.addWidget(self.commands, 0, 3, 3, 3)
 
 
 class StageCommands(CommandsGB):
@@ -40,25 +61,3 @@ class StageCommands(CommandsGB):
         self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addWidget(self.initButton, 0, 1)
         self.grid.addLayout(self.moveCmd, 1, 0, 1, 3)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.initButton, self.moveCmd.button]
-
-
-class StagePanel(ControlPanel):
-    def __init__(self, controlDialog, stage):
-        label = stage.capitalize()
-        ControlPanel.__init__(self, controlDialog)
-
-        self.state = ValueGB(self.moduleRow, 'ls%s' % label, '', 0, '{:s}')
-        self.substate = ValueGB(self.moduleRow, 'ls%s' % label, '', 1, '{:s}')
-        self.position = ValueGB(self.moduleRow, 'ls%s' % label, 'Position', 2, '{:.3f}')
-
-        self.commands = StageCommands(self, stage)
-
-        self.grid.addWidget(self.state, 0, 0)
-        self.grid.addWidget(self.substate, 0, 1)
-        self.grid.addWidget(self.position, 0, 2)
-
-        self.grid.addWidget(self.commands, 0, 3, 3, 3)

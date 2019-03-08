@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, QTabWidget, QLayout, QHBoxLayout
 from spsClient.common import PushButton
 from spsClient.logs import CmdLogArea, RawLogArea
-from spsClient.widgets import EmptyWidget, ReloadButton
+from spsClient.widgets import EmptyWidget, ReloadButton, CustomedCmd
 
 
 class CommandsGB(QGroupBox):
@@ -21,12 +21,16 @@ class CommandsGB(QGroupBox):
             "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (fontSize) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
-    @property
-    def buttons(self):
-        return []
-
     def emptySpace(self, height=False):
         return EmptyWidget(height=height)
+
+    def setEnabled(self, a0: bool):
+        QGroupBox.setEnabled(self, a0)
+        for item in [self.grid.itemAt(i) for i in range(self.grid.count())]:
+            if (issubclass(type(item), QLayout)):
+                item.setEnabled(a0)
+            else:
+                item.widget().setEnabled(a0)
 
 
 class ControlPanel(QGroupBox):
@@ -36,7 +40,9 @@ class ControlPanel(QGroupBox):
         self.grid = QGridLayout()
         self.setLayout(self.grid)
 
-        self.commands = CommandsGB(self)
+        self.createWidgets()
+        self.setInLayout()
+        self.addCommandSet()
 
     @property
     def moduleRow(self):
@@ -47,19 +53,20 @@ class ControlPanel(QGroupBox):
         return self.controlDialog.moduleRow.actorName
 
     @property
-    def basicWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())] + self.commands.buttons
-
-    @property
-    def customWidgets(self):
-        return []
-
-    @property
     def allWidgets(self):
-        return self.basicWidgets + self.customWidgets
+         return [self.grid.itemAt(i).widget() for i in range(self.grid.count())]
 
     def emptySpace(self):
         return EmptyWidget()
+
+    def createWidgets(self):
+        pass
+
+    def setInLayout(self):
+        pass
+
+    def addCommandSet(self):
+        self.commands = CommandsGB(self)
 
 
 class ButtonBox(QGridLayout):

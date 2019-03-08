@@ -58,7 +58,7 @@ class Shutter(QGroupBox):
         self.close = ValueGB(moduleRow, shId, 'close', 1, '{:d}')
         self.error = ValueGB(moduleRow, shId, 'error', 2, '{:d}')
 
-        for j, widget in enumerate(self.widgets):
+        for j, widget in enumerate([self.open, self.close, self.error]):
             self.grid.addWidget(widget, 0, j)
 
         self.setStyleSheet(
@@ -66,9 +66,43 @@ class Shutter(QGroupBox):
                 styles.smallFont) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
-    @property
-    def widgets(self):
-        return [self.open, self.close, self.error]
+    def setEnabled(self, a0: bool):
+        QGroupBox.setEnabled(self, a0)
+        for widget in [self.grid.itemAt(i).widget() for i in range(self.grid.count())]:
+            widget.setEnabled(a0)
+
+
+class ShuttersPanel(ControlPanel):
+    def __init__(self, controlDialog):
+        ControlPanel.__init__(self, controlDialog)
+
+    def createWidgets(self):
+        self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}')
+        self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}')
+
+        self.shutters = ValueGB(self.moduleRow, 'shutters', 'Shutters', 0, '{:s}')
+        self.exptime = ValueGB(self.moduleRow, 'integratingTime', 'Exptime', 0, '{:.1f}')
+        self.elapsedTime = ValueGB(self.moduleRow, 'elapsedTime', 'elapsedTime', 0, '{:.1f}')
+
+        self.blueShutter = Shutter(self.moduleRow, 'shb')
+        self.redShutter = Shutter(self.moduleRow, 'shr')
+
+    def setInLayout(self):
+        self.grid.addWidget(self.mode, 0, 0)
+        self.grid.addWidget(self.state, 0, 1)
+        self.grid.addWidget(self.substate, 0, 2)
+
+        self.grid.addWidget(self.shutters, 1, 0)
+        self.grid.addWidget(self.exptime, 1, 1)
+        self.grid.addWidget(self.elapsedTime, 1, 2)
+
+        self.grid.addWidget(self.blueShutter, 2, 0, 1, 3)
+        self.grid.addWidget(self.redShutter, 3, 0, 1, 3)
+
+    def addCommandSet(self):
+        self.commands = ShuttersCommands(self)
+        self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
 
 class ShuttersCommands(CommandsGB):
@@ -92,42 +126,3 @@ class ShuttersCommands(CommandsGB):
         self.grid.addLayout(self.exposeCmd, 3, 0, 1, 3)
 
         self.grid.addWidget(self.emptySpace(20), 4, 0, 1, 3)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.connectButton, self.shutterCmd.button, self.exposeCmd.button]
-
-
-class ShuttersPanel(ControlPanel):
-    def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
-
-        self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}')
-        self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}')
-        self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}')
-
-        self.shutters = ValueGB(self.moduleRow, 'shutters', 'Shutters', 0, '{:s}')
-        self.exptime = ValueGB(self.moduleRow, 'integratingTime', 'Exptime', 0, '{:.1f}')
-        self.elapsedTime = ValueGB(self.moduleRow, 'elapsedTime', 'elapsedTime', 0, '{:.1f}')
-
-
-        self.blueShutter = Shutter(self.moduleRow, 'shb')
-        self.redShutter = Shutter(self.moduleRow, 'shr')
-
-        self.commands = ShuttersCommands(self)
-        self.grid.addWidget(self.mode, 0, 0)
-        self.grid.addWidget(self.state, 0, 1)
-        self.grid.addWidget(self.substate, 0, 2)
-
-        self.grid.addWidget(self.shutters, 1, 0)
-        self.grid.addWidget(self.exptime, 1, 1)
-        self.grid.addWidget(self.elapsedTime, 1, 2)
-
-        self.grid.addWidget(self.blueShutter, 2, 0, 1, 3)
-        self.grid.addWidget(self.redShutter, 3, 0, 1, 3)
-
-        self.grid.addWidget(self.commands, 0, 3, 5, 3)
-
-    @property
-    def customWidgets(self):
-        return self.blueShutter.widgets + self.redShutter.widgets

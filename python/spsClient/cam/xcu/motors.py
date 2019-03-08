@@ -1,9 +1,10 @@
 __author__ = 'alefur'
 import spsClient.styles as styles
 from PyQt5.QtWidgets import QGroupBox, QGridLayout
+from spsClient.common import ComboBox, CheckBox
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, AbortButton
-from spsClient.common import ComboBox, CheckBox
+
 
 class MoveCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -54,30 +55,6 @@ class HomeCmd(CustomedCmd):
         return cmdStr
 
 
-class MotorsCommands(CommandsGB):
-    def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='%s motors status' % controlPanel.actorName)
-        self.initButton = CmdButton(controlPanel=controlPanel, label='INIT',
-                                    cmdStr='%s motors init' % controlPanel.actorName)
-
-        self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s motors halt' % controlPanel.actorName)
-
-        self.homeCmd = HomeCmd(controlPanel=controlPanel)
-        self.moveCmd = MoveCmd(controlPanel=controlPanel)
-
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.initButton, 1, 0)
-        self.grid.addWidget(self.abortButton, 1, 1)
-        self.grid.addLayout(self.homeCmd, 2, 0, 1, 2)
-        self.grid.addLayout(self.moveCmd, 3, 0, 1, 5)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.initButton, self.abortButton, self.homeCmd.button, self.moveCmd.button]
-
-
 class CcdMotor(QGroupBox):
     motorNames = {1: 'A', 2: 'B', 3: 'C'}
 
@@ -109,21 +86,39 @@ class MotorsPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog)
 
-        self.motorA = CcdMotor(self.moduleRow, motorId=1)
-        self.motorB = CcdMotor(self.moduleRow, motorId=2)
-        self.motorC = CcdMotor(self.moduleRow, motorId=3)
-
-        for i, motor in enumerate(self.motors):
-            self.grid.addWidget(motor, i, 0, 1, 5)
-
-        self.commands = MotorsCommands(self)
-
-        self.grid.addWidget(self.commands, 0, 5, 3, 3)
-
     @property
     def motors(self):
         return [self.motorA, self.motorB, self.motorC]
 
-    @property
-    def customWidgets(self):
-        return self.motorA.widgets + self.motorB.widgets + self.motorC.widgets + self.commands.buttons
+    def createWidgets(self):
+        self.motorA = CcdMotor(self.moduleRow, motorId=1)
+        self.motorB = CcdMotor(self.moduleRow, motorId=2)
+        self.motorC = CcdMotor(self.moduleRow, motorId=3)
+
+    def setInLayout(self):
+        for i, motor in enumerate(self.motors):
+            self.grid.addWidget(motor, i, 0, 1, 5)
+
+    def addCommandSet(self):
+        self.commands = MotorsCommands(self)
+        self.grid.addWidget(self.commands, 0, 5, 3, 3)
+
+
+class MotorsCommands(CommandsGB):
+    def __init__(self, controlPanel):
+        CommandsGB.__init__(self, controlPanel)
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
+                                      cmdStr='%s motors status' % controlPanel.actorName)
+        self.initButton = CmdButton(controlPanel=controlPanel, label='INIT',
+                                    cmdStr='%s motors init' % controlPanel.actorName)
+
+        self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s motors halt' % controlPanel.actorName)
+
+        self.homeCmd = HomeCmd(controlPanel=controlPanel)
+        self.moveCmd = MoveCmd(controlPanel=controlPanel)
+
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.initButton, 1, 0)
+        self.grid.addWidget(self.abortButton, 1, 1)
+        self.grid.addLayout(self.homeCmd, 2, 0, 1, 2)
+        self.grid.addLayout(self.moveCmd, 3, 0, 1, 5)

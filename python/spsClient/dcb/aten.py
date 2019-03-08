@@ -4,10 +4,33 @@ from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import ValueGB, SwitchGB, EnumGB, CmdButton, SwitchButton
 
 
+class AtenButton(SwitchButton):
+    def __init__(self, controlPanel, key, label, safetyCheck=False):
+        cmdStrOn = 'dcb power on=%s' % key
+        cmdStrOff = 'dcb power off=%s' % key
+        SwitchButton.__init__(self, controlPanel=controlPanel, key=key, label=label, cmdHead='', cmdStrOn=cmdStrOn,
+                              cmdStrOff=cmdStrOff, safetyCheck=safetyCheck)
+
+
+class SwitchLabsphere(SwitchButton):
+    def __init__(self, controlPanel):
+        cmdStrOn = 'dcb power on=labsphere'
+        cmdStrOff = 'dcb power off=labsphere'
+        SwitchButton.__init__(self, controlPanel=controlPanel, key='pow_labsphere', label='Labsphere', fmt='{:s}',
+                              cmdHead='', cmdStrOn=cmdStrOn, cmdStrOff=cmdStrOff, safetyCheck=False)
+
+    def setText(self, txt):
+        bool = True if txt in ['undef', 'on'] else False
+
+        self.buttonOn.setVisible(not bool)
+        self.buttonOff.setVisible(bool)
+
+
 class AtenPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog)
 
+    def createWidgets(self):
         self.mode = ValueGB(self.moduleRow, 'atenMode', '', 0, '{:s}')
         self.state = ValueGB(self.moduleRow, 'atenFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'atenFSM', '', 1, '{:s}')
@@ -31,8 +54,7 @@ class AtenPanel(ControlPanel):
         self.current = ValueGB(self.moduleRow, 'atenVAW', 'Current', 1, '{:.2f}')
         self.power = ValueGB(self.moduleRow, 'atenVAW', 'Power', 2, '{:.2f}')
 
-        self.commands = AtenCommands(self)
-
+    def setInLayout(self):
         self.grid.addWidget(self.mode, 0, 0)
         self.grid.addWidget(self.state, 0, 1)
         self.grid.addWidget(self.substate, 0, 2)
@@ -55,34 +77,15 @@ class AtenPanel(ControlPanel):
         self.grid.addWidget(self.roughpump, 5, 0)
         self.grid.addWidget(self.bakeout, 5, 1)
 
+    def addCommandSet(self):
+        self.commands = AtenCommands(self)
         self.grid.addWidget(self.commands, 0, 3, 6, 4)
-
-
-class AtenButton(SwitchButton):
-    def __init__(self, controlPanel, key, label, safetyCheck=False):
-        cmdStrOn = 'dcb power on=%s' % key
-        cmdStrOff = 'dcb power off=%s' % key
-        SwitchButton.__init__(self, controlPanel=controlPanel, key=key, label=label, cmdHead='', cmdStrOn=cmdStrOn,
-                              cmdStrOff=cmdStrOff, safetyCheck=safetyCheck)
-
-
-class SwitchLabsphere(SwitchButton):
-    def __init__(self, controlPanel):
-        cmdStrOn = 'dcb power on=labsphere'
-        cmdStrOff = 'dcb power off=labsphere'
-        SwitchButton.__init__(self, controlPanel=controlPanel, key='pow_labsphere', label='Labsphere', fmt='{:s}',
-                              cmdHead='', cmdStrOn=cmdStrOn, cmdStrOff=cmdStrOff, safetyCheck=False)
-
-    def setText(self, txt):
-        bool = True if txt in ['undef', 'on'] else False
-
-        self.buttonOn.setVisible(not bool)
-        self.buttonOff.setVisible(bool)
 
 
 class AtenCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
+
         self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='dcb aten status')
         self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT', cmdStr='dcb connect controller=aten')
 
@@ -119,9 +122,3 @@ class AtenCommands(CommandsGB):
 
         self.grid.addWidget(self.switchRoughpump, 4, 0)
         self.grid.addWidget(self.switchBakeout, 4, 1)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.connectButton] + self.switchLabsphere.buttons + self.switchMono.buttons + \
-               self.switchRoughpump.buttons + self.switchNeon.buttons + self.switchXenon.buttons + \
-               self.switchHgar.buttons + self.switchKrypton.buttons + self.switchBakeout.buttons + self.switchDeuterium.buttons + self.switchArgon.buttons

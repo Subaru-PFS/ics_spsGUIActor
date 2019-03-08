@@ -34,8 +34,24 @@ class ExposeCmd(CustomedCmd):
     def buildCmd(self):
         exptype = 'expose' if self.combo.currentText() == 'object' else 'background'
         cmdStr = 'sac ccd %s exptime=%.2f' % (exptype, self.exptime.getValue())
-
         return cmdStr
+
+
+class CcdPanel(ControlPanel):
+    def __init__(self, controlDialog):
+        ControlPanel.__init__(self, controlDialog)
+
+    def createWidgets(self):
+        self.state = ValueGB(self.moduleRow, 'ccd', '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'ccd', '', 1, '{:s}')
+
+    def setInLayout(self):
+        self.grid.addWidget(self.state, 0, 0)
+        self.grid.addWidget(self.substate, 0, 1)
+
+    def addCommandSet(self):
+        self.commands = CcdCommands(self)
+        self.grid.addWidget(self.commands, 0, 2, 3, 3)
 
 
 class CcdCommands(CommandsGB):
@@ -53,22 +69,3 @@ class CcdCommands(CommandsGB):
         self.grid.addLayout(self.exposeCmd, 1, 0, 1, 3)
         self.grid.addWidget(self.startLoop, 2, 0)
         self.grid.addWidget(self.stopLoop, 2, 0)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.connectButton, self.exposeCmd.button, self.startLoop, self.stopLoop]
-
-
-class CcdPanel(ControlPanel):
-    def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
-
-        self.state = ValueGB(self.moduleRow, 'ccd', '', 0, '{:s}')
-        self.substate = ValueGB(self.moduleRow, 'ccd', '', 1, '{:s}')
-
-        self.commands = CcdCommands(self)
-
-        self.grid.addWidget(self.state, 0, 0)
-        self.grid.addWidget(self.substate, 0, 1)
-
-        self.grid.addWidget(self.commands, 0, 2, 3, 3)

@@ -38,13 +38,13 @@ class Aitmodule(Module):
         self.dcb = DcbRow(self)
         # self.seqno = SeqnoRow(self)
         self.sac = SacRow(self)
-        # self.breva = BrevaRow(self)
+        self.breva = BrevaRow(self)
 
         self.populateLayout()
 
     @property
     def rows(self):
-        return [self.dcb.rowone, self.dcb.rowtwo, self.sac]
+        return [self.dcb.rowone, self.dcb.rowtwo, self.sac, self.breva]
 
 
 class Specmodule(Module):

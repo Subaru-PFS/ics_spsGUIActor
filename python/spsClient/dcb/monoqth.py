@@ -8,6 +8,7 @@ class MonoQthPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog)
 
+    def createWidgets(self):
         self.mode = ValueGB(self.moduleRow, 'monoqthMode', '', 0, '{:s}')
         self.state = ValueGB(self.moduleRow, 'monoqthFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'monoqthFSM', '', 1, '{:s}')
@@ -17,8 +18,7 @@ class MonoQthPanel(ControlPanel):
         self.current = ValueGB(self.moduleRow, 'monoqthVAW', 'Current', 1, '{:.2f}')
         self.power = ValueGB(self.moduleRow, 'monoqthVAW', 'Power', 2, '{:.2f}')
 
-        self.commands = MonoQthCommands(self)
-
+    def setInLayout(self):
         self.grid.addWidget(self.mode, 0, 0)
         self.grid.addWidget(self.state, 0, 1)
         self.grid.addWidget(self.substate, 0, 2)
@@ -29,7 +29,8 @@ class MonoQthPanel(ControlPanel):
         self.grid.addWidget(self.current, 2, 1)
         self.grid.addWidget(self.power, 2, 2)
 
-        self.grid.addWidget(self.emptySpace(), 3, 0, 2, 3)
+    def addCommandSet(self):
+        self.commands = MonoQthCommands(self)
         self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
 
@@ -48,9 +49,4 @@ class MonoQthCommands(CommandsGB):
         self.grid.addWidget(self.connectButton, 0, 1)
 
         self.grid.addWidget(self.switchQth, 1, 0)
-
         self.grid.addWidget(self.emptySpace(), 2, 0, 3, 2)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.connectButton] + self.switchQth.buttons

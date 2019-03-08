@@ -1,9 +1,10 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QGridLayout
+from spsClient.common import ComboBox
 from spsClient.control import ControlPanel, CommandsGB
 from spsClient.widgets import Coordinates, ValueGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, \
     AbortButton
-from spsClient.common import ComboBox
+
 
 class CoordBoxes(QGridLayout):
     def __init__(self):
@@ -80,6 +81,37 @@ class SetRepCmd(CustomedCmd):
         return cmdStr
 
 
+class SlitPanel(ControlPanel):
+    def __init__(self, controlDialog):
+        ControlPanel.__init__(self, controlDialog)
+
+    def createWidgets(self):
+        self.mode = ValueGB(self.moduleRow, 'slitMode', 'Mode', 0, '{:s}')
+        self.state = ValueGB(self.moduleRow, 'slitFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'slitFSM', '', 1, '{:s}')
+        self.info = ValueGB(self.moduleRow, 'slitInfo', 'Info', 0, '{:s}')
+        self.location = ValueGB(self.moduleRow, 'slitLocation', 'Location', 0, '{:s}')
+
+        self.coordinates = Coordinates(self.moduleRow, 'slit', title='Position')
+        self.work = Coordinates(self.moduleRow, 'slitWork', title='Work')
+        self.tool = Coordinates(self.moduleRow, 'slitTool', title='Tool')
+
+    def setInLayout(self):
+        self.grid.addWidget(self.mode, 0, 0)
+        self.grid.addWidget(self.state, 0, 1)
+        self.grid.addWidget(self.substate, 0, 2)
+        self.grid.addWidget(self.location, 0, 3)
+
+        self.grid.addWidget(self.info, 1, 0, 1, 6)
+        self.grid.addWidget(self.coordinates, 2, 0, 1, 6)
+        self.grid.addWidget(self.work, 3, 0, 1, 6)
+        self.grid.addWidget(self.tool, 4, 0, 1, 6)
+
+    def addCommandSet(self):
+        self.commands = SlitCommands(self)
+        self.grid.addWidget(self.commands, 0, 7, 5, 4)
+
+
 class SlitCommands(CommandsGB):
     def __init__(self, controlPanel):
         CommandsGB.__init__(self, controlPanel)
@@ -105,41 +137,3 @@ class SlitCommands(CommandsGB):
         self.grid.addLayout(self.moveCmd, 4, 0, 1, 2)
         self.grid.addLayout(self.setRepCmd, 5, 0, 1, 2)
         self.grid.addWidget(self.goHomeButton, 6, 0, 1, 1)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.connectButton, self.initButton, self.abortButton,
-                self.goHomeButton, self.moveCmd.button, self.setRepCmd.button]
-
-
-class SlitPanel(ControlPanel):
-    def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
-
-        self.mode = ValueGB(self.moduleRow, 'slitMode', 'Mode', 0, '{:s}')
-        self.state = ValueGB(self.moduleRow, 'slitFSM', '', 0, '{:s}')
-        self.substate = ValueGB(self.moduleRow, 'slitFSM', '', 1, '{:s}')
-        self.info = ValueGB(self.moduleRow, 'slitInfo', 'Info', 0, '{:s}')
-        self.location = ValueGB(self.moduleRow, 'slitLocation', 'Location', 0, '{:s}')
-
-        self.coordinates = Coordinates(self.moduleRow, 'slit', title='Position')
-        self.work = Coordinates(self.moduleRow, 'slitWork', title='Work')
-        self.tool = Coordinates(self.moduleRow, 'slitTool', title='Tool')
-
-        self.commands = SlitCommands(self)
-
-        self.grid.addWidget(self.mode, 0, 0)
-        self.grid.addWidget(self.state, 0, 1)
-        self.grid.addWidget(self.substate, 0, 2)
-        self.grid.addWidget(self.location, 0, 3)
-
-        self.grid.addWidget(self.info, 1, 0, 1, 6)
-        self.grid.addWidget(self.coordinates, 2, 0, 1, 6)
-        self.grid.addWidget(self.work, 3, 0, 1, 6)
-        self.grid.addWidget(self.tool, 4, 0, 1, 6)
-
-        self.grid.addWidget(self.commands, 0, 7, 5, 4)
-
-    @property
-    def customWidgets(self):
-        return self.coordinates.widgets + self.work.widgets + self.tool.widgets
