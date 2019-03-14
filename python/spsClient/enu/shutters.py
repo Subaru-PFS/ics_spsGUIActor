@@ -3,8 +3,8 @@ __author__ = 'alefur'
 import spsClient.styles as styles
 from PyQt5.QtWidgets import QGroupBox, QGridLayout
 from spsClient.common import ComboBox
-from spsClient.control import ControlPanel, CommandsGB
-from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, AbortButton
+from spsClient.control import ControllerPanel, ControllerCmd
+from spsClient.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, AbortButton
 
 
 class ShutterCmd(CustomedCmd):
@@ -72,9 +72,10 @@ class Shutter(QGroupBox):
             widget.setEnabled(a0)
 
 
-class ShuttersPanel(ControlPanel):
+class ShuttersPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'bsh')
+        self.addCommandSet(ShuttersCommands(self))
 
     def createWidgets(self):
         self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}')
@@ -100,29 +101,17 @@ class ShuttersPanel(ControlPanel):
         self.grid.addWidget(self.blueShutter, 2, 0, 1, 3)
         self.grid.addWidget(self.redShutter, 3, 0, 1, 3)
 
-    def addCommandSet(self):
-        self.commands = ShuttersCommands(self)
-        self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
-
-class ShuttersCommands(CommandsGB):
+class ShuttersCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='%s bsh status' % controlPanel.actorName)
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='%s connect controller=bsh' % controlPanel.actorName)
+        ControllerCmd.__init__(self, controlPanel)
 
         self.abortButton = AbortButton(controlPanel=controlPanel,
-                                       cmdStr='%s shutters close force' % controlPanel.actorName)
+                                       cmdStr='%s exposure finish' % controlPanel.actorName)
 
         self.shutterCmd = ShutterCmd(controlPanel=controlPanel)
         self.exposeCmd = ExposeCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
         self.grid.addWidget(self.abortButton, 1, 0)
         self.grid.addLayout(self.shutterCmd, 2, 0, 1, 3)
         self.grid.addLayout(self.exposeCmd, 3, 0, 1, 3)
-
-        self.grid.addWidget(self.emptySpace(20), 4, 0, 1, 3)

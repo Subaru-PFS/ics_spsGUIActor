@@ -33,6 +33,7 @@ class StagePanel(ControlPanel):
     def __init__(self, controlDialog, stage):
         self.stage = stage
         ControlPanel.__init__(self, controlDialog)
+        self.addCommandSet(StageCommands(self, stage))
 
     def createWidgets(self):
         label = self.stage.capitalize()
@@ -44,10 +45,6 @@ class StagePanel(ControlPanel):
         self.grid.addWidget(self.state, 0, 0)
         self.grid.addWidget(self.substate, 0, 1)
         self.grid.addWidget(self.position, 0, 2)
-
-    def addCommandSet(self):
-        self.commands = StageCommands(self, self.stage)
-        self.grid.addWidget(self.commands, 0, 3, 3, 3)
 
 
 class StageCommands(CommandsGB):

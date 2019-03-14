@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QGridLayout
 from spsClient.common import ComboBox
 from spsClient.control import ControlPanel, CommandsGB, ControlDialog
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import Coordinates, ValueGB, SwitchGB, DoubleSpinBoxGB, CustomedCmd, CmdButton
+from spsClient.widgets import Coordinates, SwitchGB, DoubleSpinBoxGB, CustomedCmd, CmdButton, ValueMRow
 
 
 class MotorState(SwitchGB):
@@ -116,15 +116,15 @@ class BrevaRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='breva', actorLabel='BREVA')
 
-        self.state = ValueGB(self, 'hexaFSM', '', 0, '{:s}', fontSize=styles.bigFont)
-        self.substate = ValueGB(self, 'hexaFSM', '', 1, '{:s}', fontSize=styles.bigFont)
+        self.state = ValueMRow(self, 'hexaFSM', '', 0, '{:s}')
+        self.substate = ValueMRow(self, 'hexaFSM', '', 1, '{:s}')
         self.motorState = MotorState(self)
-        self.error = ValueGB(self, 'error', 'ERROR', 0, '{:g}', fontSize=styles.bigFont)
-        self.fiberTargeted = ValueGB(self, 'targetedFiber', 'Fiber', 0, '{:s}', fontSize=styles.bigFont)
-        self.controlDialog = BrevaDialog(self)
+        self.error = ValueMRow(self, 'error', 'ERROR', 0, '{:g}',)
+        self.fiberTargeted = ValueMRow(self, 'targetedFiber', 'Fiber', 0, '{:s}')
+        self.createDialog(BrevaDialog(self))
 
     @property
-    def customWidgets(self):
+    def widgets(self):
         return [self.state, self.substate, self.motorState, self.error, self.fiberTargeted]
 
 
@@ -138,6 +138,7 @@ class BrevaDialog(ControlDialog):
 class BrevaPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog)
+        self.addCommandSet(BrevaCommands(self))
 
     def createWidgets(self):
         self.coordinates = Coordinates(self.moduleRow, 'position', title='Position')
@@ -148,10 +149,6 @@ class BrevaPanel(ControlPanel):
         self.grid.addWidget(self.coordinates, 0, 0, 1, 6)
         self.grid.addWidget(self.repobj, 1, 0, 1, 6)
         self.grid.addWidget(self.reputil, 2, 0, 1, 6)
-
-    def addCommandSet(self):
-        self.commands = BrevaCommands(self)
-        self.grid.addWidget(self.commands, 0, 7, 3, 6)
 
 
 class BrevaCommands(CommandsGB):

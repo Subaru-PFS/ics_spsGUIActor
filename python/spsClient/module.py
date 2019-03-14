@@ -1,12 +1,11 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QGridLayout, QGroupBox
+from PyQt5.QtWidgets import QGridLayout, QGroupBox, QLayout
 from spsClient.breva import BrevaRow
+from spsClient.cam import CamRow
 from spsClient.dcb import DcbRow
 from spsClient.enu import EnuRow
 from spsClient.sac import SacRow
-from spsClient.seqno import SeqnoRow
-from spsClient.cam import CamRow
 
 
 class Module(QGroupBox):
@@ -15,7 +14,6 @@ class Module(QGroupBox):
         self.grid = QGridLayout()
         self.setLayout(self.grid)
         self.setTitle(title)
-
         self.mwindow = mwindow
 
     @property
@@ -24,8 +22,7 @@ class Module(QGroupBox):
 
     def populateLayout(self):
         for i, row in enumerate(self.rows):
-            row.setLine(i)
-            for j, widget in enumerate(row.widgets):
+            for j, widget in enumerate(row.displayed):
                 if widget is None:
                     continue
                 self.grid.addWidget(widget, i, j)
@@ -36,11 +33,11 @@ class Aitmodule(Module):
         Module.__init__(self, mwindow=mwindow, title='AIT')
 
         self.dcb = DcbRow(self)
-        # self.seqno = SeqnoRow(self)
         self.sac = SacRow(self)
         self.breva = BrevaRow(self)
 
         self.populateLayout()
+        self.adjustSize()
 
     @property
     def rows(self):
@@ -53,10 +50,10 @@ class Specmodule(Module):
         arms = ['b', 'r'] if not arms else arms
 
         self.smId = smId
-
         self.enu = EnuRow(self)
         self.cams = [CamRow(self, arm=arm) for arm in arms]
         self.populateLayout()
+        self.adjustSize()
 
     @property
     def rows(self):

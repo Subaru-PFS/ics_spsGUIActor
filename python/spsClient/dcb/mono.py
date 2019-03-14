@@ -2,7 +2,7 @@ __author__ = 'alefur'
 
 import spsClient.styles as styles
 from spsClient.common import ComboBox
-from spsClient.control import ControlPanel, CommandsGB
+from spsClient.control import ControllerPanel, ControllerCmd
 from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, SwitchGB, SwitchButton
 
 
@@ -66,9 +66,10 @@ class WaveCmd(CustomedCmd):
         return cmdStr
 
 
-class MonoPanel(ControlPanel):
+class MonoPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'mono')
+        self.addCommandSet(MonoCommands(self))
 
     def createWidgets(self):
         self.mode = ValueGB(self.moduleRow, 'monoMode', '', 0, '{:s}')
@@ -102,19 +103,10 @@ class MonoPanel(ControlPanel):
         self.grid.addWidget(self.outport, 3, 1)
         self.grid.addWidget(self.wavelength, 3, 2)
 
-    def addCommandSet(self):
-        self.commands = MonoCommands(self)
-        self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
-
-class MonoCommands(CommandsGB):
+class MonoCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='dcb status controllers=mono,monoqth')
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='dcb connect controller=mono')
-
+        ControllerCmd.__init__(self, controlPanel)
         self.gratingCmd = GratingCmd(controlPanel=controlPanel)
         self.shutterCmd = ShutterCmd(controlPanel=controlPanel)
         self.outportCmd = OutportCmd(controlPanel=controlPanel)
@@ -122,9 +114,6 @@ class MonoCommands(CommandsGB):
 
         self.switchQth = SwitchButton(controlPanel=controlPanel, key='monoqth', label='QTH',
                                       cmdHead='dcb monoqth')
-
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
 
         self.grid.addLayout(self.gratingCmd, 1, 0, 1, 2)
         self.grid.addLayout(self.shutterCmd, 2, 0, 1, 2)

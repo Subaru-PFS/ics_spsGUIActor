@@ -8,25 +8,37 @@ from spsClient.dcb.labsphere import LabspherePanel, AttenuatorValue
 from spsClient.dcb.mono import MonoPanel
 from spsClient.dcb.monoqth import MonoQthPanel
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB, SwitchGB, EnumGB
+from spsClient.widgets import ValueGB, ValueMRow, SwitchMRow, EnumMRow, Controllers
 
 
 class RowOne:
     def __init__(self, dcbRow):
-        self.widgets = [dcbRow.actorStatus, dcbRow.state, dcbRow.substate, dcbRow.labsphere, dcbRow.attenuator,
-                        dcbRow.photodiode, dcbRow.halogen, dcbRow.neon, dcbRow.krypton, dcbRow.hgar]
+        self.dcbRow = dcbRow
 
-    def setLine(self, lineNB):
-        self.lineNB = lineNB
+    @property
+    def widgets(self):
+        dcbRow = self.dcbRow
+        return [dcbRow.state, dcbRow.substate, dcbRow.labsphere, dcbRow.attenuator,
+                dcbRow.photodiode, dcbRow.halogen, dcbRow.neon, dcbRow.krypton, dcbRow.hgar]
+
+    @property
+    def displayed(self):
+        return [self.dcbRow.actorStatus] + self.widgets
 
 
 class RowTwo:
     def __init__(self, dcbRow):
-        self.widgets = [None, None, None, dcbRow.mono, dcbRow.monoqth, dcbRow.monoshutter, dcbRow.wavelength,
-                        dcbRow.xenon, dcbRow.deuterium, dcbRow.argon]
+        self.dcbRow = dcbRow
 
-    def setLine(self, lineNB):
-        self.lineNB = lineNB
+    @property
+    def widgets(self):
+        dcbRow = self.dcbRow
+        return [dcbRow.mono, dcbRow.monoqth, dcbRow.monoshutter, dcbRow.wavelength,
+                dcbRow.xenon, dcbRow.deuterium, dcbRow.argon]
+
+    @property
+    def displayed(self):
+        return [None, None, None] + self.widgets
 
 
 class FiberConfig(ValueGB):
@@ -55,41 +67,40 @@ class DcbRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='dcb', actorLabel='DCB')
 
-        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=styles.bigFont)
-        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=styles.bigFont)
-        self.labsphere = EnumGB(self, 'pow_labsphere', 'Labsphere', 0, '{:s}', fontSize=styles.bigFont)
+        self.state = ValueMRow(self, 'metaFSM', '', 0, '{:s}')
+        self.substate = ValueMRow(self, 'metaFSM', '', 1, '{:s}')
+        self.labsphere = EnumMRow(self, 'pow_labsphere', 'Labsphere', 0, '{:s}', controllerName='aten')
 
-        self.neon = SwitchGB(self, 'neon', 'Neon', 0, '{:g}', fontSize=styles.bigFont)
-        self.xenon = SwitchGB(self, 'xenon', 'Xenon', 0, '{:g}', fontSize=styles.bigFont)
-        self.hgar = SwitchGB(self, 'hgar', 'Hg-Ar', 0, '{:g}', fontSize=styles.bigFont)
-        self.krypton = SwitchGB(self, 'krypton', 'Krypton', 0, '{:g}', fontSize=styles.bigFont)
-        self.argon = SwitchGB(self, 'argon', 'Argon', 0, '{:g}', fontSize=styles.bigFont)
-        self.deuterium = SwitchGB(self, 'deuterium', 'Deuterium', 0, '{:g}', fontSize=styles.bigFont)
+        self.neon = SwitchMRow(self, 'neon', 'Neon', 0, '{:g}', controllerName='aten')
+        self.xenon = SwitchMRow(self, 'xenon', 'Xenon', 0, '{:g}', controllerName='aten')
+        self.hgar = SwitchMRow(self, 'hgar', 'Hg-Ar', 0, '{:g}', controllerName='aten')
+        self.krypton = SwitchMRow(self, 'krypton', 'Krypton', 0, '{:g}', controllerName='aten')
+        self.argon = SwitchMRow(self, 'argon', 'Argon', 0, '{:g}', controllerName='aten')
+        self.deuterium = SwitchMRow(self, 'deuterium', 'Deuterium', 0, '{:g}', controllerName='aten')
 
-        self.halogen = SwitchGB(self, 'halogen', 'Halogen', 0, '{:s}', fontSize=styles.bigFont)
-        self.photodiode = ValueGB(self, 'photodiode', 'photodiode', 0, '{:g}', fontSize=styles.bigFont)
+        self.halogen = SwitchMRow(self, 'halogen', 'Halogen', 0, '{:s}', controllerName='labsphere')
+        self.photodiode = ValueMRow(self, 'photodiode', 'photodiode', 0, '{:g}', controllerName='labsphere')
         self.attenuator = AttenuatorValue(self, fontSize=styles.bigFont)
 
-        self.mono = SwitchGB(self, 'pow_mono', 'Monochromator', 0, '{:g}', fontSize=styles.bigFont)
-        self.monoqth = SwitchGB(self, 'monoqth', 'MonoQTH', 0, '{:g}', fontSize=styles.bigFont)
-        self.monoshutter = ValueGB(self, 'monochromator', 'Mono-Shutter', 0, '{:s}', fontSize=styles.bigFont)
-        self.wavelength = ValueGB(self, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}', fontSize=styles.bigFont)
+        self.mono = SwitchMRow(self, 'pow_mono', 'Monochromator', 0, '{:g}', controllerName='aten')
+        self.monoqth = SwitchMRow(self, 'monoqth', 'MonoQTH', 0, '{:g}', controllerName='monoqth')
+        self.monoshutter = ValueMRow(self, 'monochromator', 'Mono-Shutter', 0, '{:s}', controllerName='mono')
+        self.wavelength = ValueMRow(self, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}', controllerName='mono')
 
         self.rowone = RowOne(self)
         self.rowtwo = RowTwo(self)
 
-        self.controlDialog = DcbDialog(self)
+        self.controllers = Controllers(self)
+        self.createDialog(DcbDialog(self))
 
     @property
-    def customWidgets(self):
-        return [self.state, self.substate, self.labsphere, self.attenuator, self.photodiode, self.halogen, self.neon,
-                self.xenon, self.hgar, self.krypton, self.argon, self.deuterium, self.mono, self.monoqth,
-                self.monoshutter, self.wavelength]
+    def widgets(self):
+        return self.rowone.widgets + self.rowtwo.widgets
 
 
 class DcbDialog(ControlDialog):
-    def __init__(self, sacRow):
-        ControlDialog.__init__(self, moduleRow=sacRow)
+    def __init__(self, dcbRow):
+        ControlDialog.__init__(self, moduleRow=dcbRow)
         self.fiberConfig = FiberConfig(self)
         self.topbar.addWidget(self.fiberConfig)
 

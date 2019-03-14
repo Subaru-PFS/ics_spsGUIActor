@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 
 from spsClient.common import ComboBox
-from spsClient.control import ControlPanel, CommandsGB
+from spsClient.control import ControllerPanel, ControllerCmd
 from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, AbortButton
 
 
@@ -19,9 +19,10 @@ class MoveCmd(CustomedCmd):
         return cmdStr
 
 
-class RexmPanel(ControlPanel):
+class RexmPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'rexm')
+        self.addCommandSet(RexmCommands(self))
 
     def createWidgets(self):
         self.mode = ValueGB(self.moduleRow, 'rexmMode', 'Mode', 0, '{:s}')
@@ -45,28 +46,16 @@ class RexmPanel(ControlPanel):
         self.grid.addWidget(self.speed, 1, 2)
         self.grid.addWidget(self.steps, 1, 3)
 
-    def addCommandSet(self):
-        self.commands = RexmCommands(self)
-        self.grid.addWidget(self.commands, 0, 4, 5, 4)
 
-
-class RexmCommands(CommandsGB):
+class RexmCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='%s rexm status' % controlPanel.actorName)
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='%s connect controller=rexm' % controlPanel.actorName)
+        ControllerCmd.__init__(self, controlPanel)
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT',
                                     cmdStr='%s rexm init' % controlPanel.actorName)
         self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s rexm abort' % controlPanel.actorName)
 
         self.moveCmd = MoveCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
         self.grid.addWidget(self.initButton, 1, 0)
         self.grid.addWidget(self.abortButton, 1, 1)
         self.grid.addLayout(self.moveCmd, 2, 0, 1, 2)
-
-        self.grid.addWidget(self.emptySpace(100), 3, 0)

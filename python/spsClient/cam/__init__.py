@@ -1,12 +1,12 @@
 __author__ = 'alefur'
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QGroupBox, QGridLayout, QTabWidget
-from spsClient.cam.ccd import CcdRow, CcdGB
-from spsClient.cam.xcu import XcuRow, XcuGB
+from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, QTabWidget, QLayout
+from spsClient.cam.ccd import CcdRow
+from spsClient.cam.xcu import XcuRow
 from spsClient.common import PushButton
 from spsClient.control import ControlDialog, ButtonBox
-from spsClient.logs import CmdLogArea, RawLogArea
+from spsClient.logs import CmdLogArea
 from spsClient.modulerow import ActorGB
 
 
@@ -43,11 +43,11 @@ class CamRow(object):
         self.specModule = specModule
         self.arm = arm
         self.label = '%sCU' % arm.upper()
-        self.lineNB = 0
         self.actorStatus = CamStatus(self)
         self.actorStatus.button.clicked.connect(self.showDetails)
-        self.ccd = CcdRow(camRow=self)
-        self.xcu = XcuRow(camRow=self)
+
+        self.ccd = CcdRow(self)
+        self.xcu = XcuRow(self)
 
         self.controlDialog = CamDialog(self)
 
@@ -56,17 +56,11 @@ class CamRow(object):
         return self.specModule.mwindow
 
     @property
-    def widgets(self):
+    def displayed(self):
         return [self.actorStatus, self.ccd.substate, self.ccd.temperature, self.xcu.pressure]
 
     def setOnline(self):
         self.actorStatus.setStatus(sum([self.ccd.isOnline + self.xcu.isOnline]))
-
-    def setLine(self, lineNB):
-        self.lineNB = lineNB
-
-    def addReadRows(self):
-        self.specModule.grid.addWidget(self.ccd.readRows, self.lineNB, 1)
 
     def showDetails(self):
         self.controlDialog.setVisible(True)
@@ -74,40 +68,39 @@ class CamRow(object):
 
 class CamDialog(ControlDialog):
     def __init__(self, camRow):
-        title = '%s %i' % (camRow.label, camRow.specModule.smId)
+        self.moduleRow = camRow
         QDialog.__init__(self, parent=camRow.mwindow.spsClient)
+        self.setWindowTitle('%s %i' % (camRow.label, camRow.specModule.smId))
 
         self.vbox = QVBoxLayout()
-        self.cmdBuffer = dict()
-        self.moduleRow = camRow
-
+        self.vbox.setSizeConstraint(QLayout.SetMinimumSize)
         self.tabWidget = QTabWidget(self)
+        self.cmdBuffer = dict()
+
+        self.moduleRow.xcu.createDialog(self.tabWidget)
+        self.moduleRow.ccd.createDialog(self.tabWidget)
 
         self.logArea = QTabWidget(self)
         self.cmdLog = CmdLogArea()
-        self.rawXcuLog = RawLogArea(camRow.xcu.actorName)
-        self.rawCcdLog = RawLogArea(camRow.ccd.actorName)
         self.logArea.addTab(self.cmdLog, 'cmdLog')
-        self.logArea.addTab(self.rawXcuLog, 'xcuLog')
-        self.logArea.addTab(self.rawCcdLog, 'ccdLog')
+        self.logArea.addTab(self.xcuDialog.rawLogArea(), 'xcuLog')
+        self.logArea.addTab(self.ccdDialog.rawLogArea(), 'ccdLog')
 
         buttonBox = ButtonBox(self)
 
-        self.setLayout(self.vbox)
-        self.setWindowTitle(title)
-
-        self.xcuGB = XcuGB(camRow.xcu)
-        self.ccdGB = CcdGB(camRow.ccd)
-
-        self.vbox.addLayout(self.xcuGB.topbar)
-        self.vbox.addLayout(self.ccdGB.topbar)
+        self.vbox.addLayout(self.xcuDialog.topbar)
+        self.vbox.addLayout(self.ccdDialog.topbar)
         self.vbox.addWidget(self.tabWidget)
-
-        for tabname, widget in self.xcuGB.virtualTabs.items():
-            self.tabWidget.addTab(widget, tabname)
-
-        for tabname, widget in self.ccdGB.virtualTabs.items():
-            self.tabWidget.addTab(widget, tabname)
-
         self.vbox.addLayout(buttonBox)
         self.vbox.addWidget(self.logArea)
+
+        self.setLayout(self.vbox)
+        self.setVisible(False)
+
+    @property
+    def ccdDialog(self):
+        return self.moduleRow.ccd.controlDialog
+
+    @property
+    def xcuDialog(self):
+        return self.moduleRow.xcu.controlDialog

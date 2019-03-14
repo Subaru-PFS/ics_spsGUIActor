@@ -40,6 +40,7 @@ class ExposeCmd(CustomedCmd):
 class CcdPanel(ControlPanel):
     def __init__(self, controlDialog):
         ControlPanel.__init__(self, controlDialog)
+        self.addCommandSet(CcdCommands(self))
 
     def createWidgets(self):
         self.state = ValueGB(self.moduleRow, 'ccd', '', 0, '{:s}')
@@ -48,10 +49,6 @@ class CcdPanel(ControlPanel):
     def setInLayout(self):
         self.grid.addWidget(self.state, 0, 0)
         self.grid.addWidget(self.substate, 0, 1)
-
-    def addCommandSet(self):
-        self.commands = CcdCommands(self)
-        self.grid.addWidget(self.commands, 0, 2, 3, 3)
 
 
 class CcdCommands(CommandsGB):

@@ -2,7 +2,7 @@ __author__ = 'alefur'
 import spsClient.styles as styles
 from PyQt5.QtWidgets import QGroupBox, QGridLayout
 from spsClient.common import ComboBox, CheckBox
-from spsClient.control import ControlPanel, CommandsGB
+from spsClient.control import CommandsGB, ControllerPanel
 from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, AbortButton
 
 
@@ -82,9 +82,10 @@ class CcdMotor(QGroupBox):
         return [self.status, self.homeSwitch, self.farSwitch, self.steps, self.position]
 
 
-class MotorsPanel(ControlPanel):
+class MotorsPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'PCM')
+        self.addCommandSet(MotorsCommands(self))
 
     @property
     def motors(self):
@@ -98,10 +99,6 @@ class MotorsPanel(ControlPanel):
     def setInLayout(self):
         for i, motor in enumerate(self.motors):
             self.grid.addWidget(motor, i, 0, 1, 5)
-
-    def addCommandSet(self):
-        self.commands = MotorsCommands(self)
-        self.grid.addWidget(self.commands, 0, 5, 3, 3)
 
 
 class MotorsCommands(CommandsGB):

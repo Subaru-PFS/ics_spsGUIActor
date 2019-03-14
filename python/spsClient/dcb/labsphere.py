@@ -1,12 +1,13 @@
 __author__ = 'alefur'
 import spsClient.styles as styles
-from spsClient.control import ControlPanel, CommandsGB
+from spsClient.control import ControllerPanel, ControllerCmd
 from spsClient.widgets import ValueGB, SwitchGB, CmdButton, CustomedCmd, SpinBoxGB, SwitchButton
 
 
 class AttenuatorValue(ValueGB):
     def __init__(self, moduleRow, fontSize=styles.smallFont):
         ValueGB.__init__(self, moduleRow, 'attenuator', 'attenuator', 0, '{:g}', fontSize=fontSize)
+        self.controllerName = 'labsphere'
 
     def setText(self, txt):
         if txt == '0':
@@ -44,9 +45,10 @@ class SwitchHalogen(SwitchButton):
         self.buttonOff.setVisible(bool)
 
 
-class LabspherePanel(ControlPanel):
+class LabspherePanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'labsphere')
+        self.addCommandSet(LabsphereCommands(self))
 
     def createWidgets(self):
         self.mode = ValueGB(self.moduleRow, 'labsphereMode', '', 0, '{:s}')
@@ -66,26 +68,14 @@ class LabspherePanel(ControlPanel):
         self.grid.addWidget(self.photodiode, 1, 1)
         self.grid.addWidget(self.attenuator, 1, 2)
 
-    def addCommandSet(self):
-        self.commands = LabsphereCommands(self)
-        self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
-
-class LabsphereCommands(CommandsGB):
+class LabsphereCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='dcb labsphere status')
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='dcb connect controller=labsphere')
+        ControllerCmd.__init__(self, controlPanel)
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='dcb labsphere init')
         self.attenuatorCmd = AttenuatorCmd(controlPanel=controlPanel)
         self.switchHalogen = SwitchHalogen(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
-
         self.grid.addWidget(self.initButton, 1, 0)
         self.grid.addLayout(self.attenuatorCmd, 2, 0, 1, 2)
-
         self.grid.addWidget(self.switchHalogen, 3, 0)
-        self.grid.addWidget(self.emptySpace(), 4, 0, 2, 1)

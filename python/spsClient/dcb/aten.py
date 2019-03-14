@@ -1,6 +1,6 @@
 __author__ = 'alefur'
 
-from spsClient.control import ControlPanel, CommandsGB
+from spsClient.control import ControllerPanel, ControllerCmd
 from spsClient.widgets import ValueGB, SwitchGB, EnumGB, CmdButton, SwitchButton
 
 
@@ -26,9 +26,10 @@ class SwitchLabsphere(SwitchButton):
         self.buttonOff.setVisible(bool)
 
 
-class AtenPanel(ControlPanel):
+class AtenPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'aten')
+        self.addCommandSet(AtenCommands(self))
 
     def createWidgets(self):
         self.mode = ValueGB(self.moduleRow, 'atenMode', '', 0, '{:s}')
@@ -77,17 +78,10 @@ class AtenPanel(ControlPanel):
         self.grid.addWidget(self.roughpump, 5, 0)
         self.grid.addWidget(self.bakeout, 5, 1)
 
-    def addCommandSet(self):
-        self.commands = AtenCommands(self)
-        self.grid.addWidget(self.commands, 0, 3, 6, 4)
 
-
-class AtenCommands(CommandsGB):
+class AtenCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS', cmdStr='dcb aten status')
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT', cmdStr='dcb connect controller=aten')
+        ControllerCmd.__init__(self, controlPanel)
 
         self.switchLabsphere = SwitchLabsphere(controlPanel=controlPanel)
         self.switchMono = AtenButton(controlPanel=controlPanel, key='pow_mono', label='Monochromator')
@@ -105,9 +99,6 @@ class AtenCommands(CommandsGB):
 
         # self.switchSac = SwitchButton(controlPanel=controlPanel, key='sac', label='Sac')
         # self.switchBreva = SwitchButton(controlPanel=controlPanel, key='breva', label='Breva')
-
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
 
         self.grid.addWidget(self.switchLabsphere, 1, 0)
         self.grid.addWidget(self.switchMono, 1, 1)

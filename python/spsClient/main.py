@@ -5,8 +5,7 @@ import os
 import pwd
 import sys
 
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from mainwindow import SpsWidget
 
 
@@ -20,8 +19,7 @@ class SpsClient(QMainWindow):
 
         self.spsWidget = SpsWidget(self)
         self.setCentralWidget(self.spsWidget)
-
-        self.show()
+        self.showMinimized()
 
     def setName(self, name):
         self.cmdrName = name

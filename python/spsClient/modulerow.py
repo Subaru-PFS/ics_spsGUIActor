@@ -17,7 +17,6 @@ class ModuleRow(object):
 
         self.actorStatus = ActorGB(self, fontSize=fontSize)
         self.actorStatus.button.clicked.connect(self.showDetails)
-        self.lineNB = 0
 
     @property
     def mwindow(self):
@@ -36,23 +35,27 @@ class ModuleRow(object):
         return self.actorName in self.models['hub'].keyVarDict['actors']
 
     @property
-    def widgets(self):
-        return [self.actorStatus] + self.customWidgets
+    def displayed(self):
+        return [self.actorStatus] + self.widgets
 
     @property
-    def allWidgets(self):
-        return self.customWidgets + self.controlDialog.customWidgets
+    def widgets(self):
+        return []
+
+    @property
+    def actorWidgets(self):
+        return self.widgets + self.controlDialog.widgets
 
     def setOnline(self, isOnline=None):
         isOnline = isOnline if isOnline is not None else self.isOnline
 
         self.actorStatus.setOnline(isOnline=isOnline)
 
-        for widget in self.allWidgets:
+        for widget in self.actorWidgets:
             widget.setEnabled(isOnline)
 
-    def setLine(self, lineNB):
-        self.lineNB = lineNB
+    def createDialog(self, controlDialog):
+        self.controlDialog = controlDialog
 
     def showDetails(self):
         self.controlDialog.setVisible(True)

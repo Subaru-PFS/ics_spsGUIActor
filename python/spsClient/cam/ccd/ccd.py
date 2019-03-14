@@ -1,5 +1,5 @@
 __author__ = 'alefur'
-from spsClient.control import ControlPanel, CommandsGB
+from spsClient.control import CommandsGB, ControllerPanel
 from spsClient.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, SpinBoxGB
 
 
@@ -46,9 +46,10 @@ class CcdState(ValueGB):
         ValueGB.setText(self, txt)
 
 
-class CcdPanel(ControlPanel):
+class CcdPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'ccd')
+        self.addCommandSet(CcdCommands(self))
 
     def createWidgets(self):
         self.state = CcdState(self.moduleRow, )
@@ -61,10 +62,6 @@ class CcdPanel(ControlPanel):
         self.grid.addWidget(self.rootDir, 1, 0)
         self.grid.addWidget(self.nightDir, 1, 1)
         self.grid.addWidget(self.filename, 1, 2)
-
-    def addCommandSet(self):
-        self.commands = CcdCommands(self)
-        self.grid.addWidget(self.commands, 0, 3, 3, 3)
 
 
 class CcdCommands(CommandsGB):
