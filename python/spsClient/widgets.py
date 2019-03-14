@@ -2,7 +2,7 @@ __author__ = 'alefur'
 from functools import partial
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QLabel, QGroupBox, QGridLayout, QMessageBox, QWidget
+from PyQt5.QtWidgets import QLabel, QGroupBox, QGridLayout, QMessageBox
 from spsClient.common import PushButton, DoubleSpinBox, SpinBox
 
 convertText = {'on': 'ON', 'off': 'OFF', 'nan': 'nan', 'undef': 'undef'}
@@ -105,14 +105,6 @@ class Coordinates(QGroupBox):
             widget.setEnabled(a0)
 
 
-class EmptyWidget(QWidget):
-    def __init__(self, height=False):
-        QWidget.__init__(self)
-        if height:
-            self.setFixedHeight(height)
-        # self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
-
-
 class DoubleSpinBoxGB(QGroupBox):
     def __init__(self, title, vmin, vmax, decimals, fontSize=styles.smallFont):
         QGroupBox.__init__(self)
@@ -190,18 +182,14 @@ class SpinBoxGB(QGroupBox):
 
 
 class CmdButton(PushButton):
-    def __init__(self, controlPanel, label, cmdStr=False, safetyCheck=False):
-        self.controlPanel = controlPanel
+    def __init__(self, controlPanel, label, controlDialog=False, cmdStr=False, safetyCheck=False):
+        self.controlDialog = controlPanel.controlDialog if controlPanel is not None else controlDialog
         self.cmdStr = cmdStr
         self.safetyCheck = safetyCheck
         PushButton.__init__(self, label)
         self.setCheckable(True)
         self.clicked.connect(self.getCommand)
-        self.setEnabled(controlPanel.moduleRow.isOnline)
-
-    @property
-    def controlDialog(self):
-        return self.controlPanel.controlDialog
+        self.setEnabled(self.controlDialog.moduleRow.isOnline)
 
     def buildCmd(self):
         return self.cmdStr
@@ -228,27 +216,6 @@ class AbortButton(CmdButton):
     def __init__(self, controlPanel, cmdStr):
         CmdButton.__init__(self, controlPanel=controlPanel, label='ABORT', cmdStr=cmdStr)
         self.setColor(*styles.colorWidget('abort'))
-
-
-class ReloadButton(PushButton):
-    def __init__(self, controlDialog):
-        self.controlDialog = controlDialog
-        self.cmdStr = '%s reloadConfiguration' % controlDialog.moduleRow.actorName
-
-        PushButton.__init__(self, ' Reload Config ')
-        self.setCheckable(True)
-        self.clicked.connect(self.getCommand)
-        self.setEnabled(controlDialog.moduleRow.isOnline)
-
-    def buildCmd(self):
-        return self.cmdStr
-
-    def getCommand(self):
-        if self.isChecked():
-            cmdStr = self.buildCmd()
-            self.controlDialog.addCommand(button=self, cmdStr=cmdStr)
-        else:
-            self.controlDialog.clearCommand(button=self)
 
 
 class InnerButton(CmdButton):
@@ -337,9 +304,40 @@ class CustomedCmd(QGridLayout):
             button.setEnabled(a0)
 
 
-class MonitorCmd(CustomedCmd):
-    def __init__(self, controlPanel, controllerName):
+class Controllers(ValueGB):
+    def __init__(self, moduleRow):
+        ValueGB.__init__(self, moduleRow, 'controllers', 'Controllers', 0, '{:s}', fontSize=styles.bigFont)
+
+    def updateVals(self, ind, fmt, keyvar):
+        controllers = keyvar.getValue(doRaise=False)
+
+        for widget in self.moduleRow.widgets + self.moduleRow.controlDialog.pannels:
+            if not widget.controllerName:
+                continue
+
+            widget.setEnabled(widget.controllerName in controllers)
+
+
+class ValueMRow(ValueGB):
+    def __init__(self, moduleRow, key, title, ind, fmt, controllerName='', fontSize=styles.bigFont):
+        ValueGB.__init__(self, moduleRow, key, title, ind, fmt, fontSize=fontSize)
         self.controllerName = controllerName
+
+
+class SwitchMRow(SwitchGB):
+    def __init__(self, moduleRow, key, title, ind, fmt, controllerName='', fontSize=styles.bigFont):
+        SwitchGB.__init__(self, moduleRow, key, title, ind, fmt, fontSize=fontSize)
+        self.controllerName = controllerName
+
+
+class EnumMRow(EnumGB):
+    def __init__(self, moduleRow, key, title, ind, fmt, controllerName='', fontSize=styles.bigFont):
+        EnumGB.__init__(self, moduleRow, key, title, ind, fmt, fontSize=fontSize)
+        self.controllerName = controllerName
+
+
+class MonitorCmd(CustomedCmd):
+    def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MONITOR')
 
         self.period = SpinBoxGB('Period', 0, 120)
@@ -349,7 +347,7 @@ class MonitorCmd(CustomedCmd):
 
     def buildCmd(self):
         cmdStr = '%s monitor controllers=%s period=%d' % (self.controlPanel.actorName,
-                                                          self.controllerName,
+                                                          self.controlPanel.controllerName,
                                                           self.period.getValue())
 
         return cmdStr

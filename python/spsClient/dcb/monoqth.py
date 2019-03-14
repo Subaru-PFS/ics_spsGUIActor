@@ -1,12 +1,13 @@
 __author__ = 'alefur'
 
-from spsClient.control import ControlPanel, CommandsGB
+from spsClient.control import ControllerPanel, ControllerCmd
 from spsClient.widgets import ValueGB, CmdButton, SwitchGB, SwitchButton
 
 
-class MonoQthPanel(ControlPanel):
+class MonoQthPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'monoqth')
+        self.addCommandSet(MonoQthCommands(self))
 
     def createWidgets(self):
         self.mode = ValueGB(self.moduleRow, 'monoqthMode', '', 0, '{:s}')
@@ -29,24 +30,10 @@ class MonoQthPanel(ControlPanel):
         self.grid.addWidget(self.current, 2, 1)
         self.grid.addWidget(self.power, 2, 2)
 
-    def addCommandSet(self):
-        self.commands = MonoQthCommands(self)
-        self.grid.addWidget(self.commands, 0, 3, 5, 3)
 
-
-class MonoQthCommands(CommandsGB):
+class MonoQthCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='dcb monoqth status')
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='dcb connect controller=monoqth')
-
+        ControllerCmd.__init__(self, controlPanel)
         self.switchQth = SwitchButton(controlPanel=controlPanel, key='monoqth', label='QTH',
                                       cmdHead='dcb monoqth')
-
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
-
         self.grid.addWidget(self.switchQth, 1, 0)
-        self.grid.addWidget(self.emptySpace(), 2, 0, 3, 2)

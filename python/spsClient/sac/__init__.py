@@ -1,25 +1,25 @@
 __author__ = 'alefur'
-import spsClient.styles as styles
+
 from spsClient.control import ControlDialog
 from spsClient.modulerow import ModuleRow
 from spsClient.sac.ccd import CcdPanel
 from spsClient.sac.stage import StagePanel
-from spsClient.widgets import ValueGB
+from spsClient.widgets import ValueMRow
 
 
 class SacRow(ModuleRow):
     def __init__(self, aitModule):
         ModuleRow.__init__(self, module=aitModule, actorName='sac', actorLabel='SAC')
 
-        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=styles.bigFont)
-        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=styles.bigFont)
+        self.state = ValueMRow(self, 'metaFSM', '', 0, '{:s}')
+        self.substate = ValueMRow(self, 'metaFSM', '', 1, '{:s}')
 
-        self.pentaPosition = ValueGB(self, 'lsPenta', 'Penta', 2, '{:.3f}', fontSize=styles.bigFont)
-        self.detectorPosition = ValueGB(self, 'lsDetector', 'Detector', 2, '{:.3f}', fontSize=styles.bigFont)
-        self.controlDialog = SacDialog(self)
+        self.pentaPosition = ValueMRow(self, 'lsPenta', 'Penta', 2, '{:.3f}')
+        self.detectorPosition = ValueMRow(self, 'lsDetector', 'Detector', 2, '{:.3f}')
+        self.createDialog(SacDialog(self))
 
     @property
-    def customWidgets(self):
+    def widgets(self):
         return [self.state, self.substate, self.pentaPosition, self.detectorPosition]
 
 

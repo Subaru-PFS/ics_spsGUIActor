@@ -1,23 +1,17 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QGridLayout, QWidget, QVBoxLayout, QLayout
-from spsClient.module import Aitmodule
-from spsClient.module import Specmodule
+from PyQt5.QtWidgets import QWidget, QLayout, QVBoxLayout, QLabel
+from spsClient.module import Specmodule, Aitmodule
 
 
 class SpsWidget(QWidget):
     def __init__(self, spsClient):
         QWidget.__init__(self)
-
         self.spsClient = spsClient
-        self.deviceLayout = QGridLayout()
         self.mainLayout = QVBoxLayout()
+        self.mainLayout.addWidget(Aitmodule(self))
+        self.mainLayout.addWidget(Specmodule(self, smId=1))
 
-        self.deviceLayout.addWidget(Aitmodule(self), 0, 0)
-        self.deviceLayout.addWidget(Specmodule(self, smId=1), 1, 0, 3, 1)
-        #self.deviceLayout.addWidget(Specmodule(self, smId=2, arms=['r']), 4, 0, 2, 1)
-
-        self.mainLayout.addLayout(self.deviceLayout)
         self.setLayout(self.mainLayout)
 
     @property

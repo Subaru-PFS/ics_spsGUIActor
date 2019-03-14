@@ -1,13 +1,11 @@
 __author__ = 'alefur'
 
-import spsClient.styles as styles
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QProgressBar, QHBoxLayout
+from PyQt5.QtWidgets import QProgressBar, QWidget, QVBoxLayout
 from spsClient.cam.ccd.ccd import CcdPanel
 from spsClient.cam.ccd.fee import FeePanel
 from spsClient.control import ControlDialog
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB, ReloadButton
+from spsClient.widgets import Controllers, ValueMRow
 
 
 class ReadRows(QProgressBar):
@@ -18,8 +16,8 @@ class ReadRows(QProgressBar):
         self.setFormat('READING \r\n' + '%p%')
 
         self.ccdRow.keyVarDict['readRows'].addCallback(self.updateBar, callNow=False)
-        self.ccdRow.keyVarDict['exposureState'].addCallback(self.hideBar)
-        self.setFixedSize(90, 45)
+        self.setFixedSize(80, 30)
+        self.resetValue()
 
     def updateBar(self, keyvar):
         try:
@@ -29,77 +27,66 @@ class ReadRows(QProgressBar):
 
         self.setValue(val)
 
-    def hideBar(self, keyvar):
-        try:
-            state = keyvar.getValue()
-            if state == 'reading':
-                self.ccdRow.substate.hide()
-                self.ccdRow.camRow.addReadRows()
-                self.show()
-
-            else:
-                raise ValueError
-
-        except ValueError:
-            self.resetValue()
-
     def resetValue(self):
         self.hide()
         self.setValue(0)
-        self.ccdRow.substate.show()
 
 
-class CcdState(ValueGB):
+class CcdState(ValueMRow):
     def __init__(self, moduleRow):
         self.moduleRow = moduleRow
-        ValueGB.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}', fontSize=styles.bigFont)
+        ValueMRow.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}', controllerName='fee')
+        self.readRows = ReadRows(moduleRow)
+        self.grid.addWidget(self.readRows, 0, 0)
 
     def setText(self, txt):
         txt = txt.upper()
-        ValueGB.setText(self, txt)
+        if txt == 'READING':
+            self.value.hide()
+            self.readRows.show()
+        else:
+            self.value.show()
+            self.readRows.resetValue()
+
+        ValueMRow.setText(self, txt)
 
 
 class CcdRow(ModuleRow):
     def __init__(self, camRow):
         self.camRow = camRow
         ModuleRow.__init__(self, module=camRow.specModule,
-                           actorName='ccd_%s%i' % (camRow.arm, camRow.specModule.smId),
-                           actorLabel='CCD',
-                           fontSize=styles.smallFont)
+                           actorName='ccd_%s%i' % (camRow.arm, camRow.specModule.smId), actorLabel='CCD')
 
         self.substate = CcdState(self)
-        self.temperature = ValueGB(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', fontSize=styles.bigFont)
+        self.temperature = ValueMRow(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', controllerName='fee')
         self.readRows = ReadRows(self)
+        self.controllers = Controllers(self)
 
     @property
-    def customWidgets(self):
-        return [self.substate, self.readRows, self.temperature]
-
-    @property
-    def allWidgets(self):
-        return self.customWidgets + self.camRow.controlDialog.ccdGB.customWidgets
+    def widgets(self):
+        return [self.substate, self.temperature]
 
     def setOnline(self):
         ModuleRow.setOnline(self)
         self.camRow.setOnline()
 
-    def showDetails(self):
-        pass
+    def createDialog(self, tabWidget):
+        self.controlDialog = CcdDialog(self, tabWidget)
 
 
-class CcdGB(ControlDialog):
-    def __init__(self, ccdRow):
+class CcdDialog(ControlDialog):
+    def __init__(self, ccdRow, tabWidget):
         self.moduleRow = ccdRow
+        self.tabWidget = tabWidget
 
-        self.topbar = QHBoxLayout()
-        self.topbar.setAlignment(Qt.AlignLeft)
-        self.reload = ReloadButton(self)
-
-        self.topbar.addWidget(ccdRow.actorStatus)
-        self.topbar.addWidget(self.reload)
+        self.topbar = self.createTopbar()
+        self.topbar.insertWidget(0, self.moduleRow.actorStatus)
 
         self.feePanel = FeePanel(self)
         self.ccdPanel = CcdPanel(self)
+
+        for name, tab in self.virtualTabs.items():
+            self.tabWidget.addTab(tab, name)
 
     @property
     def cmdBuffer(self):
@@ -111,8 +98,5 @@ class CcdGB(ControlDialog):
                     Ccd=self.ccdPanel)
 
     @property
-    def customWidgets(self):
-        topbar = [self.topbar.itemAt(i).widget() for i in range(self.topbar.count())]
-        pannels = sum([tab.allWidgets for tab in self.virtualTabs.values()], [])
-
-        return topbar + pannels
+    def pannels(self):
+        return list(self.virtualTabs.values())

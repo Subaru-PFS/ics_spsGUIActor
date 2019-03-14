@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 import spsClient.styles as styles
-from spsClient.control import ControlPanel, CommandsGB
-from spsClient.widgets import ValueGB, CmdButton, MonitorCmd, SwitchButton
+from spsClient.control import ControllerPanel, ControllerCmd
+from spsClient.widgets import ValueGB, SwitchButton
 
 
 class Status(ValueGB):
@@ -34,9 +34,10 @@ class TurboSwitch(SwitchButton):
         self.buttonOff.setVisible(bool)
 
 
-class TurboPanel(ControlPanel):
+class TurboPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'turbo')
+        self.addCommandSet(TurboCommands(self))
 
     def createWidgets(self):
         self.speed = ValueGB(self.moduleRow, 'turboSpeed', 'Speed(RPM)', 0, '{:g}')
@@ -50,31 +51,18 @@ class TurboPanel(ControlPanel):
     def setInLayout(self):
         self.grid.addWidget(self.speed, 0, 0)
         self.grid.addWidget(self.status, 0, 1, 2, 2)
-        self.grid.addWidget(self.volt, 3, 0)
-        self.grid.addWidget(self.current, 3, 1)
-        self.grid.addWidget(self.power, 3, 2)
-        self.grid.addWidget(self.bodyTemp, 4, 0)
-        self.grid.addWidget(self.controllerTemp, 4, 1)
-
-    def addCommandSet(self):
-        self.commands = TurboCommands(self)
-        self.grid.addWidget(self.commands, 0, 4, 5, 3)
+        self.grid.addWidget(self.volt, 2, 0)
+        self.grid.addWidget(self.current, 2, 1)
+        self.grid.addWidget(self.power, 2, 2)
+        self.grid.addWidget(self.bodyTemp, 3, 0)
+        self.grid.addWidget(self.controllerTemp, 3, 1)
 
 
-class TurboCommands(CommandsGB):
+class TurboCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='%s turbo status' % controlPanel.actorName)
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='%s connect controller=turbo' % controlPanel.actorName)
+        ControllerCmd.__init__(self, controlPanel)
 
-        self.monitorCmd = MonitorCmd(controlPanel=controlPanel, controllerName='turbo')
         self.turboSwitch = TurboSwitch(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
-        self.grid.addLayout(self.monitorCmd, 1, 0, 1, 2)
-        self.grid.addWidget(self.turboSwitch.buttonOn, 2, 0)
-        self.grid.addWidget(self.turboSwitch.buttonOff, 2, 0)
-        self.grid.addWidget(self.emptySpace(30), 3, 0)
+        self.grid.addWidget(self.turboSwitch.buttonOn, 1, 0)
+        self.grid.addWidget(self.turboSwitch.buttonOff, 1, 0)

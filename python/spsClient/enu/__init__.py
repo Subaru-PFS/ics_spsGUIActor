@@ -1,26 +1,31 @@
 __author__ = 'alefur'
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QProgressBar
+from PyQt5.QtWidgets import QProgressBar, QSizePolicy
 from spsClient.control import ControlDialog
 from spsClient.enu.bia import BiaPanel, BiaState
 from spsClient.enu.rexm import RexmPanel
 from spsClient.enu.shutters import ShuttersPanel
 from spsClient.enu.slit import SlitPanel
 from spsClient.modulerow import ModuleRow
-from spsClient.widgets import ValueGB
+from spsClient.widgets import ValueMRow, Controllers
 
 
 class ElapsedTime(QProgressBar):
     def __init__(self, enuRow):
         QProgressBar.__init__(self)
-        self.setFormat('EXPOSING \r\n' + '%p%')
+        self.setFormat('INTEGRATING \r\n' + '%p%')
         self.enuRow = enuRow
         self.enuRow.keyVarDict['elapsedTime'].addCallback(self.updateBar, callNow=False)
-        self.enuRow.keyVarDict['bshFSM'].addCallback(self.hideBar)
+        self.enuRow.keyVarDict['integratingTime'].addCallback(self.setExptime, callNow=False)
 
-        self.setFixedSize(100, 45)
+        self.setFixedSize(90, 30)
 
-    def setExptime(self, exptime):
+    def setExptime(self, keyvar):
+        try:
+            exptime = keyvar.getValue()
+        except ValueError:
+            return
+
         self.setRange(0, exptime)
 
     def updateBar(self, keyvar):
@@ -31,62 +36,50 @@ class ElapsedTime(QProgressBar):
 
         self.setValue(val)
 
-    def hideBar(self, keyvar):
-        try:
-            state, substate = keyvar.getValue()
-            if substate == 'EXPOSING':
-                self.enuRow.addElaspedTime()
-                self.enuRow.substate.hide()
-                self.show()
-            else:
-                raise ValueError
-
-        except ValueError:
-            self.resetValue()
-
     def resetValue(self):
         self.hide()
         self.setValue(0)
-        self.enuRow.substate.show()
+
+
+class Substate(ValueMRow):
+    def __init__(self, moduleRow):
+        self.moduleRow = moduleRow
+        ValueMRow.__init__(self, moduleRow, 'metaFSM', '', 1, '{:s}')
+        self.elapsedTime = ElapsedTime(moduleRow)
+        self.grid.addWidget(self.elapsedTime, 0, 0)
+
+    def setText(self, txt):
+        txt = txt.upper()
+        if txt == 'EXPOSING':
+            self.value.hide()
+            self.elapsedTime.show()
+        else:
+            self.value.show()
+            self.elapsedTime.resetValue()
+
+        ValueMRow.setText(self, txt)
 
 
 class EnuRow(ModuleRow):
     def __init__(self, specModule):
         ModuleRow.__init__(self, module=specModule, actorName='enu_sm%i' % specModule.smId, actorLabel='ENU')
 
-        self.state = ValueGB(self, 'metaFSM', '', 0, '{:s}', fontSize=styles.bigFont)
-        self.substate = ValueGB(self, 'metaFSM', '', 1, '{:s}', fontSize=styles.bigFont)
+        self.state = ValueMRow(self, 'metaFSM', '', 0, '{:s}')
+        self.substate = Substate(self)
 
-        self.rexm = ValueGB(self, 'rexm', 'Red Resolution', 0, '{:s}', fontSize=styles.bigFont)
-        self.slit = ValueGB(self, 'slitLocation', 'FCA_Position', 0, '{:s}', fontSize=styles.bigFont)
-        self.shutters = ValueGB(self, 'shutters', 'SHA_Position', 0, '{:s}', fontSize=styles.bigFont)
+        self.rexm = ValueMRow(self, 'rexm', 'Red Resolution', 0, '{:s}', controllerName='rexm')
+        self.slit = ValueMRow(self, 'slitLocation', 'FCA_Position', 0, '{:s}', controllerName='slit')
+        self.shutters = ValueMRow(self, 'shutters', 'SHA_Position', 0, '{:s}', controllerName='bsh')
         self.bia = BiaState(self, fontSize=styles.bigFont)
+
         self.elapsedTime = ElapsedTime(self)
+        self.controllers = Controllers(self)
 
-        self.keyVarDict['integratingTime'].addCallback(self.setExptime, callNow=False)
-
-        self.controlDialog = EnuDialog(self)
+        self.createDialog(EnuDialog(self))
 
     @property
-    def customWidgets(self):
+    def widgets(self):
         return [self.state, self.substate, self.rexm, self.slit, self.shutters, self.bia]
-
-    def setExptime(self, keyvar):
-        try:
-            exptime = keyvar.getValue()
-        except ValueError:
-            return
-
-        self.elapsedTime.setExptime(exptime)
-
-    def addElaspedTime(self):
-
-        self.module.grid.addWidget(self.elapsedTime, self.lineNB, 2)
-
-    def removeWidget(self, widget):
-        self.state.show()
-        self.module.grid.removeWidget(widget)
-        widget.deleteLater()
 
 
 class EnuDialog(ControlDialog):

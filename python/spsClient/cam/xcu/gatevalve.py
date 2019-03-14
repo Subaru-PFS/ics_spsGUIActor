@@ -2,8 +2,8 @@ __author__ = 'alefur'
 from functools import partial
 
 from spsClient.common import CheckBox
-from spsClient.control import ControlPanel, CommandsGB
-from spsClient.widgets import ValueGB, CmdButton, MonitorCmd, CustomedCmd
+from spsClient.control import ControllerPanel, ControllerCmd
+from spsClient.widgets import ValueGB, CmdButton, CustomedCmd
 
 
 class OpenCmd(CustomedCmd):
@@ -35,9 +35,10 @@ class OpenCmd(CustomedCmd):
         return '%s gatevalve open %s %s' % (self.controlPanel.actorName, atAtmosphere, underVacuum)
 
 
-class GVPanel(ControlPanel):
+class GVPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'gatevalve')
+        self.addCommandSet(GVCommands(self))
 
     def createWidgets(self):
         self.position = ValueGB(self.moduleRow, 'gatevalve', 'Position', 1, '{:s}')
@@ -49,25 +50,14 @@ class GVPanel(ControlPanel):
         self.grid.addWidget(self.controlState, 0, 1)
         self.grid.addWidget(self.samPOW, 1, 0)
 
-    def addCommandSet(self):
-        self.commands = GVCommands(self)
-        self.grid.addWidget(self.commands, 0, 4, 5, 3)
 
-
-class GVCommands(CommandsGB):
+class GVCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='%s gatevalve status' % controlPanel.actorName)
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='%s connect controller=gatevalve' % controlPanel.actorName)
-        self.monitorCmd = MonitorCmd(controlPanel=controlPanel, controllerName='gatevalve')
+        ControllerCmd.__init__(self, controlPanel)
+
         self.openCmd = OpenCmd(controlPanel=controlPanel)
         self.closeButton = CmdButton(controlPanel=controlPanel, label='CLOSE',
                                      cmdStr='%s gatevalve close' % controlPanel.actorName, safetyCheck=True)
 
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
-        self.grid.addLayout(self.monitorCmd, 1, 0, 1, 2)
         self.openCmd.addWidget(self.closeButton, 1, 0)
         self.grid.addLayout(self.openCmd, 2, 0, 1, 3)

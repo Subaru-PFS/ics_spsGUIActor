@@ -3,70 +3,10 @@ from functools import partial
 
 import spsClient.styles as styles
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, QTabWidget, QLayout, QHBoxLayout
-from spsClient.common import PushButton
+from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, QTabWidget, QLayout, QHBoxLayout, QSpacerItem, QSizePolicy
+from spsClient.common import PushButton, Icon
 from spsClient.logs import CmdLogArea, RawLogArea
-from spsClient.widgets import EmptyWidget, ReloadButton, CustomedCmd
-
-
-class CommandsGB(QGroupBox):
-    def __init__(self, controlPanel, fontSize=styles.smallFont):
-        self.controlPanel = controlPanel
-        QGroupBox.__init__(self)
-        self.grid = QGridLayout()
-
-        self.setTitle('Commands')
-        self.setLayout(self.grid)
-        self.setStyleSheet(
-            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (fontSize) +
-            "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
-
-    def emptySpace(self, height=False):
-        return EmptyWidget(height=height)
-
-    def setEnabled(self, a0: bool):
-        QGroupBox.setEnabled(self, a0)
-        for item in [self.grid.itemAt(i) for i in range(self.grid.count())]:
-            if (issubclass(type(item), QLayout)):
-                item.setEnabled(a0)
-            else:
-                item.widget().setEnabled(a0)
-
-
-class ControlPanel(QGroupBox):
-    def __init__(self, controlDialog):
-        QGroupBox.__init__(self)
-        self.controlDialog = controlDialog
-        self.grid = QGridLayout()
-        self.setLayout(self.grid)
-
-        self.createWidgets()
-        self.setInLayout()
-        self.addCommandSet()
-
-    @property
-    def moduleRow(self):
-        return self.controlDialog.moduleRow
-
-    @property
-    def actorName(self):
-        return self.controlDialog.moduleRow.actorName
-
-    @property
-    def allWidgets(self):
-         return [self.grid.itemAt(i).widget() for i in range(self.grid.count())]
-
-    def emptySpace(self):
-        return EmptyWidget()
-
-    def createWidgets(self):
-        pass
-
-    def setInLayout(self):
-        pass
-
-    def addCommandSet(self):
-        self.commands = CommandsGB(self)
+from spsClient.widgets import CmdButton
 
 
 class ButtonBox(QGridLayout):
@@ -83,13 +23,13 @@ class ButtonBox(QGridLayout):
         self.hideLogs = PushButton('Hide Logs')
         self.showLogs.clicked.connect(partial(self.show, True))
         self.hideLogs.clicked.connect(partial(self.show, False))
-        self.show(False)
 
         self.addWidget(self.showLogs, 0, 0)
         self.addWidget(self.hideLogs, 0, 0)
-        self.addWidget(EmptyWidget(), 0, 1)
         self.addWidget(self.apply, 0, 9)
         self.addWidget(self.discard, 0, 10)
+
+        self.show(False)
 
     def show(self, bool):
         self.showLogs.setVisible(not bool)
@@ -100,29 +40,26 @@ class ButtonBox(QGridLayout):
 
 class ControlDialog(QDialog):
     def __init__(self, moduleRow, title=False):
+        self.moduleRow = moduleRow
         title = moduleRow.actorLabel if not title else title
         QDialog.__init__(self, parent=moduleRow.mwindow.spsClient)
-        self.vbox = QVBoxLayout()
-        self.topbar = QHBoxLayout()
-        self.topbar.setAlignment(Qt.AlignLeft)
-        self.vbox.setSizeConstraint(QLayout.SetMinimumSize)
-        self.tabWidget = QTabWidget(self)
         self.cmdBuffer = dict()
+        self.vbox = QVBoxLayout()
 
-        self.moduleRow = moduleRow
-
-        self.reload = ReloadButton(self)
+        self.topbar = self.createTopbar()
+        self.tabWidget = QTabWidget(self)
 
         self.logArea = QTabWidget(self)
+
         self.cmdLog = CmdLogArea()
-        self.rawLog = RawLogArea(moduleRow.actorName)
+        self.rawLog = self.rawLogArea()
         self.logArea.addTab(self.cmdLog, 'cmdLog')
         self.logArea.addTab(self.rawLog, 'rawLog')
 
         buttonBox = ButtonBox(self)
 
         self.vbox.addLayout(self.topbar)
-        self.topbar.addWidget(self.reload)
+
         self.vbox.addWidget(self.tabWidget)
         self.vbox.addLayout(buttonBox)
         self.vbox.addWidget(self.logArea)
@@ -131,12 +68,31 @@ class ControlDialog(QDialog):
         self.setWindowTitle(title)
         self.setVisible(False)
 
-    @property
-    def customWidgets(self):
-        topbar = [self.topbar.itemAt(i).widget() for i in range(self.topbar.count())]
-        pannels = sum([self.tabWidget.widget(i).allWidgets for i in range(self.tabWidget.count())], [])
+    def createTopbar(self):
+        topbar = QHBoxLayout()
+        topbar.setAlignment(Qt.AlignLeft)
 
-        return topbar + pannels
+        self.reload = CmdButton(controlPanel=None, label=' Reload Config ', controlDialog=self,
+                                cmdStr='%s reloadConfiguration' % self.moduleRow.actorName)
+        self.statusButton = CmdButton(controlPanel=None, label=' STATUS ', controlDialog=self,
+                                      cmdStr='%s status' % self.moduleRow.actorName)
+
+        topbar.addWidget(self.reload)
+        topbar.addWidget(self.statusButton)
+
+        return topbar
+
+    def rawLogArea(self):
+        return RawLogArea(self.moduleRow.actorName)
+
+    @property
+    def widgets(self):
+        topbar = [self.topbar.itemAt(i).widget() for i in range(self.topbar.count())]
+        return topbar + self.pannels
+
+    @property
+    def pannels(self):
+        return [self.tabWidget.widget(i) for i in range(self.tabWidget.count())]
 
     def addCommand(self, button, cmdStr):
         self.cmdBuffer[button] = cmdStr
@@ -154,7 +110,113 @@ class ControlDialog(QDialog):
         self.cmdBuffer.clear()
 
     def cancelCommands(self):
+        for button, fullCmd in self.cmdBuffer.items():
+            button.setChecked(0)
+
         self.cmdBuffer.clear()
 
     def close(self):
         self.setVisible(False)
+
+
+class ControlPanel(QGroupBox):
+    def __init__(self, controlDialog):
+        QGroupBox.__init__(self)
+        self.controlDialog = controlDialog
+        self.grid = QGridLayout()
+        self.grid.setSizeConstraint(QLayout.SetMinimumSize)
+        self.setLayout(self.grid)
+
+        self.createWidgets()
+        self.setInLayout()
+        self.setEnabled(False)
+
+    @property
+    def moduleRow(self):
+        return self.controlDialog.moduleRow
+
+    @property
+    def actorName(self):
+        return self.controlDialog.moduleRow.actorName
+
+    @property
+    def allWidgets(self):
+        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())][:-1]
+
+    def createWidgets(self):
+        pass
+
+    def setInLayout(self):
+        pass
+
+    def addCommandSet(self, commands):
+        self.commands = commands
+        self.grid.addWidget(self.commands, 0, self.grid.columnCount(), self.grid.rowCount(),
+                            self.grid.columnCount())
+        self.spacer = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.MinimumExpanding)
+        self.grid.addItem(self.spacer, self.grid.rowCount(), 0)
+
+    def setEnabled(self, a0):
+        icon = Icon('green.png') if a0 else Icon('orange.png')
+        self.controlDialog.tabWidget.setTabIcon(self.controlDialog.tabWidget.indexOf(self), icon)
+
+        for widget in self.allWidgets:
+            widget.setEnabled(a0)
+
+
+class CommandsGB(QGroupBox):
+    def __init__(self, controlPanel, fontSize=styles.smallFont):
+        QGroupBox.__init__(self)
+        self.controlPanel = controlPanel
+        self.grid = QGridLayout()
+
+        self.setTitle('Commands')
+        self.setLayout(self.grid)
+        self.setStyleSheet(
+            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (fontSize) +
+            "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
+
+    def setEnabled(self, a0: bool):
+        for item in [self.grid.itemAt(i) for i in range(self.grid.count())]:
+            if (issubclass(type(item), QSpacerItem)):
+                continue
+            elif (issubclass(type(item), QLayout)):
+                item.setEnabled(a0)
+            else:
+                item.widget().setEnabled(a0)
+
+
+class ControllerPanel(ControlPanel):
+    def __init__(self, controlDialog, controllerName):
+        ControlPanel.__init__(self, controlDialog=controlDialog)
+        self.controllerName = controllerName
+
+    def setEnabled(self, a0):
+        a0 = self.controllerName in self.moduleRow.keyVarDict['controllers'] if a0 else False
+        ControlPanel.setEnabled(self, a0)
+
+
+class ControllerCmd(CommandsGB):
+    def __init__(self, controlPanel, fontSize=styles.smallFont):
+        CommandsGB.__init__(self, controlPanel=controlPanel, fontSize=fontSize)
+        self.addButtons(controlPanel)
+
+    def setEnabled(self, a0: bool):
+        CommandsGB.setEnabled(self, a0)
+
+        self.connectButton.setEnabled(self.controlPanel.moduleRow.isOnline)
+        self.connectButton.setVisible(not a0)
+        self.disconnectButton.setEnabled(self.controlPanel.moduleRow.isOnline)
+        self.disconnectButton.setVisible(a0)
+
+    def addButtons(self, controlPanel):
+        actor, controller = controlPanel.actorName, controlPanel.controllerName
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
+                                      cmdStr='%s %s status' % (actor, controller))
+        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
+                                       cmdStr='%s connect controller=%s' % (actor, controller))
+        self.disconnectButton = CmdButton(controlPanel=controlPanel, label='DISCONNECT',
+                                          cmdStr='%s disconnect controller=%s' % (actor, controller))
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
+        self.grid.addWidget(self.disconnectButton, 0, 1)

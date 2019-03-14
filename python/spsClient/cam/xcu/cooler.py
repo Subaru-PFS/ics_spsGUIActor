@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 
-from spsClient.control import ControlPanel, CommandsGB
-from spsClient.widgets import ValueGB, CmdButton, MonitorCmd, CustomedCmd, SpinBoxGB
+from spsClient.control import ControllerCmd, ControllerPanel
+from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, SpinBoxGB
 
 
 class TempLoopCmd(CustomedCmd):
@@ -36,9 +36,10 @@ class Status(ValueGB):
         self.customize()
 
 
-class CoolerPanel(ControlPanel):
+class CoolerPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'cooler')
+        self.addCommandSet(CoolerCommands(self))
 
     def createWidgets(self):
         self.status = Status(self.moduleRow)
@@ -72,27 +73,15 @@ class CoolerPanel(ControlPanel):
         self.grid.addWidget(self.power, 3, 1)
         self.grid.addWidget(self.maxPower, 3, 2)
 
-    def addCommandSet(self):
-        self.commands = CoolerCommands(self)
-        self.grid.addWidget(self.commands, 0, 4, 4, 3)
 
-
-class CoolerCommands(CommandsGB):
+class CoolerCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='%s cooler status' % controlPanel.actorName)
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='%s connect controller=cooler' % controlPanel.actorName)
-        self.monitorCmd = MonitorCmd(controlPanel=controlPanel, controllerName='cooler')
+        ControllerCmd.__init__(self, controlPanel)
         self.tempLoop = TempLoopCmd(controlPanel=controlPanel)
         self.powerLoop = PowerLoopCmd(controlPanel=controlPanel)
         self.coolerOff = CmdButton(controlPanel=controlPanel, label='COOLER OFF',
                                    cmdStr='%s cooler off' % controlPanel.actorName, safetyCheck=True)
 
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
-        self.grid.addLayout(self.monitorCmd, 1, 0, 1, 2)
         self.grid.addLayout(self.tempLoop, 2, 0, 1, 2)
         self.grid.addLayout(self.powerLoop, 3, 0, 1, 2)
         self.grid.addWidget(self.coolerOff, 4, 0, 1, 1)

@@ -1,11 +1,12 @@
 __author__ = 'alefur'
-from spsClient.control import ControlPanel, CommandsGB
+from spsClient.control import ControlPanel, CommandsGB, ControllerPanel, ControllerCmd
 from spsClient.widgets import ValueGB, CmdButton, MonitorCmd
 
 
-class FeePanel(ControlPanel):
+class FeePanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'fee')
+        self.addCommandSet(FeeCommands(self))
 
     def createWidgets(self):
         self.preamp = ValueGB(self.moduleRow, 'ccdTemps', 'Preamp', 0, '{:.2f}')
@@ -17,26 +18,7 @@ class FeePanel(ControlPanel):
         self.grid.addWidget(self.ccd0, 0, 1)
         self.grid.addWidget(self.ccd1, 0, 2)
 
-    def addCommandSet(self):
-        self.commands = FeeCommands(self)
-        self.grid.addWidget(self.commands, 0, 4, 4, 3)
 
-
-class FeeCommands(CommandsGB):
+class FeeCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='%s status' % controlPanel.actorName)
-
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='%s connect controller=fee' % controlPanel.actorName)
-
-        self.monitorCmd = MonitorCmd(controlPanel=controlPanel, controllerName='temps')
-
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
-        self.grid.addLayout(self.monitorCmd, 1, 0, 1, 2)
-
-    @property
-    def buttons(self):
-        return [self.statusButton, self.connectButton, self.monitorCmd.button]
+        ControllerCmd.__init__(self, controlPanel)

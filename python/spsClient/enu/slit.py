@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QGridLayout
 from spsClient.common import ComboBox
-from spsClient.control import ControlPanel, CommandsGB
+from spsClient.control import ControllerPanel, ControllerCmd
 from spsClient.widgets import Coordinates, ValueGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, \
     AbortButton
 
@@ -81,15 +81,16 @@ class SetRepCmd(CustomedCmd):
         return cmdStr
 
 
-class SlitPanel(ControlPanel):
+class SlitPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControlPanel.__init__(self, controlDialog)
+        ControllerPanel.__init__(self, controlDialog, 'slit')
+        self.addCommandSet(SlitCommands(self))
 
     def createWidgets(self):
         self.mode = ValueGB(self.moduleRow, 'slitMode', 'Mode', 0, '{:s}')
         self.state = ValueGB(self.moduleRow, 'slitFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'slitFSM', '', 1, '{:s}')
-        self.info = ValueGB(self.moduleRow, 'slitInfo', 'Info', 0, '{:s}')
+        self.info = ValueGB(self.moduleRow, 'hexaStatus', 'Info', 1, '{:s}')
         self.location = ValueGB(self.moduleRow, 'slitLocation', 'Location', 0, '{:s}')
 
         self.coordinates = Coordinates(self.moduleRow, 'slit', title='Position')
@@ -107,18 +108,10 @@ class SlitPanel(ControlPanel):
         self.grid.addWidget(self.work, 3, 0, 1, 6)
         self.grid.addWidget(self.tool, 4, 0, 1, 6)
 
-    def addCommandSet(self):
-        self.commands = SlitCommands(self)
-        self.grid.addWidget(self.commands, 0, 7, 5, 4)
 
-
-class SlitCommands(CommandsGB):
+class SlitCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='%s slit status' % controlPanel.actorName)
-        self.connectButton = CmdButton(controlPanel=controlPanel, label='CONNECT',
-                                       cmdStr='%s connect controller=slit' % controlPanel.actorName)
+        ControllerCmd.__init__(self, controlPanel)
         self.initButton = CmdButton(controlPanel=controlPanel, label='INIT',
                                     cmdStr='%s slit init' % controlPanel.actorName)
         self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s slit abort' % controlPanel.actorName)
@@ -129,8 +122,6 @@ class SlitCommands(CommandsGB):
         self.moveCmd = MoveCmd(controlPanel=controlPanel)
         self.setRepCmd = SetRepCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.connectButton, 0, 1)
         self.grid.addWidget(self.initButton, 1, 0)
         self.grid.addWidget(self.abortButton, 1, 1)
         self.grid.addLayout(self.coordBoxes, 2, 0, 2, 3)
