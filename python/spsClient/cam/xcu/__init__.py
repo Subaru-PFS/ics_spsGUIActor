@@ -13,8 +13,8 @@ from spsClient.widgets import Controllers, ValueMRow
 class XcuRow(ModuleRow):
     def __init__(self, camRow):
         self.camRow = camRow
-        ModuleRow.__init__(self, module=camRow.specModule,
-                           actorName='xcu_%s%i' % (camRow.arm, camRow.specModule.smId), actorLabel='XCU')
+        ModuleRow.__init__(self, module=camRow.module,
+                           actorName='xcu_%s%i' % (camRow.arm, camRow.module.smId), actorLabel='XCU')
 
         self.pressure = ValueMRow(self, 'pressure', 'Pressure(Torr)', 0, '{:g}', controllerName='PCM')
         self.controllers = Controllers(self)
@@ -26,6 +26,9 @@ class XcuRow(ModuleRow):
     def setOnline(self):
         ModuleRow.setOnline(self)
         self.camRow.setOnline()
+
+    def heartBeat(self):
+        self.camRow.heartBeat()
 
     def createDialog(self, tabWidget):
         self.controlDialog = XcuDialog(self, tabWidget)

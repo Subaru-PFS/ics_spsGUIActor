@@ -8,6 +8,7 @@ from spsClient.common import PushButton
 from spsClient.control import ControlDialog, ButtonBox
 from spsClient.logs import CmdLogArea
 from spsClient.modulerow import ActorGB
+from spsClient.modulerow import ModuleRow
 
 
 class CamStatus(ActorGB, QGroupBox):
@@ -37,10 +38,9 @@ class CamStatus(ActorGB, QGroupBox):
             self.setColor(*styles.colorWidget('online'))
 
 
-class CamRow(object):
-    def __init__(self, specModule, arm):
-        object.__init__(self)
-        self.specModule = specModule
+class CamRow(ModuleRow):
+    def __init__(self, module, arm):
+        self.module = module
         self.arm = arm
         self.label = '%sCU' % arm.upper()
         self.actorStatus = CamStatus(self)
@@ -49,11 +49,7 @@ class CamRow(object):
         self.ccd = CcdRow(self)
         self.xcu = XcuRow(self)
 
-        self.controlDialog = CamDialog(self)
-
-    @property
-    def mwindow(self):
-        return self.specModule.mwindow
+        self.createDialog(CamDialog(self))
 
     @property
     def displayed(self):
@@ -62,15 +58,12 @@ class CamRow(object):
     def setOnline(self):
         self.actorStatus.setStatus(sum([self.ccd.isOnline + self.xcu.isOnline]))
 
-    def showDetails(self):
-        self.controlDialog.setVisible(True)
-
 
 class CamDialog(ControlDialog):
     def __init__(self, camRow):
         self.moduleRow = camRow
         QDialog.__init__(self, parent=camRow.mwindow.spsClient)
-        self.setWindowTitle('%s %i' % (camRow.label, camRow.specModule.smId))
+        self.setWindowTitle('%s %i' % (camRow.label, camRow.module.smId))
 
         self.vbox = QVBoxLayout()
         self.vbox.setSizeConstraint(QLayout.SetMinimumSize)

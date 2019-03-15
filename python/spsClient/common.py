@@ -1,6 +1,8 @@
 __author__ = 'alefur'
 import os
+
 import spsClient
+
 imgPath = os.path.abspath(os.path.join(os.path.dirname(spsClient.__file__), '../..', 'img'))
 import spsClient.styles as styles
 from PyQt5.QtGui import QPixmap, QIcon
@@ -39,6 +41,10 @@ class CheckBox(QCheckBox):
 
 class Icon(QIcon):
     def __init__(self, filename):
-        pix = QPixmap()
-        pix.load(os.path.join(imgPath, filename))
-        QIcon.__init__(self, pix)
+        QIcon.__init__(self, Pixmap(filename))
+
+
+class Pixmap(QPixmap):
+    def __init__(self, filename):
+        QPixmap.__init__(self)
+        self.load(os.path.join(imgPath, filename))

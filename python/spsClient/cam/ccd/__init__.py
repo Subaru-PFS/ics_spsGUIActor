@@ -1,6 +1,6 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QProgressBar, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QProgressBar
 from spsClient.cam.ccd.ccd import CcdPanel
 from spsClient.cam.ccd.fee import FeePanel
 from spsClient.control import ControlDialog
@@ -44,6 +44,7 @@ class CcdState(ValueMRow):
         if txt == 'READING':
             self.value.hide()
             self.readRows.show()
+            self.setMaximumSize(self.sizeHint())
         else:
             self.value.show()
             self.readRows.resetValue()
@@ -54,8 +55,8 @@ class CcdState(ValueMRow):
 class CcdRow(ModuleRow):
     def __init__(self, camRow):
         self.camRow = camRow
-        ModuleRow.__init__(self, module=camRow.specModule,
-                           actorName='ccd_%s%i' % (camRow.arm, camRow.specModule.smId), actorLabel='CCD')
+        ModuleRow.__init__(self, module=camRow.module,
+                           actorName='ccd_%s%i' % (camRow.arm, camRow.module.smId), actorLabel='CCD')
 
         self.substate = CcdState(self)
         self.temperature = ValueMRow(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', controllerName='fee')
@@ -69,6 +70,9 @@ class CcdRow(ModuleRow):
     def setOnline(self):
         ModuleRow.setOnline(self)
         self.camRow.setOnline()
+
+    def heartBeat(self):
+        self.camRow.heartBeat()
 
     def createDialog(self, tabWidget):
         self.controlDialog = CcdDialog(self, tabWidget)

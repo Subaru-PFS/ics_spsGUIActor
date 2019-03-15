@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 
 from spsClient.control import ControllerPanel, ControllerCmd
-from spsClient.widgets import ValueGB, CmdButton, SwitchGB, SwitchButton
+from spsClient.widgets import ValueGB, SwitchGB, SwitchButton
 
 
 class MonoQthPanel(ControllerPanel):

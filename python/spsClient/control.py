@@ -3,7 +3,8 @@ from functools import partial
 
 import spsClient.styles as styles
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, QTabWidget, QLayout, QHBoxLayout, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, QTabWidget, QLayout, QHBoxLayout, QSpacerItem, \
+    QSizePolicy
 from spsClient.common import PushButton, Icon
 from spsClient.logs import CmdLogArea, RawLogArea
 from spsClient.widgets import CmdButton

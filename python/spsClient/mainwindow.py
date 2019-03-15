@@ -1,6 +1,6 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QWidget, QLayout, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from spsClient.module import Specmodule, Aitmodule
 
 

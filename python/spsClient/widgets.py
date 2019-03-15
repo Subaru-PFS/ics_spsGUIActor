@@ -61,6 +61,7 @@ class ValueGB(QGroupBox):
 
     def setText(self, txt):
         self.value.setText(txt)
+        self.moduleRow.heartBeat()
         self.customize()
 
     def customize(self):

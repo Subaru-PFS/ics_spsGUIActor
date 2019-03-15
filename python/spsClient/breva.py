@@ -119,7 +119,7 @@ class BrevaRow(ModuleRow):
         self.state = ValueMRow(self, 'hexaFSM', '', 0, '{:s}')
         self.substate = ValueMRow(self, 'hexaFSM', '', 1, '{:s}')
         self.motorState = MotorState(self)
-        self.error = ValueMRow(self, 'error', 'ERROR', 0, '{:g}',)
+        self.error = ValueMRow(self, 'error', 'ERROR', 0, '{:g}')
         self.fiberTargeted = ValueMRow(self, 'targetedFiber', 'Fiber', 0, '{:s}')
         self.createDialog(BrevaDialog(self))
 

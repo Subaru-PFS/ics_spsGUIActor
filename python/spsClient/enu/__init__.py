@@ -1,6 +1,6 @@
 __author__ = 'alefur'
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QProgressBar, QSizePolicy
+from PyQt5.QtWidgets import QProgressBar
 from spsClient.control import ControlDialog
 from spsClient.enu.bia import BiaPanel, BiaState
 from spsClient.enu.rexm import RexmPanel
@@ -26,7 +26,7 @@ class ElapsedTime(QProgressBar):
         except ValueError:
             return
 
-        self.setRange(0, exptime)
+        self.setRange(0, exptime * 100)
 
     def updateBar(self, keyvar):
         try:
@@ -34,7 +34,7 @@ class ElapsedTime(QProgressBar):
         except ValueError:
             val = 0
 
-        self.setValue(val)
+        self.setValue(val * 100)
 
     def resetValue(self):
         self.hide()
@@ -49,10 +49,12 @@ class Substate(ValueMRow):
         self.grid.addWidget(self.elapsedTime, 0, 0)
 
     def setText(self, txt):
+
         txt = txt.upper()
         if txt == 'EXPOSING':
             self.value.hide()
             self.elapsedTime.show()
+            self.setMaximumSize(self.sizeHint())
         else:
             self.value.show()
             self.elapsedTime.resetValue()

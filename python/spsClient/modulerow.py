@@ -2,11 +2,12 @@ __author__ = 'alefur'
 
 from functools import partial
 
-from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import  QGroupBox, QGridLayout
 import spsClient.styles as styles
-from spsClient.widgets import ValueGB
+from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QGroupBox, QGridLayout
 from spsClient.common import PushButton
+from spsClient.widgets import ValueGB
+
 
 class ModuleRow(object):
     def __init__(self, module, actorName, actorLabel, fontSize=styles.bigFont):
@@ -14,7 +15,6 @@ class ModuleRow(object):
         self.module = module
         self.actorName = actorName
         self.actorLabel = actorLabel
-
         self.actorStatus = ActorGB(self, fontSize=fontSize)
         self.actorStatus.button.clicked.connect(self.showDetails)
 
@@ -53,6 +53,9 @@ class ModuleRow(object):
 
         for widget in self.actorWidgets:
             widget.setEnabled(isOnline)
+
+    def heartBeat(self):
+        pass
 
     def createDialog(self, controlDialog):
         self.controlDialog = controlDialog

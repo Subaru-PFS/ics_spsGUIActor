@@ -1,6 +1,6 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QGridLayout, QGroupBox, QLayout
+from PyQt5.QtWidgets import QGridLayout, QGroupBox
 from spsClient.breva import BrevaRow
 from spsClient.cam import CamRow
 from spsClient.dcb import DcbRow

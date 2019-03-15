@@ -1,6 +1,6 @@
 __author__ = 'alefur'
-from spsClient.control import ControlPanel, CommandsGB, ControllerPanel, ControllerCmd
-from spsClient.widgets import ValueGB, CmdButton, MonitorCmd
+from spsClient.control import ControllerPanel, ControllerCmd
+from spsClient.widgets import ValueGB
 
 
 class FeePanel(ControllerPanel):

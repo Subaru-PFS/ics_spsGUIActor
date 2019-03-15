@@ -3,7 +3,7 @@ __author__ = 'alefur'
 import spsClient.styles as styles
 from spsClient.common import ComboBox
 from spsClient.control import ControllerPanel, ControllerCmd
-from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, SwitchGB, SwitchButton
+from spsClient.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, SwitchGB, SwitchButton
 
 
 class Error(ValueGB):
