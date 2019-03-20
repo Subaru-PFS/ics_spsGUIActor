@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 import spsClient.styles as styles
 from spsClient.control import ControllerPanel, ControllerCmd
-from spsClient.widgets import ValueGB, SwitchGB, CmdButton, CustomedCmd, SpinBoxGB, SwitchButton
+from spsClient.widgets import ValueGB, SwitchGB, CustomedCmd, SpinBoxGB, SwitchButton
 
 
 class AttenuatorValue(ValueGB):
@@ -33,16 +33,17 @@ class AttenuatorCmd(CustomedCmd):
         return cmdStr
 
 
-class SwitchHalogen(SwitchButton):
-    def __init__(self, controlPanel):
-        SwitchButton.__init__(self, controlPanel=controlPanel, key='halogen', label='Halogen', fmt='{:s}',
-                              cmdHead='dcb labsphere halogen')
+class SwitchArc(SwitchButton):
+    def __init__(self, controlPanel, key, label, fmt='{:g}'):
+        cmdStrOn = 'dcb arc on=%s' % key
+        cmdStrOff = 'dcb arc off=%s' % key
+        SwitchButton.__init__(self, controlPanel=controlPanel, key=key, label=label, fmt=fmt,
+                              cmdHead='', cmdStrOn=cmdStrOn, cmdStrOff=cmdStrOff)
 
     def setText(self, txt):
-        bool = True if txt in ['undef', 'on'] else False
-
-        self.buttonOn.setVisible(not bool)
-        self.buttonOff.setVisible(bool)
+        bool = True if txt.strip() in ['0', 'nan', 'off', 'undef'] else False
+        self.buttonOn.setVisible(bool)
+        self.buttonOff.setVisible(not bool)
 
 
 class LabspherePanel(ControllerPanel):
@@ -59,6 +60,13 @@ class LabspherePanel(ControllerPanel):
         self.photodiode = ValueGB(self.moduleRow, 'photodiode', 'photodiode', 0, '{:g}')
         self.attenuator = AttenuatorValue(self.moduleRow)
 
+        self.neon = SwitchGB(self.moduleRow, 'neon', 'Neon', 0, '{:g}')
+        self.xenon = SwitchGB(self.moduleRow, 'xenon', 'Xenon', 0, '{:g}')
+        self.hgar = SwitchGB(self.moduleRow, 'hgar', 'HgAr', 0, '{:g}')
+        self.krypton = SwitchGB(self.moduleRow, 'krypton', 'Krypton', 0, '{:g}')
+        self.argon = SwitchGB(self.moduleRow, 'argon', 'Argon', 0, '{:g}')
+        self.deuterium = SwitchGB(self.moduleRow, 'deuterium', 'Deuterium', 0, '{:g}')
+
     def setInLayout(self):
         self.grid.addWidget(self.mode, 0, 0)
         self.grid.addWidget(self.state, 0, 1)
@@ -68,14 +76,34 @@ class LabspherePanel(ControllerPanel):
         self.grid.addWidget(self.photodiode, 1, 1)
         self.grid.addWidget(self.attenuator, 1, 2)
 
+        self.grid.addWidget(self.neon, 2, 0)
+        self.grid.addWidget(self.xenon, 2, 1)
+        self.grid.addWidget(self.krypton, 2, 2)
+
+        self.grid.addWidget(self.hgar, 3, 0)
+        self.grid.addWidget(self.argon, 3, 1)
+        self.grid.addWidget(self.deuterium, 3, 2)
+
 
 class LabsphereCommands(ControllerCmd):
     def __init__(self, controlPanel):
         ControllerCmd.__init__(self, controlPanel)
-        self.initButton = CmdButton(controlPanel=controlPanel, label='INIT', cmdStr='dcb labsphere init')
         self.attenuatorCmd = AttenuatorCmd(controlPanel=controlPanel)
-        self.switchHalogen = SwitchHalogen(controlPanel=controlPanel)
+        self.switchHalogen = SwitchArc(controlPanel=controlPanel, key='halogen', label='Halogen', fmt='{:s}')
+        self.switchNeon = SwitchArc(controlPanel=controlPanel, key='neon', label='Neon')
+        self.switchXenon = SwitchArc(controlPanel=controlPanel, key='xenon', label='Xenon')
+        self.switchHgar = SwitchArc(controlPanel=controlPanel, key='hgar', label='HgAr')
+        self.switchKrypton = SwitchArc(controlPanel=controlPanel, key='krypton', label='Krypton')
+        self.switchArgon = SwitchArc(controlPanel=controlPanel, key='argon', label='Argon')
+        self.switchDeuterium = SwitchArc(controlPanel=controlPanel, key='deuterium', label='Deuterium')
 
-        self.grid.addWidget(self.initButton, 1, 0)
-        self.grid.addLayout(self.attenuatorCmd, 2, 0, 1, 2)
-        self.grid.addWidget(self.switchHalogen, 3, 0)
+        self.grid.addLayout(self.attenuatorCmd, 1, 0, 1, 2)
+        self.grid.addWidget(self.switchHalogen, 2, 0)
+
+        self.grid.addWidget(self.switchNeon, 3, 0)
+        self.grid.addWidget(self.switchXenon, 3, 1)
+        self.grid.addWidget(self.switchHgar, 3, 2)
+
+        self.grid.addWidget(self.switchKrypton, 4, 0)
+        self.grid.addWidget(self.switchArgon, 4, 1)
+        self.grid.addWidget(self.switchDeuterium, 4, 2)

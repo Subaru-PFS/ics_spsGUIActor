@@ -69,7 +69,7 @@ class DcbRow(ModuleRow):
 
         self.state = ValueMRow(self, 'metaFSM', '', 0, '{:s}')
         self.substate = ValueMRow(self, 'metaFSM', '', 1, '{:s}')
-        self.labsphere = EnumMRow(self, 'pow_labsphere', 'Labsphere', 0, '{:s}', controllerName='aten')
+        self.labsphere = SwitchMRow(self, 'pow_labsphere', 'Labsphere', 0, '{:g}', controllerName='aten')
 
         self.neon = SwitchMRow(self, 'neon', 'Neon', 0, '{:g}', controllerName='aten')
         self.xenon = SwitchMRow(self, 'xenon', 'Xenon', 0, '{:g}', controllerName='aten')
