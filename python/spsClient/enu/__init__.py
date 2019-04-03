@@ -6,6 +6,8 @@ from spsClient.enu.bia import BiaPanel, BiaState
 from spsClient.enu.rexm import RexmPanel
 from spsClient.enu.shutters import ShuttersPanel
 from spsClient.enu.slit import SlitPanel
+from spsClient.enu.pdu import PduPanel
+from spsClient.enu.temps import TempsPanel
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueMRow, Controllers
 
@@ -92,8 +94,12 @@ class EnuDialog(ControlDialog):
         self.shuttersPanel = ShuttersPanel(self)
         self.biaPanel = BiaPanel(self)
         self.rexmPanel = RexmPanel(self)
+        self.tempsPanel = TempsPanel(self)
+        self.pduPanel = PduPanel(self)
 
         self.tabWidget.addTab(self.slitPanel, 'FCA')
         self.tabWidget.addTab(self.shuttersPanel, 'SHUTTERS')
         self.tabWidget.addTab(self.biaPanel, 'BIA')
         self.tabWidget.addTab(self.rexmPanel, 'RDA')
+        self.tabWidget.addTab(self.tempsPanel, 'TEMPS')
+        self.tabWidget.addTab(self.pduPanel, 'PDU')
