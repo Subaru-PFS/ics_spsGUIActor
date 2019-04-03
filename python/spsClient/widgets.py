@@ -80,17 +80,12 @@ class ValueGB(QGroupBox):
             self.setColor(*styles.colorWidget('offline'))
 
 
-class Coordinates(QGroupBox):
-    posName = ['X', 'Y', 'Z', 'U', 'V', 'W']
-
-    def __init__(self, moduleRow, key, title, fontSize=styles.smallFont):
+class ValuesRow(QGroupBox):
+    def __init__(self, widgets, title, fontSize=styles.smallFont):
         QGroupBox.__init__(self)
         self.grid = QGridLayout()
 
-        self.widgets = [ValueGB(moduleRow, key, pos, i, '{:.5f}', fontSize) for i, pos in
-                        enumerate(Coordinates.posName)]
-
-        for i, widget in enumerate(self.widgets):
+        for i, widget in enumerate(widgets):
             self.grid.addWidget(widget, 0, i)
 
         self.grid.setContentsMargins(1, 8, 1, 1)
@@ -104,6 +99,14 @@ class Coordinates(QGroupBox):
         QGroupBox.setEnabled(self, a0)
         for widget in [self.grid.itemAt(i).widget() for i in range(self.grid.count())]:
             widget.setEnabled(a0)
+
+
+class Coordinates(ValuesRow):
+    posName = ['X', 'Y', 'Z', 'U', 'V', 'W']
+
+    def __init__(self, moduleRow, key, title, fontSize=styles.smallFont):
+        widgets = [ValueGB(moduleRow, key, c, i, '{:.5f}', fontSize) for i, c in enumerate(Coordinates.posName)]
+        ValuesRow.__init__(self, widgets, title=title, fontSize=fontSize)
 
 
 class DoubleSpinBoxGB(QGroupBox):
