@@ -1,10 +1,9 @@
 __author__ = 'alefur'
 
 import spsClient.styles as styles
-from PyQt5.QtWidgets import QGroupBox, QGridLayout
 from spsClient.common import ComboBox
 from spsClient.control import ControllerPanel, ControllerCmd
-from spsClient.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, AbortButton
+from spsClient.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, AbortButton, ValuesRow
 
 
 class ShutterCmd(CustomedCmd):
@@ -46,30 +45,24 @@ class ExposeCmd(CustomedCmd):
         return cmdStr
 
 
-class Shutter(QGroupBox):
+class Coordinates(ValuesRow):
+    posName = ['X', 'Y', 'Z', 'U', 'V', 'W']
+
+    def __init__(self, moduleRow, key, title, fontSize=styles.smallFont):
+        widgets = [ValueGB(moduleRow, key, c, i, '{:.5f}', fontSize) for i, c in enumerate(Coordinates.posName)]
+        ValuesRow.__init__(self, widgets, title=title, fontSize=fontSize)
+
+
+class Shutter(ValuesRow):
     shutterName = {'shb': 'Blue Shutter', 'shr': 'Red Shutter'}
 
     def __init__(self, moduleRow, shId):
-        QGroupBox.__init__(self)
-        self.grid = QGridLayout()
-        self.setLayout(self.grid)
-        self.setTitle(self.shutterName[shId])
-        self.open = ValueGB(moduleRow, shId, 'open', 0, '{:d}')
-        self.close = ValueGB(moduleRow, shId, 'close', 1, '{:d}')
-        self.error = ValueGB(moduleRow, shId, 'error', 2, '{:d}')
+        widgets = [ValueGB(moduleRow, shId, 'open', 0, '{:d}'),
+                   ValueGB(moduleRow, shId, 'close', 1, '{:d}'),
+                   ValueGB(moduleRow, shId, 'error', 2, '{:d}')]
 
-        for j, widget in enumerate([self.open, self.close, self.error]):
-            self.grid.addWidget(widget, 0, j)
+        ValuesRow.__init__(self, widgets, title=self.shutterName[shId])
 
-        self.setStyleSheet(
-            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 1ex;} " % (
-                styles.smallFont) +
-            "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
-
-    def setEnabled(self, a0: bool):
-        QGroupBox.setEnabled(self, a0)
-        for widget in [self.grid.itemAt(i).widget() for i in range(self.grid.count())]:
-            widget.setEnabled(a0)
 
 
 class ShuttersPanel(ControllerPanel):

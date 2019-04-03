@@ -86,11 +86,13 @@ class BiaPanel(ControllerPanel):
         self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}')
 
-        self.bia = BiaState(self.moduleRow)
-
+        self.bia = SwitchGB(self.moduleRow, 'bia', 'BIA', 0, '{:s}')
         self.biaStrobe = SwitchGB(self.moduleRow, 'biaConfig', 'Strobe', 0, '{:d}')
         self.biaPeriod = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Period', 1, '{:d}')
         self.biaDuty = ValueGB(self.moduleRow, 'biaConfig', 'Bia-Duty', 2, '{:d}')
+
+        self.photores1 = ValueGB(self.moduleRow, 'photores', 'PhotoRes1', 0, '{:d}')
+        self.photores2 = ValueGB(self.moduleRow, 'photores', 'PhotoRes2', 1, '{:d}')
 
     def setInLayout(self):
         self.grid.addWidget(self.mode, 0, 0)
@@ -102,6 +104,9 @@ class BiaPanel(ControllerPanel):
 
         self.grid.addWidget(self.biaPeriod, 2, 0)
         self.grid.addWidget(self.biaDuty, 2, 1)
+
+        self.grid.addWidget(self.photores1, 3, 0)
+        self.grid.addWidget(self.photores2, 3, 1)
 
 
 class BiaCommands(ControllerCmd):

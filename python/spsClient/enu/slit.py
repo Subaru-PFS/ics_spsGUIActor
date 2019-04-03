@@ -1,9 +1,8 @@
 __author__ = 'alefur'
 from PyQt5.QtWidgets import QGridLayout
-from spsClient.common import ComboBox
+from spsClient.common import ComboBox, CheckBox
 from spsClient.control import ControllerPanel, ControllerCmd
-from spsClient.widgets import Coordinates, ValueGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, \
-    AbortButton
+from spsClient.widgets import Coordinates, ValueGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, AbortButton
 
 
 class CoordBoxes(QGridLayout):
@@ -19,6 +18,17 @@ class CoordBoxes(QGridLayout):
         for i, spinbox in enumerate(self.widgets):
             self.addWidget(spinbox, i // 3, i % 3)
 
+class InitCmd(CustomedCmd):
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='INIT')
+
+        self.skipHoming = CheckBox('skipHoming')
+        self.skipHoming.setChecked(False)
+        self.addWidget(self.skipHoming, 0, 1)
+
+    def buildCmd(self):
+        skipHoming = 'skipHoming' if self.skipHoming.isChecked() else ''
+        return '%s slit init %s' % (self.controlPanel.actorName, skipHoming)
 
 class MoveCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -90,7 +100,7 @@ class SlitPanel(ControllerPanel):
         self.mode = ValueGB(self.moduleRow, 'slitMode', 'Mode', 0, '{:s}')
         self.state = ValueGB(self.moduleRow, 'slitFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'slitFSM', '', 1, '{:s}')
-        self.info = ValueGB(self.moduleRow, 'hexaStatus', 'Info', 1, '{:s}')
+        self.info = ValueGB(self.moduleRow, 'hxpStatus', 'Info', 1, '{:s}')
         self.location = ValueGB(self.moduleRow, 'slitLocation', 'Location', 0, '{:s}')
 
         self.coordinates = Coordinates(self.moduleRow, 'slit', title='Position')
@@ -112,8 +122,7 @@ class SlitPanel(ControllerPanel):
 class SlitCommands(ControllerCmd):
     def __init__(self, controlPanel):
         ControllerCmd.__init__(self, controlPanel)
-        self.initButton = CmdButton(controlPanel=controlPanel, label='INIT',
-                                    cmdStr='%s slit init' % controlPanel.actorName)
+        self.initCmd = InitCmd(controlPanel=controlPanel)
         self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s slit abort' % controlPanel.actorName)
         self.goHomeButton = CmdButton(controlPanel=controlPanel, label='GO HOME',
                                       cmdStr='%s slit move home' % controlPanel.actorName)
@@ -122,9 +131,9 @@ class SlitCommands(ControllerCmd):
         self.moveCmd = MoveCmd(controlPanel=controlPanel)
         self.setRepCmd = SetRepCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.initButton, 1, 0)
-        self.grid.addWidget(self.abortButton, 1, 1)
+        self.grid.addLayout(self.initCmd, 1, 0, 1, 2)
         self.grid.addLayout(self.coordBoxes, 2, 0, 2, 3)
         self.grid.addLayout(self.moveCmd, 4, 0, 1, 2)
+        self.grid.addWidget(self.abortButton, 4, 2)
         self.grid.addLayout(self.setRepCmd, 5, 0, 1, 2)
         self.grid.addWidget(self.goHomeButton, 6, 0, 1, 1)

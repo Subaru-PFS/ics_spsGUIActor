@@ -1,13 +1,26 @@
 __author__ = 'alefur'
 
-from spsClient.common import ComboBox
+from spsClient.common import ComboBox, CheckBox
 from spsClient.control import ControllerPanel, ControllerCmd
-from spsClient.widgets import ValueGB, CmdButton, CustomedCmd, AbortButton
+from spsClient.widgets import ValueGB, CustomedCmd, AbortButton, DoubleSpinBoxGB
 
 
-class MoveCmd(CustomedCmd):
+class InitCmd(CustomedCmd):
     def __init__(self, controlPanel):
-        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MOVE')
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='INIT')
+
+        self.skipHoming = CheckBox('skipHoming')
+        self.skipHoming.setChecked(False)
+        self.addWidget(self.skipHoming, 0, 1)
+
+    def buildCmd(self):
+        skipHoming = 'skipHoming' if self.skipHoming.isChecked() else ''
+        return '%s rexm init %s' % (self.controlPanel.actorName, skipHoming)
+
+
+class GoCmd(CustomedCmd):
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='GOTO')
 
         self.combo = ComboBox()
         self.combo.addItems(['low', 'mid'])
@@ -16,6 +29,19 @@ class MoveCmd(CustomedCmd):
 
     def buildCmd(self):
         cmdStr = '%s rexm move %s ' % (self.controlPanel.actorName, self.combo.currentText())
+        return cmdStr
+
+
+class MoveCmd(CustomedCmd):
+    limits = (0, 420, 1)
+
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel, buttonLabel='MOVE')
+        self.distSpinbox = DoubleSpinBoxGB('Relative(mm)', *self.limits)
+        self.addWidget(self.distSpinbox, 0, 1)
+
+    def buildCmd(self):
+        cmdStr = '%s rexm move relative=%.1f' % (self.controlPanel.actorName, self.distSpinbox.getValue())
         return cmdStr
 
 
@@ -35,27 +61,34 @@ class RexmPanel(ControllerPanel):
         self.speed = ValueGB(self.moduleRow, 'rexmInfo', 'Speed', 2, '{:d}')
         self.steps = ValueGB(self.moduleRow, 'rexmInfo', 'Steps', 3, '{:d}')
 
+        self.usrs = ValueGB(self.moduleRow, 'rexmConfig', 'Step Resolution', 0, '{:d}')
+        self.pulseDivisor = ValueGB(self.moduleRow, 'rexmConfig', 'Pulse Divisor', 1, '{:d}')
+
     def setInLayout(self):
         self.grid.addWidget(self.mode, 0, 0)
         self.grid.addWidget(self.state, 0, 1)
         self.grid.addWidget(self.substate, 0, 2)
         self.grid.addWidget(self.position, 0, 3)
 
-        self.grid.addWidget(self.switchA, 1, 0)
-        self.grid.addWidget(self.switchB, 1, 1)
-        self.grid.addWidget(self.speed, 1, 2)
-        self.grid.addWidget(self.steps, 1, 3)
+        self.grid.addWidget(self.usrs, 1, 0)
+        self.grid.addWidget(self.pulseDivisor, 1, 1)
+
+        self.grid.addWidget(self.switchA, 2, 0)
+        self.grid.addWidget(self.switchB, 2, 1)
+        self.grid.addWidget(self.speed, 2, 2)
+        self.grid.addWidget(self.steps, 2, 3)
 
 
 class RexmCommands(ControllerCmd):
     def __init__(self, controlPanel):
         ControllerCmd.__init__(self, controlPanel)
-        self.initButton = CmdButton(controlPanel=controlPanel, label='INIT',
-                                    cmdStr='%s rexm init' % controlPanel.actorName)
+        self.initButton = InitCmd(controlPanel=controlPanel)
         self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s rexm abort' % controlPanel.actorName)
 
+        self.goCmd = GoCmd(controlPanel=controlPanel)
         self.moveCmd = MoveCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.initButton, 1, 0)
-        self.grid.addWidget(self.abortButton, 1, 1)
-        self.grid.addLayout(self.moveCmd, 2, 0, 1, 2)
+        self.grid.addLayout(self.initButton, 1, 0, 1, 2)
+        self.grid.addWidget(self.abortButton, 2, 2)
+        self.grid.addLayout(self.goCmd, 2, 0, 1, 2)
+        self.grid.addLayout(self.moveCmd, 3, 0, 1, 2)
