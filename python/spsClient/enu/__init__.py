@@ -8,6 +8,7 @@ from spsClient.enu.shutters import ShuttersPanel
 from spsClient.enu.slit import SlitPanel
 from spsClient.enu.pdu import PduPanel
 from spsClient.enu.temps import TempsPanel
+from spsClient.enu.iis import IisPanel
 from spsClient.modulerow import ModuleRow
 from spsClient.widgets import ValueMRow, Controllers
 
@@ -96,6 +97,7 @@ class EnuDialog(ControlDialog):
         self.rexmPanel = RexmPanel(self)
         self.tempsPanel = TempsPanel(self)
         self.pduPanel = PduPanel(self)
+        self.iisPanel = IisPanel(self)
 
         self.tabWidget.addTab(self.slitPanel, 'FCA')
         self.tabWidget.addTab(self.shuttersPanel, 'SHUTTERS')
@@ -103,3 +105,4 @@ class EnuDialog(ControlDialog):
         self.tabWidget.addTab(self.rexmPanel, 'RDA')
         self.tabWidget.addTab(self.tempsPanel, 'TEMPS')
         self.tabWidget.addTab(self.pduPanel, 'PDU')
+        self.tabWidget.addTab(self.iisPanel, 'IIS')
