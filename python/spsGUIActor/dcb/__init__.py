@@ -78,7 +78,7 @@ class DcbRow(ModuleRow):
         self.argon = SwitchMRow(self, 'argon', 'Argon', 0, '{:g}', controllerName='aten')
         self.deuterium = SwitchMRow(self, 'deuterium', 'Deuterium', 0, '{:g}', controllerName='aten')
 
-        self.halogen = SwitchMRow(self, 'halogen', 'Halogen', 0, '{:s}', controllerName='labsphere')
+        self.halogen = SwitchMRow(self, 'halogen', 'Halogen', 0, '{:g}', controllerName='labsphere')
         self.photodiode = ValueMRow(self, 'photodiode', 'photodiode', 0, '{:g}', controllerName='labsphere')
         self.attenuator = AttenuatorValue(self, fontSize=styles.bigFont)
 

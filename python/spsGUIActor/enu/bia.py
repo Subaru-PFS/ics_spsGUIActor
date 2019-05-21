@@ -63,7 +63,7 @@ class SwitchBia(SwitchButton):
 class BiaState(ValueGB):
     def __init__(self, moduleRow, fontSize=styles.smallFont):
         ValueGB.__init__(self, moduleRow, 'bia', 'BIA', 0, '{:s}', fontSize=fontSize)
-        self.controllerName = 'bsh'
+        self.controllerName = 'biasha'
 
     def customize(self):
         text = self.value.text()
@@ -78,13 +78,13 @@ class BiaState(ValueGB):
 
 class BiaPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'bsh')
+        ControllerPanel.__init__(self, controlDialog, 'biasha')
         self.addCommandSet(BiaCommands(self))
 
     def createWidgets(self):
-        self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}')
-        self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}')
-        self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}')
+        self.mode = ValueGB(self.moduleRow, 'biashaMode', 'Mode', 0, '{:s}')
+        self.state = ValueGB(self.moduleRow, 'biashaFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'biashaFSM', '', 1, '{:s}')
 
         self.bia = SwitchGB(self.moduleRow, 'bia', 'BIA', 0, '{:s}')
         self.biaStrobe = SwitchGB(self.moduleRow, 'biaConfig', 'Strobe', 0, '{:d}')
