@@ -56,7 +56,7 @@ class LabspherePanel(ControllerPanel):
         self.state = ValueGB(self.moduleRow, 'labsphereFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'labsphereFSM', '', 1, '{:s}')
 
-        self.halogen = SwitchGB(self.moduleRow, 'halogen', 'Halogen', 0, '{:s}')
+        self.halogen = SwitchGB(self.moduleRow, 'halogen', 'Halogen', 0, '{:g}')
         self.photodiode = ValueGB(self.moduleRow, 'photodiode', 'photodiode', 0, '{:g}')
         self.attenuator = AttenuatorValue(self.moduleRow)
 
@@ -89,7 +89,7 @@ class LabsphereCommands(ControllerCmd):
     def __init__(self, controlPanel):
         ControllerCmd.__init__(self, controlPanel)
         self.attenuatorCmd = AttenuatorCmd(controlPanel=controlPanel)
-        self.switchHalogen = SwitchArc(controlPanel=controlPanel, key='halogen', label='Halogen', fmt='{:s}')
+        self.switchHalogen = SwitchArc(controlPanel=controlPanel, key='halogen', label='Halogen')
         self.switchNeon = SwitchArc(controlPanel=controlPanel, key='neon', label='Neon')
         self.switchXenon = SwitchArc(controlPanel=controlPanel, key='xenon', label='Xenon')
         self.switchHgar = SwitchArc(controlPanel=controlPanel, key='hgar', label='HgAr')
