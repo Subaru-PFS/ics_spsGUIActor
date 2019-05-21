@@ -67,13 +67,13 @@ class Shutter(ValuesRow):
 
 class ShuttersPanel(ControllerPanel):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'bsh')
+        ControllerPanel.__init__(self, controlDialog, 'biasha')
         self.addCommandSet(ShuttersCommands(self))
 
     def createWidgets(self):
-        self.mode = ValueGB(self.moduleRow, 'bshMode', 'Mode', 0, '{:s}')
-        self.state = ValueGB(self.moduleRow, 'bshFSM', '', 0, '{:s}')
-        self.substate = ValueGB(self.moduleRow, 'bshFSM', '', 1, '{:s}')
+        self.mode = ValueGB(self.moduleRow, 'biashaMode', 'Mode', 0, '{:s}')
+        self.state = ValueGB(self.moduleRow, 'biashaFSM', '', 0, '{:s}')
+        self.substate = ValueGB(self.moduleRow, 'biashaFSM', '', 1, '{:s}')
 
         self.shutters = ValueGB(self.moduleRow, 'shutters', 'Shutters', 0, '{:s}')
         self.exptime = ValueGB(self.moduleRow, 'integratingTime', 'Exptime', 0, '{:.1f}')

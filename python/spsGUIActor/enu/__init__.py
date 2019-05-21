@@ -74,7 +74,7 @@ class EnuRow(ModuleRow):
 
         self.rexm = ValueMRow(self, 'rexm', 'Red Resolution', 0, '{:s}', controllerName='rexm')
         self.slit = ValueMRow(self, 'slitLocation', 'FCA_Position', 0, '{:s}', controllerName='slit')
-        self.shutters = ValueMRow(self, 'shutters', 'SHA_Position', 0, '{:s}', controllerName='bsh')
+        self.shutters = ValueMRow(self, 'shutters', 'SHA_Position', 0, '{:s}', controllerName='biasha')
         self.bia = BiaState(self, fontSize=styles.bigFont)
 
         self.elapsedTime = ElapsedTime(self)
