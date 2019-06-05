@@ -6,7 +6,7 @@ import spsGUIActor
 imgPath = os.path.abspath(os.path.join(os.path.dirname(spsGUIActor.__file__), '../..', 'img'))
 import spsGUIActor.styles as styles
 from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QComboBox, QCheckBox
+from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QComboBox, QCheckBox, QLineEdit
 
 
 class SpinBox(QSpinBox):
@@ -32,6 +32,10 @@ class ComboBox(QComboBox):
         QComboBox.__init__(self, *args, **kwargs)
         self.setStyleSheet("QComboBox {font: %dpt; }" % (styles.smallFont))
 
+class LineEdit(QLineEdit):
+    def __init__(self, *args, **kwargs):
+        QLineEdit.__init__(self, *args, **kwargs)
+        self.setStyleSheet("QLineEdit {font: %dpt; }" % (styles.smallFont))
 
 class CheckBox(QCheckBox):
     def __init__(self, *args, **kwargs):
