@@ -3,9 +3,11 @@ __author__ = 'alefur'
 from spsGUIActor.cam.xcu.cooler import CoolerPanel
 from spsGUIActor.cam.xcu.gatevalve import GVPanel
 from spsGUIActor.cam.xcu.gauge import GaugePanel
+from spsGUIActor.cam.xcu.heaters import HeatersPanel
 from spsGUIActor.cam.xcu.ionpump import IonpumpPanel
-from spsGUIActor.cam.xcu.pcm import PcmPanel
 from spsGUIActor.cam.xcu.motors import MotorsPanel
+from spsGUIActor.cam.xcu.pcm import PcmPanel
+from spsGUIActor.cam.xcu.temps import TempsPanel
 from spsGUIActor.cam.xcu.turbo import TurboPanel
 from spsGUIActor.control import ControlDialog
 from spsGUIActor.modulerow import ModuleRow
@@ -44,13 +46,17 @@ class XcuDialog(ControlDialog):
         self.topbar = self.createTopbar()
         self.topbar.insertWidget(0, self.moduleRow.actorStatus)
 
+        self.pcmPanel = PcmPanel(self)
+
         self.GVPanel = GVPanel(self)
         self.turboPanel = TurboPanel(self)
-        self.pcmPanel = PcmPanel(self)
-        self.gaugePanel = GaugePanel(self)
-        self.coolerPanel = CoolerPanel(self)
-        self.motorsPanel = MotorsPanel(self)
         self.ionpumpPanel = IonpumpPanel(self)
+        self.gaugePanel = GaugePanel(self)
+
+        self.coolerPanel = CoolerPanel(self)
+        self.tempsPanel = TempsPanel(self)
+        self.heatersPanel = HeatersPanel(self)
+        self.motorsPanel = MotorsPanel(self)
 
         for name, tab in self.virtualTabs.items():
             self.tabWidget.addTab(tab, name)
@@ -65,5 +71,6 @@ class XcuDialog(ControlDialog):
 
     @property
     def virtualTabs(self):
-        return dict(PCM=self.pcmPanel, Gatevalve=self.GVPanel, Turbo=self.turboPanel,  Ionpump=self.ionpumpPanel, Cooler=self.coolerPanel, Gauge=self.gaugePanel,
-                    Motors=self.motorsPanel,)
+        return dict(PCM=self.pcmPanel, Gatevalve=self.GVPanel, Turbo=self.turboPanel, Ionpump=self.ionpumpPanel,
+                    Gauge=self.gaugePanel, Cooler=self.coolerPanel, Temps=self.tempsPanel, Heaters=self.heatersPanel,
+                    Motors=self.motorsPanel)
