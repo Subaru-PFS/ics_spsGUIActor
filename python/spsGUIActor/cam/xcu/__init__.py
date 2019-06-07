@@ -4,6 +4,7 @@ from spsGUIActor.cam.xcu.cooler import CoolerPanel
 from spsGUIActor.cam.xcu.gatevalve import GVPanel
 from spsGUIActor.cam.xcu.gauge import GaugePanel
 from spsGUIActor.cam.xcu.ionpump import IonpumpPanel
+from spsGUIActor.cam.xcu.pcm import PcmPanel
 from spsGUIActor.cam.xcu.motors import MotorsPanel
 from spsGUIActor.cam.xcu.turbo import TurboPanel
 from spsGUIActor.control import ControlDialog
@@ -45,6 +46,7 @@ class XcuDialog(ControlDialog):
 
         self.GVPanel = GVPanel(self)
         self.turboPanel = TurboPanel(self)
+        self.pcmPanel = PcmPanel(self)
         self.gaugePanel = GaugePanel(self)
         self.coolerPanel = CoolerPanel(self)
         self.motorsPanel = MotorsPanel(self)
@@ -63,5 +65,5 @@ class XcuDialog(ControlDialog):
 
     @property
     def virtualTabs(self):
-        return dict(Gatevalve=self.GVPanel, Turbo=self.turboPanel, Cooler=self.coolerPanel, Gauge=self.gaugePanel,
-                    Motors=self.motorsPanel, Ionpump=self.ionpumpPanel)
+        return dict(PCM=self.pcmPanel, Gatevalve=self.GVPanel, Turbo=self.turboPanel,  Ionpump=self.ionpumpPanel, Cooler=self.coolerPanel, Gauge=self.gaugePanel,
+                    Motors=self.motorsPanel,)
