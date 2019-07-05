@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 import spsGUIActor.styles as styles
 from PyQt5.QtWidgets import QGroupBox, QGridLayout
-from spsGUIActor.common import ComboBox, CheckBox
+from spsGUIActor.common import ComboBox, CheckBox, LineEdit
 from spsGUIActor.control import CommandsGB, ControllerPanel
 from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, AbortButton
 
@@ -52,6 +52,44 @@ class HomeCmd(CustomedCmd):
 
         cmdStr = '%s motors home axes=%s' % (self.controlPanel.actorName, motor)
 
+        return cmdStr
+
+
+class ToSwitchCmd(CustomedCmd):
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='TO SWITCH')
+
+        self.comboMotors = ComboBox()
+        self.comboMotors.addItems(['a', 'b', 'c'])
+
+        self.comboSide = ComboBox()
+        self.comboSide.addItems(['home', 'far'])
+
+        self.comboCmd = ComboBox()
+        self.comboCmd.addItems(['set', 'clear'])
+
+        self.addWidget(self.comboMotors, 0, 1)
+        self.addWidget(self.comboSide, 0, 2)
+        self.addWidget(self.comboCmd, 0, 3)
+
+    def buildCmd(self):
+        cmdStr = '%s motors toSwitch %s %s %s' % (self.controlPanel.actorName,
+                                                  self.comboMotors.currentText(),
+                                                  self.comboSide.currentText(),
+                                                  self.comboCmd.currentText())
+
+        return cmdStr
+
+
+class RawCmd(CustomedCmd):
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='RAW')
+
+        self.rawCmd = LineEdit()
+        self.addWidget(self.rawCmd, 0, 1)
+
+    def buildCmd(self):
+        cmdStr = '%s motors raw=%s' % (self.controlPanel.actorName, self.rawCmd.text())
         return cmdStr
 
 
@@ -113,9 +151,14 @@ class MotorsCommands(CommandsGB):
 
         self.homeCmd = HomeCmd(controlPanel=controlPanel)
         self.moveCmd = MoveCmd(controlPanel=controlPanel)
+        self.toSwitchCmd = ToSwitchCmd(controlPanel=controlPanel)
+        self.rawCmd = RawCmd(controlPanel=controlPanel)
 
         self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addWidget(self.initButton, 1, 0)
         self.grid.addWidget(self.abortButton, 1, 1)
         self.grid.addLayout(self.homeCmd, 2, 0, 1, 2)
         self.grid.addLayout(self.moveCmd, 3, 0, 1, 5)
+        self.grid.addLayout(self.toSwitchCmd, 4, 0, 1, 5)
+        self.grid.addLayout(self.rawCmd, 5, 0, 1, 5)
+
