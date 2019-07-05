@@ -2,6 +2,7 @@ __author__ = 'alefur'
 
 from spsGUIActor.control import ControllerCmd, ControllerPanel
 from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd, SpinBoxGB
+from spsGUIActor.common import LineEdit
 
 
 class TempLoopCmd(CustomedCmd):
@@ -24,6 +25,17 @@ class PowerLoopCmd(CustomedCmd):
 
     def buildCmd(self):
         return '%s cooler power setpoint=%d' % (self.controlPanel.actorName, self.value.getValue())
+
+class RawCmd(CustomedCmd):
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='RAW')
+
+        self.rawCmd = LineEdit()
+        self.addWidget(self.rawCmd, 0, 1)
+
+    def buildCmd(self):
+        cmdStr = '%s cooler raw=%s' % (self.controlPanel.actorName, self.rawCmd.text())
+        return cmdStr
 
 
 class Status(ValueGB):
@@ -82,6 +94,9 @@ class CoolerCommands(ControllerCmd):
         self.coolerOff = CmdButton(controlPanel=controlPanel, label='COOLER OFF',
                                    cmdStr='%s cooler off' % controlPanel.actorName, safetyCheck=True)
 
+        self.rawCmd = RawCmd(controlPanel=controlPanel)
+
         self.grid.addLayout(self.tempLoop, 2, 0, 1, 2)
         self.grid.addLayout(self.powerLoop, 3, 0, 1, 2)
-        self.grid.addWidget(self.coolerOff, 4, 0, 1, 1)
+        self.grid.addWidget(self.coolerOff, 4, 0)
+        self.grid.addLayout(self.rawCmd, 5, 0, 1, 2)
