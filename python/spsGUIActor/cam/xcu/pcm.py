@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 from spsGUIActor.common import LineEdit, ComboBox
 from spsGUIActor.control import ControllerPanel, ControllerCmd
-from spsGUIActor.widgets import ValueGB, SwitchGB, ValuesRow, SwitchButton, CustomedCmd
+from spsGUIActor.widgets import ValueGB, SwitchGB, ValuesRow, SwitchButton, CustomedCmd,CmdButton
 
 
 class PcmButton(SwitchButton):
@@ -96,6 +96,7 @@ class MaskCmd(CustomedCmd):
     def showLineEdit(self):
         self.linedit.setVisible(self.comboCmd.currentText() == 'SET')
 
+
 class ThreshCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='THRESHOLD')
@@ -124,13 +125,17 @@ class ThreshCmd(CustomedCmd):
         self.linedit.setVisible(self.comboCmd.currentText() == 'SET')
 
 
-
 class PcmCommands(ControllerCmd):
     def __init__(self, controlPanel):
         ControllerCmd.__init__(self, controlPanel)
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
+                                      cmdStr='%s power status' % controlPanel.actorName)
+
         self.rawCmd = RawCmd(controlPanel)
         self.maskCmd = MaskCmd(controlPanel)
         self.getThresh = ThreshCmd(controlPanel)
+
+        self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addLayout(self.rawCmd, 1, 0, 1, 2)
         self.grid.addLayout(self.maskCmd, 2, 0, 1, 2)
         self.grid.addLayout(self.getThresh, 3, 0, 1, 2)

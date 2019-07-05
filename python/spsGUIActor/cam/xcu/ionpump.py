@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 import spsGUIActor.styles as styles
 from spsGUIActor.common import ComboBox, LineEdit
-from spsGUIActor.control import CommandsGB, ControllerPanel
+from spsGUIActor.control import CommandsGB, ControllerPanel,ControllerCmd
 from spsGUIActor.widgets import SwitchGB, ValuesRow, SwitchButton, ValueGB, CmdButton, CustomedCmd, InnerButton
 
 
@@ -80,20 +80,17 @@ class GetRawCmd(CustomedCmd):
                                             self.rawCmd.text())
         return cmdStr
 
-class IonpumpCommands(CommandsGB):
+class IonpumpCommands(ControllerCmd):
     def __init__(self, controlPanel):
-        CommandsGB.__init__(self, controlPanel)
-        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
-                                      cmdStr='%s ionpump status' % controlPanel.actorName)
+        ControllerCmd.__init__(self, controlPanel)
 
         self.pumpCmd = PumpCmd(controlPanel)
         self.getRawCmd = GetRawCmd(controlPanel)
         self.setRawCmd = SetRawCmd(controlPanel)
 
-        self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addLayout(self.pumpCmd, 1, 0)
-        self.grid.addLayout(self.getRawCmd, 2, 0)
-        self.grid.addLayout(self.setRawCmd, 3, 0)
+        self.grid.addLayout(self.pumpCmd, 1, 0, 1, 2)
+        self.grid.addLayout(self.getRawCmd, 2, 0, 1, 2)
+        self.grid.addLayout(self.setRawCmd, 3, 0, 1, 2)
 
 
 #
