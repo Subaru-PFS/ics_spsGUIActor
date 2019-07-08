@@ -1,8 +1,9 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QWidget
-from spsGUIActor.module import Specmodule, Aitmodule
 from spsGUIActor.common import VBoxLayout
+from spsGUIActor.module import Specmodule, Aitmodule
+
 
 class SpsWidget(QWidget):
     def __init__(self, spsGUIActor):

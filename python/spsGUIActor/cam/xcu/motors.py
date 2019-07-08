@@ -5,6 +5,7 @@ from spsGUIActor.common import ComboBox, CheckBox, LineEdit
 from spsGUIActor.control import CommandsGB, ControllerPanel
 from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, AbortButton
 
+
 class MoveCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MOVE')
@@ -160,4 +161,3 @@ class MotorsCommands(CommandsGB):
         self.grid.addLayout(self.moveCmd, 3, 0, 1, 5)
         self.grid.addLayout(self.toSwitchCmd, 4, 0, 1, 5)
         self.grid.addLayout(self.rawCmd, 5, 0, 1, 5)
-

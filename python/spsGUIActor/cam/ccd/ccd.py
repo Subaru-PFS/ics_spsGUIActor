@@ -1,7 +1,8 @@
 __author__ = 'alefur'
-from spsGUIActor.control import CommandsGB, ControllerPanel
-from spsGUIActor.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, SpinBoxGB
 from spsGUIActor.cam import CamDevice
+from spsGUIActor.control import CommandsGB
+from spsGUIActor.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, SpinBoxGB
+
 
 class BiasCmd(CustomedCmd):
     def __init__(self, controlPanel):

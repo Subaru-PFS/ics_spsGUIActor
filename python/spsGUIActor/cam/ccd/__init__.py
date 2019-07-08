@@ -96,7 +96,6 @@ class CcdDialog(ControlDialog):
 
         self.tabWidget.addTab(ccdPanel, 'Ccd')
 
-
     @property
     def cmdBuffer(self):
         return self.moduleRow.camRow.controlDialog.cmdBuffer

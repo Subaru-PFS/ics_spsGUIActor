@@ -162,7 +162,6 @@ class ControlPanel(QGroupBox):
         self.controlDialog.tabWidget.setTabIcon(self.controlDialog.tabWidget.indexOf(self), icon)
 
     def setEnabled(self, a0):
-
         self.updateIcon(a0)
         for widget in self.allWidgets:
             widget.setEnabled(a0)

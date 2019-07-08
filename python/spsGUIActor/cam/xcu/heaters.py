@@ -1,7 +1,8 @@
 __author__ = 'alefur'
-from spsGUIActor.control import ControllerPanel, CommandsGB
-from spsGUIActor.widgets import SwitchGB, ValuesRow, ValueGB, CustomedCmd, CmdButton, DoubleSpinBoxGB, SwitchButton
 from spsGUIActor.cam import CamDevice
+from spsGUIActor.control import CommandsGB
+from spsGUIActor.widgets import SwitchGB, ValuesRow, ValueGB, CustomedCmd, CmdButton, DoubleSpinBoxGB, SwitchButton
+
 
 class HeaterState(ValuesRow):
     heaters = dict(ccd=0, spreader=1, asic=4, shield=5)

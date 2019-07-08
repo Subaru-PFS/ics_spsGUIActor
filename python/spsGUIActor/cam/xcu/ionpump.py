@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 from spsGUIActor.cam import CamDevice
 from spsGUIActor.common import ComboBox, LineEdit
-from spsGUIActor.control import ControllerPanel, ControllerCmd
+from spsGUIActor.control import ControllerCmd
 from spsGUIActor.widgets import SwitchGB, ValuesRow, ValueGB, CustomedCmd
 
 

@@ -1,10 +1,11 @@
 __author__ = 'alefur'
 from functools import partial
 
-from spsGUIActor.common import CheckBox
-from spsGUIActor.control import ControllerPanel, ControllerCmd
-from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd
 from spsGUIActor.cam import CamDevice
+from spsGUIActor.common import CheckBox
+from spsGUIActor.control import ControllerCmd
+from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd
+
 
 class OpenCmd(CustomedCmd):
     def __init__(self, controlPanel):

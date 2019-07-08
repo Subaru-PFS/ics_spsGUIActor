@@ -1,9 +1,9 @@
 __author__ = 'alefur'
 
 from PyQt5.QtWidgets import QGroupBox
-from spsGUIActor.common import GridLayout
 from spsGUIActor.breva import BrevaRow
 from spsGUIActor.cam import CamRow
+from spsGUIActor.common import GridLayout
 from spsGUIActor.dcb import DcbRow
 from spsGUIActor.enu import EnuRow
 from spsGUIActor.sac import SacRow

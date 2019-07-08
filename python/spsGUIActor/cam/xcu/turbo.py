@@ -1,9 +1,10 @@
 __author__ = 'alefur'
 import spsGUIActor.styles as styles
-from spsGUIActor.control import ControllerPanel, ControllerCmd
-from spsGUIActor.widgets import ValueGB, SwitchButton, CustomedCmd
-from spsGUIActor.common import LineEdit
 from spsGUIActor.cam import CamDevice
+from spsGUIActor.common import LineEdit
+from spsGUIActor.control import ControllerCmd
+from spsGUIActor.widgets import ValueGB, SwitchButton, CustomedCmd
+
 
 class Status(ValueGB):
     def __init__(self, moduleRow):
@@ -33,6 +34,7 @@ class TurboSwitch(SwitchButton):
 
         self.buttonOn.setVisible(not bool)
         self.buttonOff.setVisible(bool)
+
 
 class RawCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -80,4 +82,3 @@ class TurboCommands(ControllerCmd):
         self.grid.addWidget(self.turboSwitch.buttonOn, 1, 0, 1, 2)
         self.grid.addWidget(self.turboSwitch.buttonOff, 1, 0, 1, 2)
         self.grid.addLayout(self.rawCmd, 2, 0, 1, 2)
-

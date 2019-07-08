@@ -1,10 +1,10 @@
 __author__ = 'alefur'
-from functools import partial
 
-from spsGUIActor.common import CheckBox, LineEdit
-from spsGUIActor.control import ControllerPanel, ControllerCmd
-from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd
 from spsGUIActor.cam import CamDevice
+from spsGUIActor.common import LineEdit
+from spsGUIActor.control import ControllerCmd
+from spsGUIActor.widgets import ValueGB, CustomedCmd
+
 
 class Status(ValueGB):
     def __init__(self, moduleRow):
@@ -14,6 +14,7 @@ class Status(ValueGB):
         ftext = [stat for stat in txt.split(',') if 'bit ' not in stat]
         self.value.setText(','.join(ftext))
         self.customize()
+
 
 class InterlockPanel(CamDevice):
     def __init__(self, controlDialog):
@@ -43,10 +44,8 @@ class RawCmd(CustomedCmd):
         return cmdStr
 
 
-
 class InterlockCommands(ControllerCmd):
     def __init__(self, controlPanel):
         ControllerCmd.__init__(self, controlPanel)
         self.rawCmd = RawCmd(controlPanel=controlPanel)
         self.grid.addLayout(self.rawCmd, 1, 0, 1, 2)
-

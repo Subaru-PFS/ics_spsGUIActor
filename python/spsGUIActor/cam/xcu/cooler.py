@@ -1,9 +1,10 @@
 __author__ = 'alefur'
 
-from spsGUIActor.control import ControllerCmd, ControllerPanel
-from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd, SpinBoxGB
-from spsGUIActor.common import LineEdit
 from spsGUIActor.cam import CamDevice
+from spsGUIActor.common import LineEdit
+from spsGUIActor.control import ControllerCmd
+from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd, SpinBoxGB
+
 
 class TempLoopCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -25,6 +26,7 @@ class PowerLoopCmd(CustomedCmd):
 
     def buildCmd(self):
         return '%s cooler power setpoint=%d' % (self.controlPanel.actorName, self.value.getValue())
+
 
 class RawCmd(CustomedCmd):
     def __init__(self, controlPanel):

@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 from spsGUIActor.common import LineEdit, ComboBox
 from spsGUIActor.control import ControllerPanel, ControllerCmd
-from spsGUIActor.widgets import ValueGB, SwitchGB, ValuesRow, SwitchButton, CustomedCmd,CmdButton
+from spsGUIActor.widgets import ValueGB, SwitchGB, ValuesRow, SwitchButton, CustomedCmd, CmdButton
 
 
 class PcmButton(SwitchButton):

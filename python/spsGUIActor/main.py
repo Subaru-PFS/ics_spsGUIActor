@@ -59,10 +59,10 @@ def main():
 
     try:
         ex = Spsgui(reactor,
-                       actor,
-                       geometry.width() * args.stretch,
-                       geometry.height() * args.stretch,
-                       args.name)
+                    actor,
+                    geometry.width() * args.stretch,
+                    geometry.height() * args.stretch,
+                    args.name)
     except:
         actor.disconnectActor()
         raise

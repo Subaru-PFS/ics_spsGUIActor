@@ -1,8 +1,9 @@
 __author__ = 'alefur'
-from spsGUIActor.common import LineEdit
-from spsGUIActor.control import ControllerPanel, ControllerCmd
-from spsGUIActor.widgets import ValueGB, CustomedCmd
 from spsGUIActor.cam import CamDevice
+from spsGUIActor.common import LineEdit
+from spsGUIActor.control import ControllerCmd
+from spsGUIActor.widgets import ValueGB, CustomedCmd
+
 
 class TempsPanel(CamDevice):
     visNames = ['Detector Box', 'Mangin', 'Spider', 'Thermal Spreader', 'Front Ring', '', '', '', '', '', 'Detector 1',
