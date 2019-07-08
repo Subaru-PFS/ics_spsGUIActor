@@ -3,16 +3,16 @@ from functools import partial
 
 import spsGUIActor.styles as styles
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, QTabWidget, QLayout, QHBoxLayout, QSpacerItem, \
-    QSizePolicy
-from spsGUIActor.common import PushButton, Icon
+from PyQt5.QtWidgets import QDialog, QGroupBox, QTabWidget, QLayout, QHBoxLayout, QSpacerItem, \
+    QSizePolicy, QWidget
+from spsGUIActor.common import PushButton, Icon, GridLayout, VBoxLayout
 from spsGUIActor.logs import CmdLogArea, RawLogArea
 from spsGUIActor.widgets import CmdButton
 
 
-class ButtonBox(QGridLayout):
+class ButtonBox(GridLayout):
     def __init__(self, controlDialog):
-        QGridLayout.__init__(self)
+        GridLayout.__init__(self)
         self.controlDialog = controlDialog
         self.apply = PushButton('Apply')
         self.apply.clicked.connect(controlDialog.sendCommands)
@@ -45,7 +45,7 @@ class ControlDialog(QDialog):
         title = moduleRow.actorLabel if not title else title
         QDialog.__init__(self, parent=moduleRow.mwindow.spsGUIActor)
         self.cmdBuffer = dict()
-        self.vbox = QVBoxLayout()
+        self.vbox = VBoxLayout()
 
         self.topbar = self.createTopbar()
         self.tabWidget = QTabWidget(self)
@@ -124,7 +124,7 @@ class ControlPanel(QGroupBox):
     def __init__(self, controlDialog):
         QGroupBox.__init__(self)
         self.controlDialog = controlDialog
-        self.grid = QGridLayout()
+        self.grid = GridLayout()
         self.grid.setSizeConstraint(QLayout.SetMinimumSize)
         self.setLayout(self.grid)
 
@@ -157,10 +157,13 @@ class ControlPanel(QGroupBox):
         self.spacer = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.MinimumExpanding)
         self.grid.addItem(self.spacer, self.grid.rowCount(), 0)
 
-    def setEnabled(self, a0):
+    def updateIcon(self, a0):
         icon = Icon('green.png') if a0 else Icon('orange.png')
         self.controlDialog.tabWidget.setTabIcon(self.controlDialog.tabWidget.indexOf(self), icon)
 
+    def setEnabled(self, a0):
+
+        self.updateIcon(a0)
         for widget in self.allWidgets:
             widget.setEnabled(a0)
 
@@ -169,7 +172,7 @@ class CommandsGB(QGroupBox):
     def __init__(self, controlPanel, fontSize=styles.smallFont):
         QGroupBox.__init__(self)
         self.controlPanel = controlPanel
-        self.grid = QGridLayout()
+        self.grid = GridLayout()
 
         self.setTitle('Commands')
         self.setLayout(self.grid)
@@ -221,3 +224,14 @@ class ControllerCmd(CommandsGB):
         self.grid.addWidget(self.statusButton, 0, 0)
         self.grid.addWidget(self.connectButton, 0, 1)
         self.grid.addWidget(self.disconnectButton, 0, 1)
+
+
+class MultiplePanel(QWidget):
+    def __init__(self, parent):
+        QWidget.__init__(self)
+        self.grid = GridLayout()
+
+        self.setLayout(self.grid)
+
+    def addWidget(self, *args, **kwargs):
+        return self.grid.addWidget(*args, **kwargs)

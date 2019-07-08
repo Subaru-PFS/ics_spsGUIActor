@@ -1,6 +1,7 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QGridLayout, QGroupBox
+from PyQt5.QtWidgets import QGroupBox
+from spsGUIActor.common import GridLayout
 from spsGUIActor.breva import BrevaRow
 from spsGUIActor.cam import CamRow
 from spsGUIActor.dcb import DcbRow
@@ -11,7 +12,7 @@ from spsGUIActor.sac import SacRow
 class Module(QGroupBox):
     def __init__(self, mwindow, title):
         QGroupBox.__init__(self)
-        self.grid = QGridLayout()
+        self.grid = GridLayout()
         self.setLayout(self.grid)
         self.setTitle(title)
         self.mwindow = mwindow

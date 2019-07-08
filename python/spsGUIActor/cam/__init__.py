@@ -3,8 +3,8 @@ __author__ = 'alefur'
 import os
 
 import spsGUIActor.styles as styles
-from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, QTabWidget, QLayout
-from spsGUIActor.common import PushButton, imgPath
+from PyQt5.QtWidgets import QDialog, QGroupBox, QGridLayout, QTabWidget, QLayout
+from spsGUIActor.common import PushButton, imgPath, VBoxLayout
 from spsGUIActor.control import ControlDialog, ButtonBox, ControllerPanel
 from spsGUIActor.logs import CmdLogArea
 from spsGUIActor.modulerow import ActorGB
@@ -87,7 +87,7 @@ class CamDialog(ControlDialog):
             "QDialog { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #%s, stop: 1 #efefef);}" %
             CamDialog.back[camRow.arm])
 
-        self.vbox = QVBoxLayout()
+        self.vbox = VBoxLayout()
         self.vbox.setSizeConstraint(QLayout.SetMinimumSize)
         self.tabWidget = QTabWidget(self)
         self.cmdBuffer = dict()

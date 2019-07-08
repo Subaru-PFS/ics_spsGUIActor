@@ -2,8 +2,8 @@ __author__ = 'alefur'
 from functools import partial
 
 import spsGUIActor.styles as styles
-from PyQt5.QtWidgets import QLabel, QGroupBox, QGridLayout, QMessageBox
-from spsGUIActor.common import PushButton, DoubleSpinBox, SpinBox
+from PyQt5.QtWidgets import QLabel, QGroupBox, QMessageBox
+from spsGUIActor.common import PushButton, DoubleSpinBox, SpinBox, GridLayout
 
 convertText = {'on': 'ON', 'off': 'OFF', 'nan': 'nan', 'undef': 'undef'}
 
@@ -18,7 +18,7 @@ class ValueGB(QGroupBox):
         QGroupBox.__init__(self)
         self.setTitle('%s' % self.title)
 
-        self.grid = QGridLayout()
+        self.grid = GridLayout()
         self.grid.setContentsMargins(*((fontSize - 1,) * 4))
         self.value = QLabel()
 
@@ -83,7 +83,7 @@ class ValueGB(QGroupBox):
 class ValuesRow(QGroupBox):
     def __init__(self, widgets, title, fontSize=styles.smallFont):
         QGroupBox.__init__(self)
-        self.grid = QGridLayout()
+        self.grid = GridLayout()
 
         for i, widget in enumerate(widgets):
             self.grid.addWidget(widget, 0, i)
@@ -114,7 +114,7 @@ class DoubleSpinBoxGB(QGroupBox):
         QGroupBox.__init__(self)
         self.setTitle('%s' % title)
 
-        self.grid = QGridLayout()
+        self.grid = GridLayout()
         self.value = DoubleSpinBox()
         self.value.setValue(0)
         self.value.setDecimals(decimals)
@@ -155,7 +155,7 @@ class SpinBoxGB(QGroupBox):
         QGroupBox.__init__(self)
         self.setTitle('%s' % title)
 
-        self.grid = QGridLayout()
+        self.grid = GridLayout()
         self.value = LockSpinBox()
         self.value.setValue(0)
         self.value.setRange(vmin, vmax)
@@ -292,9 +292,9 @@ class EnumGB(ValueGB):
         ValueGB.setText(self, txt=txt)
 
 
-class CustomedCmd(QGridLayout):
+class CustomedCmd(GridLayout):
     def __init__(self, controlPanel, buttonLabel, safetyCheck=False):
-        QGridLayout.__init__(self)
+        GridLayout.__init__(self)
         self.controlPanel = controlPanel
         self.button = InnerButton(self, label=buttonLabel, safetyCheck=safetyCheck)
         self.addWidget(self.button, 0, 0)
@@ -303,7 +303,7 @@ class CustomedCmd(QGridLayout):
         pass
 
     def setEnabled(self, a0: bool):
-        QGridLayout.setEnabled(self, a0)
+        GridLayout.setEnabled(self, a0)
         for button in [self.itemAt(i).widget() for i in range(self.count())]:
             button.setEnabled(a0)
 
