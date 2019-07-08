@@ -1,39 +1,35 @@
 __author__ = 'alefur'
-from spsGUIActor.common import LineEdit
-from spsGUIActor.control import CommandsGB, ControllerPanel
+from spsGUIActor.cam import CamDevice
+from spsGUIActor.common import LineEdit, ComboBox
+from spsGUIActor.control import CommandsGB
 from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd
 
 
-class SetRawCmd(CustomedCmd):
-    def __init__(self, controlPanel):
-        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SET RAW')
+class RawCmd(CustomedCmd):
+    cmdLogic = {0: 'raw', 1: 'getRaw', 2: 'setRaw'}
 
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='RAW')
+
+        self.comboCmd = ComboBox()
+        self.comboCmd.addItems(['', 'get', 'set'])
         self.rawCmd = LineEdit()
-        self.addWidget(self.rawCmd, 0, 1)
+
+        self.addWidget(self.comboCmd, 0, 1)
+        self.addWidget(self.rawCmd, 0, 2)
 
     def buildCmd(self):
-        cmdStr = '%s setRaw=%s' % (self.controlPanel.actorName,
-                                   self.rawCmd.text())
+        cmdStr = '%s gauge %s=%s' % (self.controlPanel.actorName,
+                                     self.cmdLogic[self.comboCmd.currentIndex()],
+                                     self.rawCmd.text())
         return cmdStr
 
 
-class GetRawCmd(CustomedCmd):
-    def __init__(self, controlPanel):
-        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='GET RAW')
-
-        self.rawCmd = LineEdit()
-        self.addWidget(self.rawCmd, 0, 1)
-
-    def buildCmd(self):
-        cmdStr = '%s getRaw=%s' % (self.controlPanel.actorName,
-                                   self.rawCmd.text())
-        return cmdStr
-
-
-class GaugePanel(ControllerPanel):
+class GaugePanel(CamDevice):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'PCM')
+        CamDevice.__init__(self, controlDialog, 'PCM', 'Ion Gauge')
         self.addCommandSet(GaugeCommands(self))
+        self.setMaximumWidth(390)
 
     def createWidgets(self):
         self.pressure = ValueGB(self.moduleRow, 'pressure', 'Pressure(Torr)', 0, '{:g}')
@@ -48,10 +44,7 @@ class GaugeCommands(CommandsGB):
         self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
                                       cmdStr='%s gauge status' % controlPanel.actorName)
 
-        self.getRawCmd = GetRawCmd(controlPanel)
-        self.setRawCmd = SetRawCmd(controlPanel)
+        self.rawCmd = RawCmd(controlPanel)
 
         self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addLayout(self.getRawCmd, 1, 0)
-        self.grid.addLayout(self.setRawCmd, 2, 0)
-
+        self.grid.addLayout(self.rawCmd, 1, 0)

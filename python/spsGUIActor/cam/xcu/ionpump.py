@@ -1,8 +1,8 @@
 __author__ = 'alefur'
-import spsGUIActor.styles as styles
+from spsGUIActor.cam import CamDevice
 from spsGUIActor.common import ComboBox, LineEdit
-from spsGUIActor.control import CommandsGB, ControllerPanel,ControllerCmd
-from spsGUIActor.widgets import SwitchGB, ValuesRow, SwitchButton, ValueGB, CmdButton, CustomedCmd, InnerButton
+from spsGUIActor.control import ControllerPanel, ControllerCmd
+from spsGUIActor.widgets import SwitchGB, ValuesRow, ValueGB, CustomedCmd
 
 
 class Ionpump(ValuesRow):
@@ -22,9 +22,9 @@ class Ionpump(ValuesRow):
             self.grid.addWidget(widget, 1, i)
 
 
-class IonpumpPanel(ControllerPanel):
+class IonpumpPanel(CamDevice):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'ionpump')
+        CamDevice.__init__(self, controlDialog, 'ionpump', 'Ion pumps')
         self.addCommandSet(IonpumpCommands(self))
 
     def createWidgets(self):
@@ -51,47 +51,40 @@ class PumpCmd(CustomedCmd):
 
     def buildCmd(self):
         cmdStr = '%s ionpump %s %s' % (self.controlPanel.actorName,
-                                        self.comboSwitch.currentText().lower(),
-                                        self.comboPump.currentText())
+                                       self.comboSwitch.currentText().lower(),
+                                       self.comboPump.currentText())
         return cmdStr
 
 
-class SetRawCmd(CustomedCmd):
-    def __init__(self, controlPanel):
-        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SET RAW')
+class RawCmd(CustomedCmd):
+    cmdLogic = {0: 'ionpump', 1: 'ionpumpRead', 2: 'ionpumpWrite'}
 
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='RAW')
+
+        self.comboCmd = ComboBox()
+        self.comboCmd.addItems(['', 'read', 'write'])
         self.rawCmd = LineEdit()
-        self.addWidget(self.rawCmd, 0, 1)
+
+        self.addWidget(self.comboCmd, 0, 1)
+        self.addWidget(self.rawCmd, 0, 2)
 
     def buildCmd(self):
-        cmdStr = '%s ionpumpWrite raw=%s' % (self.controlPanel.actorName,
-                                             self.rawCmd.text())
+        cmdStr = '%s %s raw=%s' % (self.controlPanel.actorName,
+                                   self.cmdLogic[self.comboCmd.currentIndex()],
+                                   self.rawCmd.text())
         return cmdStr
 
-class GetRawCmd(CustomedCmd):
-    def __init__(self, controlPanel):
-        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='GET RAW')
-
-        self.rawCmd = LineEdit()
-        self.addWidget(self.rawCmd, 0, 1)
-
-    def buildCmd(self):
-        cmdStr = '%s ionpumpRead raw=%s' % (self.controlPanel.actorName,
-                                            self.rawCmd.text())
-        return cmdStr
 
 class IonpumpCommands(ControllerCmd):
     def __init__(self, controlPanel):
         ControllerCmd.__init__(self, controlPanel)
 
         self.pumpCmd = PumpCmd(controlPanel)
-        self.getRawCmd = GetRawCmd(controlPanel)
-        self.setRawCmd = SetRawCmd(controlPanel)
+        self.rawCmd = RawCmd(controlPanel)
 
         self.grid.addLayout(self.pumpCmd, 1, 0, 1, 2)
-        self.grid.addLayout(self.getRawCmd, 2, 0, 1, 2)
-        self.grid.addLayout(self.setRawCmd, 3, 0, 1, 2)
-
+        self.grid.addLayout(self.rawCmd, 2, 0, 1, 2)
 
 #
 # class PumpSwitch(SwitchButton):
@@ -153,4 +146,3 @@ class IonpumpCommands(ControllerCmd):
 #     def buildCmd(self):
 #         state = 'on' if self.buttonStart.isVisible() else 'off'
 #         return '%s ionpump %s' % (self.controlPanel.actorName, state)
-

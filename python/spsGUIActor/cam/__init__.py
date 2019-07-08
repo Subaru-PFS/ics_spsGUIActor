@@ -1,14 +1,30 @@
 __author__ = 'alefur'
 
+import os
+
 import spsGUIActor.styles as styles
 from PyQt5.QtWidgets import QDialog, QGroupBox, QVBoxLayout, QGridLayout, QTabWidget, QLayout
-from spsGUIActor.cam.ccd import CcdRow
-from spsGUIActor.cam.xcu import XcuRow
-from spsGUIActor.common import PushButton
-from spsGUIActor.control import ControlDialog, ButtonBox
+from spsGUIActor.common import PushButton, imgPath
+from spsGUIActor.control import ControlDialog, ButtonBox, ControllerPanel
 from spsGUIActor.logs import CmdLogArea
 from spsGUIActor.modulerow import ActorGB
 from spsGUIActor.modulerow import ModuleRow
+
+
+class CamDevice(ControllerPanel):
+    def __init__(self, controlDialog, controllerName, title=None):
+        title = controllerName.capitalize() if title is None else title
+        ControllerPanel.__init__(self, controlDialog, controllerName)
+        self.setTitle(title)
+        self.setCheckable(True)
+
+    def updateIcon(self, a0):
+        filename = 'green.png' if a0 else 'orange.png'
+        self.setStyleSheet("QGroupBox::indicator:checked {image: url(%s);} " % os.path.join(imgPath, filename))
+
+
+from spsGUIActor.cam.ccd import CcdRow
+from spsGUIActor.cam.xcu import XcuRow
 
 
 class CamStatus(ActorGB, QGroupBox):
@@ -60,10 +76,16 @@ class CamRow(ModuleRow):
 
 
 class CamDialog(ControlDialog):
+    back = dict(b='8594ff', r='e6a2a2', n='f285ff')
+
     def __init__(self, camRow):
         self.moduleRow = camRow
         QDialog.__init__(self, parent=camRow.mwindow.spsGUIActor)
         self.setWindowTitle('%s %i' % (camRow.label, camRow.module.smId))
+
+        self.setStyleSheet(
+            "QDialog { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #%s, stop: 1 #efefef);}" %
+            CamDialog.back[camRow.arm])
 
         self.vbox = QVBoxLayout()
         self.vbox.setSizeConstraint(QLayout.SetMinimumSize)

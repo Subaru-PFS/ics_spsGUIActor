@@ -5,7 +5,6 @@ from spsGUIActor.common import ComboBox, CheckBox, LineEdit
 from spsGUIActor.control import CommandsGB, ControllerPanel
 from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, AbortButton
 
-
 class MoveCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='MOVE')

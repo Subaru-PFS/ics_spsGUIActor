@@ -4,7 +4,7 @@ from functools import partial
 from spsGUIActor.common import CheckBox, LineEdit
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd
-
+from spsGUIActor.cam import CamDevice
 
 class Status(ValueGB):
     def __init__(self, moduleRow):
@@ -12,12 +12,12 @@ class Status(ValueGB):
 
     def setText(self, txt):
         ftext = [stat for stat in txt.split(',') if 'bit ' not in stat]
-        self.value.setText('\n'.join(ftext))
+        self.value.setText(','.join(ftext))
         self.customize()
 
-class InterlockPanel(ControllerPanel):
+class InterlockPanel(CamDevice):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'interlock')
+        CamDevice.__init__(self, controlDialog, 'interlock')
         self.addCommandSet(InterlockCommands(self))
 
     def createWidgets(self):

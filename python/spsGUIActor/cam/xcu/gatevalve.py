@@ -4,7 +4,7 @@ from functools import partial
 from spsGUIActor.common import CheckBox
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd
-
+from spsGUIActor.cam import CamDevice
 
 class OpenCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -39,9 +39,9 @@ class OpenCmd(CustomedCmd):
         return '%s gatevalve open %s %s %s' % (self.controlPanel.actorName, atAtmosphere, underVacuum, dryRun)
 
 
-class GVPanel(ControllerPanel):
+class GVPanel(CamDevice):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'gatevalve')
+        CamDevice.__init__(self, controlDialog, 'gatevalve')
         self.addCommandSet(GVCommands(self))
 
     def createWidgets(self):

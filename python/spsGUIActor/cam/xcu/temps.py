@@ -2,9 +2,9 @@ __author__ = 'alefur'
 from spsGUIActor.common import LineEdit
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, CustomedCmd
+from spsGUIActor.cam import CamDevice
 
-
-class TempsPanel(ControllerPanel):
+class TempsPanel(CamDevice):
     visNames = ['Detector Box', 'Mangin', 'Spider', 'Thermal Spreader', 'Front Ring', '', '', '', '', '', 'Detector 1',
                 'Detector 2']
     nirNames = ['Mirror Cell 1', 'Mangin', 'Mirror Cell 2', 'SiC Spreader', 'Front Ring', 'Spreader Pan', '',
@@ -12,7 +12,7 @@ class TempsPanel(ControllerPanel):
     probeNames = dict(b=visNames, r=visNames, n=nirNames)
 
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'temps')
+        CamDevice.__init__(self, controlDialog, 'temps')
         self.addCommandSet(TempsCommands(self))
 
     def createWidgets(self):

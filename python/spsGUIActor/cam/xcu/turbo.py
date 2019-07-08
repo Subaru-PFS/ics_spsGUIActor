@@ -3,7 +3,7 @@ import spsGUIActor.styles as styles
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, SwitchButton, CustomedCmd
 from spsGUIActor.common import LineEdit
-
+from spsGUIActor.cam import CamDevice
 
 class Status(ValueGB):
     def __init__(self, moduleRow):
@@ -11,7 +11,7 @@ class Status(ValueGB):
 
     def setText(self, txt):
         ftext = [stat for stat in txt.split(',') if 'bit ' not in stat]
-        self.value.setText('\n'.join(ftext))
+        self.value.setText(','.join(ftext))
         self.customize()
 
 
@@ -46,9 +46,9 @@ class RawCmd(CustomedCmd):
         return cmdStr
 
 
-class TurboPanel(ControllerPanel):
+class TurboPanel(CamDevice):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'turbo')
+        CamDevice.__init__(self, controlDialog, 'turbo')
         self.addCommandSet(TurboCommands(self))
 
     def createWidgets(self):

@@ -10,7 +10,7 @@ from spsGUIActor.cam.xcu.motors import MotorsPanel
 from spsGUIActor.cam.xcu.pcm import PcmPanel
 from spsGUIActor.cam.xcu.temps import TempsPanel
 from spsGUIActor.cam.xcu.turbo import TurboPanel
-from spsGUIActor.control import ControlDialog
+from spsGUIActor.control import ControlDialog, MultiplePanel
 from spsGUIActor.modulerow import ModuleRow
 from spsGUIActor.widgets import Controllers, ValueMRow
 
@@ -60,8 +60,24 @@ class XcuDialog(ControlDialog):
         self.heatersPanel = HeatersPanel(self)
         self.motorsPanel = MotorsPanel(self)
 
-        for name, tab in self.virtualTabs.items():
-            self.tabWidget.addTab(tab, name)
+        vacuumPanel = MultiplePanel(self)
+        coolingPanel = MultiplePanel(self)
+
+        vacuumPanel.addWidget(self.GVPanel, 0, 0, 1, 3)
+        vacuumPanel.addWidget(self.interlockPanel, 1, 0, 1, 2)
+        vacuumPanel.addWidget(self.gaugePanel, 1, 2)
+        vacuumPanel.addWidget(self.turboPanel, 2, 0, 1, 3)
+        vacuumPanel.addWidget(self.ionpumpPanel, 3, 0, 1, 3)
+
+        coolingPanel.addWidget(self.coolerPanel, 0, 0, 1, 1)
+        coolingPanel.addWidget(self.tempsPanel, 1, 0, 1, 1)
+        coolingPanel.addWidget(self.heatersPanel, 2, 0, 1, 1)
+
+        self.tabWidget.addTab(self.pcmPanel, 'PCM')
+        self.tabWidget.addTab(self.motorsPanel, 'Motors')
+
+        self.tabWidget.addTab(vacuumPanel, 'Pumping / Vacuum')
+        self.tabWidget.addTab(coolingPanel, 'Cooling')
 
     @property
     def cmdBuffer(self):

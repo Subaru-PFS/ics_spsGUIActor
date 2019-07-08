@@ -3,7 +3,7 @@ __author__ = 'alefur'
 from spsGUIActor.control import ControllerCmd, ControllerPanel
 from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd, SpinBoxGB
 from spsGUIActor.common import LineEdit
-
+from spsGUIActor.cam import CamDevice
 
 class TempLoopCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -48,9 +48,9 @@ class Status(ValueGB):
         self.customize()
 
 
-class CoolerPanel(ControllerPanel):
+class CoolerPanel(CamDevice):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'cooler')
+        CamDevice.__init__(self, controlDialog, 'cooler')
         self.addCommandSet(CoolerCommands(self))
 
     def createWidgets(self):
