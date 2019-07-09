@@ -12,12 +12,9 @@ class PduButton(SwitchButton):
                               label=pduPort.powerName.capitalize(), ind=1, fmt='{:s}', cmdHead='', cmdStrOn=cmdStrOn,
                               cmdStrOff=cmdStrOff)
 
-        self.grid.setContentsMargins(1, 16, 1, 1)
-
     def setText(self, txt):
-        state = 1 if txt == 'on' else 0
-        self.buttonOn.setVisible(not state)
-        self.buttonOff.setVisible(state)
+        txt = 1 if txt=='ON' else 0
+        return SwitchButton.setText(self, txt=txt)
 
 
 class PduPort(ValuesRow):
@@ -33,7 +30,7 @@ class PduPort(ValuesRow):
 
 
 class PduPanel(ControllerPanel):
-    ports = dict(slit=2, temps=7, hgar=8)
+    ports = dict(slit=2, ctrl=5, pows=6, temps=7, hgar=8)
 
     def __init__(self, controlDialog):
         ControllerPanel.__init__(self, controlDialog, 'pdu')

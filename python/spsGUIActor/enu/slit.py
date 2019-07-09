@@ -1,13 +1,13 @@
 __author__ = 'alefur'
-from PyQt5.QtWidgets import QGridLayout
-from spsGUIActor.common import ComboBox, CheckBox
+
+from spsGUIActor.common import ComboBox, CheckBox, GridLayout
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import Coordinates, ValueGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, AbortButton
 
 
-class CoordBoxes(QGridLayout):
+class CoordBoxes(GridLayout):
     def __init__(self):
-        QGridLayout.__init__(self)
+        GridLayout.__init__(self)
         self.widgets = [DoubleSpinBoxGB('X', -10, 10, 5),
                         DoubleSpinBoxGB('Y', -10, 10, 5),
                         DoubleSpinBoxGB('Z', -10, 10, 5),
@@ -101,7 +101,7 @@ class SlitPanel(ControllerPanel):
         self.state = ValueGB(self.moduleRow, 'slitFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'slitFSM', '', 1, '{:s}')
         self.info = ValueGB(self.moduleRow, 'hxpStatus', 'Info', 1, '{:s}')
-        self.location = ValueGB(self.moduleRow, 'slitLocation', 'Location', 0, '{:s}')
+        self.position = ValueGB(self.moduleRow, 'slitPosition', 'Position', 0, '{:s}')
 
         self.coordinates = Coordinates(self.moduleRow, 'slit', title='Position')
         self.work = Coordinates(self.moduleRow, 'slitWork', title='Work')
@@ -111,7 +111,7 @@ class SlitPanel(ControllerPanel):
         self.grid.addWidget(self.mode, 0, 0)
         self.grid.addWidget(self.state, 0, 1)
         self.grid.addWidget(self.substate, 0, 2)
-        self.grid.addWidget(self.location, 0, 3)
+        self.grid.addWidget(self.position, 0, 3)
 
         self.grid.addWidget(self.info, 1, 0, 1, 6)
         self.grid.addWidget(self.coordinates, 2, 0, 1, 6)

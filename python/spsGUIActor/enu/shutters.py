@@ -25,7 +25,6 @@ class ShutterCmd(CustomedCmd):
                                         self.comboShut.currentText())
         return cmdStr
 
-
 class ExposeCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='EXPOSE')

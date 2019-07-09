@@ -36,7 +36,7 @@ class Slot(QGroupBox):
 
 
 class TempsPanel(ControllerPanel):
-    probesName1 = ['MOTOR_RDA',
+    probeNames1 = ['MOTOR_RDA',
                    'MOTOR_SHUTTER_B',
                    'MOTOR_SHUTTER_R',
                    'BIA_BOX_UPPER',
@@ -46,7 +46,7 @@ class TempsPanel(ControllerPanel):
                    'FIBER_UNIT_FIBER_FRAME_TOP',
                    'COLLIMATOR_FRAME_BENCH_LEVEL',
                    'COLLIMATOR_FRAME_TOP']
-    probesName2 = ['BENCH_LEFT_TOP',
+    probeNames2 = ['BENCH_LEFT_TOP',
                    'BENCH_LEFT_BOTTOM',
                    'BENCH_RIGHT_TOP',
                    'BENCH_RIGHT_BOTTOM',
@@ -71,8 +71,8 @@ class TempsPanel(ControllerPanel):
         self.slot1 = Slot(self.moduleRow, 1)
         self.slot2 = Slot(self.moduleRow, 2)
 
-        self.temps1 = [ValueGB(self.moduleRow, 'temps1', name, i, '{:.3f}') for i, name in enumerate(self.probesName1)]
-        self.temps2 = [ValueGB(self.moduleRow, 'temps2', name, i, '{:.3f}') for i, name in enumerate(self.probesName2)]
+        self.temps1 = [ValueGB(self.moduleRow, 'temps1', name, i, '{:.3f}') for i, name in enumerate(self.probeNames1)]
+        self.temps2 = [ValueGB(self.moduleRow, 'temps2', name, i, '{:.3f}') for i, name in enumerate(self.probeNames2)]
 
     def setInLayout(self):
         self.grid.addWidget(self.mode, 0, 0)
