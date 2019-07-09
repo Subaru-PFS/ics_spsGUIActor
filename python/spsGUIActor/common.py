@@ -75,3 +75,11 @@ class HBoxLayout(QHBoxLayout):
     def __init__(self, *args, **kwargs):
         QHBoxLayout.__init__(self, *args, **kwargs)
         self.setSpacing(spacing)
+
+
+class GBoxGrid(QGridLayout):
+    def __init__(self, *args, title='', **kwargs):
+        QGridLayout.__init__(self, *args, **kwargs)
+        upMargin = 1 if not title else 8
+        self.setContentsMargins(0, upMargin, 0, 0)
+        self.setSpacing(spacing)

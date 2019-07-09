@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 import spsGUIActor.styles as styles
-from PyQt5.QtWidgets import QGroupBox, QGridLayout
-from spsGUIActor.common import ComboBox, CheckBox, LineEdit
+from PyQt5.QtWidgets import QGroupBox
+from spsGUIActor.common import ComboBox, CheckBox, LineEdit, GBoxGrid
 from spsGUIActor.control import CommandsGB, ControllerPanel
 from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd, DoubleSpinBoxGB, AbortButton
 
@@ -98,9 +98,10 @@ class CcdMotor(QGroupBox):
 
     def __init__(self, moduleRow, motorId):
         QGroupBox.__init__(self)
-        self.grid = QGridLayout()
+        title = 'Motor %s' % self.motorNames[motorId]
+        self.grid = GBoxGrid(title=title)
         self.setLayout(self.grid)
-        self.setTitle('Motor %s' % self.motorNames[motorId])
+        self.setTitle(title)
         self.status = ValueGB(moduleRow, 'ccdMotor%i' % motorId, 'status', 0, '{:s}')
         self.homeSwitch = ValueGB(moduleRow, 'ccdMotor%i' % motorId, 'homeSwitch', 1, '{:d}')
         self.farSwitch = ValueGB(moduleRow, 'ccdMotor%i' % motorId, 'farSwitch', 2, '{:d}')
