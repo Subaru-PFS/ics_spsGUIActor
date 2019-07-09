@@ -1,8 +1,9 @@
 __author__ = 'alefur'
 from functools import partial
 
+from spsGUIActor.cam import CamDevice
 from spsGUIActor.common import CheckBox
-from spsGUIActor.control import ControllerPanel, ControllerCmd
+from spsGUIActor.control import ControllerCmd
 from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd
 
 
@@ -12,15 +13,18 @@ class OpenCmd(CustomedCmd):
 
         self.atAtmosphere = CheckBox('atAtmosphere')
         self.underVacuum = CheckBox('underVacuum')
+        self.dryRun = CheckBox('dryRun')
 
         self.atAtmosphere.setChecked(True)
         self.underVacuum.setChecked(False)
+        self.dryRun.setChecked(False)
 
         self.atAtmosphere.stateChanged.connect(partial(self.stateChanged, self.underVacuum))
         self.underVacuum.stateChanged.connect(partial(self.stateChanged, self.atAtmosphere))
 
         self.addWidget(self.atAtmosphere, 0, 1)
         self.addWidget(self.underVacuum, 0, 2)
+        self.addWidget(self.dryRun, 0, 3)
 
     def stateChanged(self, other, state):
         state = 2 if not state else 0
@@ -31,13 +35,14 @@ class OpenCmd(CustomedCmd):
     def buildCmd(self):
         atAtmosphere = 'atAtmosphere' if self.atAtmosphere.isChecked() else ''
         underVacuum = 'underVacuum' if self.underVacuum.isChecked() else ''
+        dryRun = 'dryRun' if self.dryRun.isChecked() else ''
 
-        return '%s gatevalve open %s %s' % (self.controlPanel.actorName, atAtmosphere, underVacuum)
+        return '%s gatevalve open %s %s %s' % (self.controlPanel.actorName, atAtmosphere, underVacuum, dryRun)
 
 
-class GVPanel(ControllerPanel):
+class GVPanel(CamDevice):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'gatevalve')
+        CamDevice.__init__(self, controlDialog, 'gatevalve')
         self.addCommandSet(GVCommands(self))
 
     def createWidgets(self):

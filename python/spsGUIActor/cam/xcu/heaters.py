@@ -1,5 +1,6 @@
 __author__ = 'alefur'
-from spsGUIActor.control import ControllerPanel, CommandsGB
+from spsGUIActor.cam import CamDevice
+from spsGUIActor.control import CommandsGB
 from spsGUIActor.widgets import SwitchGB, ValuesRow, ValueGB, CustomedCmd, CmdButton, DoubleSpinBoxGB, SwitchButton
 
 
@@ -14,13 +15,13 @@ class HeaterState(ValuesRow):
         ValuesRow.__init__(self, widgets, title=name.capitalize())
 
 
-class HeatersPanel(ControllerPanel):
+class HeatersPanel(CamDevice):
     visNames = ['ccd', 'spreader']
     nirNames = ['asic', 'shield']
     heaterNames = dict(b=visNames, r=visNames, n=nirNames)
 
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'temps')
+        CamDevice.__init__(self, controlDialog, 'temps', 'Heaters')
         self.addCommandSet(HeatersCommands(self))
 
     def createWidgets(self):

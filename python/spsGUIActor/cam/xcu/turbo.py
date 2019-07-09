@@ -1,7 +1,9 @@
 __author__ = 'alefur'
 import spsGUIActor.styles as styles
-from spsGUIActor.control import ControllerPanel, ControllerCmd
-from spsGUIActor.widgets import ValueGB, SwitchButton
+from spsGUIActor.cam import CamDevice
+from spsGUIActor.common import LineEdit
+from spsGUIActor.control import ControllerCmd
+from spsGUIActor.widgets import ValueGB, SwitchButton, CustomedCmd
 
 
 class Status(ValueGB):
@@ -10,7 +12,7 @@ class Status(ValueGB):
 
     def setText(self, txt):
         ftext = [stat for stat in txt.split(',') if 'bit ' not in stat]
-        self.value.setText('\n'.join(ftext))
+        self.value.setText(','.join(ftext))
         self.customize()
 
 
@@ -34,9 +36,21 @@ class TurboSwitch(SwitchButton):
         self.buttonOff.setVisible(bool)
 
 
-class TurboPanel(ControllerPanel):
+class RawCmd(CustomedCmd):
+    def __init__(self, controlPanel):
+        CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='RAW')
+
+        self.rawCmd = LineEdit()
+        self.addWidget(self.rawCmd, 0, 1)
+
+    def buildCmd(self):
+        cmdStr = '%s turbo raw=%s' % (self.controlPanel.actorName, self.rawCmd.text())
+        return cmdStr
+
+
+class TurboPanel(CamDevice):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'turbo')
+        CamDevice.__init__(self, controlDialog, 'turbo')
         self.addCommandSet(TurboCommands(self))
 
     def createWidgets(self):
@@ -63,6 +77,8 @@ class TurboCommands(ControllerCmd):
         ControllerCmd.__init__(self, controlPanel)
 
         self.turboSwitch = TurboSwitch(controlPanel=controlPanel)
+        self.rawCmd = RawCmd(controlPanel=controlPanel)
 
-        self.grid.addWidget(self.turboSwitch.buttonOn, 1, 0)
-        self.grid.addWidget(self.turboSwitch.buttonOff, 1, 0)
+        self.grid.addWidget(self.turboSwitch.buttonOn, 1, 0, 1, 2)
+        self.grid.addWidget(self.turboSwitch.buttonOff, 1, 0, 1, 2)
+        self.grid.addLayout(self.rawCmd, 2, 0, 1, 2)

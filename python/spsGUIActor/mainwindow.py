@@ -1,6 +1,7 @@
 __author__ = 'alefur'
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QWidget
+from spsGUIActor.common import VBoxLayout
 from spsGUIActor.module import Specmodule, Aitmodule
 
 
@@ -8,9 +9,9 @@ class SpsWidget(QWidget):
     def __init__(self, spsGUIActor):
         QWidget.__init__(self)
         self.spsGUIActor = spsGUIActor
-        self.mainLayout = QVBoxLayout()
+        self.mainLayout = VBoxLayout()
         self.mainLayout.addWidget(Aitmodule(self))
-        self.mainLayout.addWidget(Specmodule(self, smId=1))
+        self.mainLayout.addWidget(Specmodule(self, smId=1, ))
 
         self.setLayout(self.mainLayout)
 

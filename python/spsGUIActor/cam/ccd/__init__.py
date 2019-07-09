@@ -3,7 +3,7 @@ __author__ = 'alefur'
 from PyQt5.QtWidgets import QProgressBar
 from spsGUIActor.cam.ccd.ccd import CcdPanel
 from spsGUIActor.cam.ccd.fee import FeePanel
-from spsGUIActor.control import ControlDialog
+from spsGUIActor.control import ControlDialog, MultiplePanel
 from spsGUIActor.modulerow import ModuleRow
 from spsGUIActor.widgets import Controllers, ValueMRow
 
@@ -89,8 +89,12 @@ class CcdDialog(ControlDialog):
         self.feePanel = FeePanel(self)
         self.ccdPanel = CcdPanel(self)
 
-        for name, tab in self.virtualTabs.items():
-            self.tabWidget.addTab(tab, name)
+        ccdPanel = MultiplePanel(self)
+
+        ccdPanel.addWidget(self.ccdPanel, 0, 0)
+        ccdPanel.addWidget(self.feePanel, 1, 0)
+
+        self.tabWidget.addTab(ccdPanel, 'Ccd')
 
     @property
     def cmdBuffer(self):

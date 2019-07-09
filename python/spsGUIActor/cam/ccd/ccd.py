@@ -1,5 +1,6 @@
 __author__ = 'alefur'
-from spsGUIActor.control import CommandsGB, ControllerPanel
+from spsGUIActor.cam import CamDevice
+from spsGUIActor.control import CommandsGB
 from spsGUIActor.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, SpinBoxGB
 
 
@@ -46,9 +47,9 @@ class CcdState(ValueGB):
         ValueGB.setText(self, txt)
 
 
-class CcdPanel(ControllerPanel):
+class CcdPanel(CamDevice):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'ccd')
+        CamDevice.__init__(self, controlDialog, 'ccd')
         self.addCommandSet(CcdCommands(self))
 
     def createWidgets(self):

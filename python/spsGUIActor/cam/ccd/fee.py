@@ -1,11 +1,12 @@
 __author__ = 'alefur'
-from spsGUIActor.control import ControllerPanel, ControllerCmd
+from spsGUIActor.cam import CamDevice
+from spsGUIActor.control import ControllerCmd
 from spsGUIActor.widgets import ValueGB
 
 
-class FeePanel(ControllerPanel):
+class FeePanel(CamDevice):
     def __init__(self, controlDialog):
-        ControllerPanel.__init__(self, controlDialog, 'fee')
+        CamDevice.__init__(self, controlDialog, 'fee')
         self.addCommandSet(FeeCommands(self))
 
     def createWidgets(self):
