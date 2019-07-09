@@ -6,18 +6,16 @@ from spsGUIActor.widgets import ValueGB, SwitchGB, ValuesRow, SwitchButton, Cust
 
 class PcmButton(SwitchButton):
     def __init__(self, controlPanel, pcmPort):
+        force = 'force' if pcmPort.powerName == 'bee' else ''
         cmdStrOn = '%s power on %s' % (controlPanel.actorName, pcmPort.powerName)
-        cmdStrOff = '%s power off %s' % (controlPanel.actorName, pcmPort.powerName)
+        cmdStrOff = '%s power off %s %s' % (controlPanel.actorName, pcmPort.powerName, force)
+        safetyCheck = pcmPort.powerName == 'bee'
+
         SwitchButton.__init__(self, controlPanel=controlPanel, key=pcmPort.pcmPort,
-                              label=pcmPort.powerName.capitalize(), ind=1, fmt='{:s}', cmdHead='', cmdStrOn=cmdStrOn,
-                              cmdStrOff=cmdStrOff)
-
-        self.grid.setContentsMargins(1, 16, 1, 1)
-
-    def setText(self, txt):
-        state = 1 if txt == 'on' else 0
-        self.buttonOn.setVisible(not state)
-        self.buttonOff.setVisible(state)
+                              label=pcmPort.powerName.capitalize(), ind=1, fmt='{:s}', cmdHead='',
+                              cmdStrOn=cmdStrOn,
+                              cmdStrOff=cmdStrOff,
+                              safetyCheck=safetyCheck)
 
 
 class PcmPort(ValuesRow):
