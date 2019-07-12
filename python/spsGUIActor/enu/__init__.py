@@ -2,13 +2,13 @@ __author__ = 'alefur'
 import spsGUIActor.styles as styles
 from PyQt5.QtWidgets import QProgressBar
 from spsGUIActor.control import ControlDialog
-from spsGUIActor.enu.bia import BiaPanel, BiaState
+from spsGUIActor.enu.bia import BiaPanel
+from spsGUIActor.enu.iis import IisPanel
+from spsGUIActor.enu.pdu import PduPanel
 from spsGUIActor.enu.rexm import RexmPanel
 from spsGUIActor.enu.shutters import ShuttersPanel
 from spsGUIActor.enu.slit import SlitPanel
-from spsGUIActor.enu.pdu import PduPanel
 from spsGUIActor.enu.temps import TempsPanel
-from spsGUIActor.enu.iis import IisPanel
 from spsGUIActor.modulerow import ModuleRow
 from spsGUIActor.widgets import ValueMRow, Controllers
 
@@ -73,9 +73,9 @@ class EnuRow(ModuleRow):
         self.substate = Substate(self)
 
         self.rexm = ValueMRow(self, 'rexm', 'Red Resolution', 0, '{:s}', controllerName='rexm')
-        self.slit = ValueMRow(self, 'slitPosition', 'FCA_Position', 0, '{:s}', controllerName='slit')
-        self.shutters = ValueMRow(self, 'shutters', 'SHA_Position', 0, '{:s}', controllerName='biasha')
-        self.bia = BiaState(self, fontSize=styles.bigFont)
+        self.slit = ValueMRow(self, 'slitPosition', 'Slit', 0, '{:s}', controllerName='slit')
+        self.shutters = ValueMRow(self, 'shutters', 'Shutters', 0, '{:s}', controllerName='biasha')
+        self.bia = ValueMRow(self, 'bia', 'BIA', 0, '{:s}', controllerName='biasha')
 
         self.elapsedTime = ElapsedTime(self)
         self.controllers = Controllers(self)

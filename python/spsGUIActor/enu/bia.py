@@ -60,21 +60,6 @@ class SwitchBia(SwitchButton):
         self.buttonOff.setVisible(bool)
 
 
-class BiaState(ValueGB):
-    def __init__(self, moduleRow, fontSize=styles.smallFont):
-        ValueGB.__init__(self, moduleRow, 'bia', 'BIA', 0, '{:s}', fontSize=fontSize)
-        self.controllerName = 'biasha'
-
-    def customize(self):
-        text = self.value.text()
-        if text in ['off', 'on']:
-            colors = styles.colorWidget('default')
-        else:
-            colors = styles.colorWidget('warning')
-
-        self.setColor(*colors)
-        self.setEnabled(self.moduleRow.isOnline)
-
 
 class BiaPanel(ControllerPanel):
     def __init__(self, controlDialog):

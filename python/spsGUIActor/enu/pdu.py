@@ -13,7 +13,7 @@ class PduButton(SwitchButton):
                               cmdStrOff=cmdStrOff)
 
     def setText(self, txt):
-        txt = 1 if txt=='ON' else 0
+        txt = 1 if txt == 'ON' else 0
         return SwitchButton.setText(self, txt=txt)
 
 
