@@ -47,12 +47,12 @@ class GVPanel(CamDevice):
 
     def createWidgets(self):
         self.position = ValueGB(self.moduleRow, 'gatevalve', 'Position', 1, '{:s}')
-        self.controlState = ValueGB(self.moduleRow, 'gatevalve', 'controlState', 2, '{:s}')
+        self.requested = ValueGB(self.moduleRow, 'gatevalve', 'Requested', 2, '{:s}')
         self.samPOW = ValueGB(self.moduleRow, 'sampower', 'SAM POWER', 0, '{:g}')
 
     def setInLayout(self):
         self.grid.addWidget(self.position, 0, 0)
-        self.grid.addWidget(self.controlState, 0, 1)
+        self.grid.addWidget(self.requested, 0, 1)
         self.grid.addWidget(self.samPOW, 1, 0)
 
 

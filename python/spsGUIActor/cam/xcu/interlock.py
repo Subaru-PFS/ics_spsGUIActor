@@ -7,12 +7,15 @@ from spsGUIActor.widgets import ValueGB, CustomedCmd
 
 
 class Status(ValueGB):
+    maxNb = 3
     def __init__(self, moduleRow):
         ValueGB.__init__(self, moduleRow, 'interlock', 'Status', 1, '{:s}')
 
     def setText(self, txt):
         ftext = [stat for stat in txt.split(',') if 'bit ' not in stat]
-        self.value.setText(','.join(ftext))
+        chunks = [','.join(ftext[x:x + Status.maxNb]) for x in range(0, len(ftext), Status.maxNb)]
+
+        self.value.setText('\n'.join(chunks))
         self.customize()
 
 

@@ -48,6 +48,7 @@ class XcuDialog(ControlDialog):
         self.topbar.insertWidget(0, self.moduleRow.actorStatus)
 
         self.pcmPanel = PcmPanel(self)
+        self.motorsPanel = MotorsPanel(self)
 
         self.GVPanel = GVPanel(self)
         self.interlockPanel = InterlockPanel(self)
@@ -58,7 +59,6 @@ class XcuDialog(ControlDialog):
         self.coolerPanel = CoolerPanel(self)
         self.tempsPanel = TempsPanel(self)
         self.heatersPanel = HeatersPanel(self)
-        self.motorsPanel = MotorsPanel(self)
 
         vacuumPanel = MultiplePanel(self)
         coolingPanel = MultiplePanel(self)
@@ -85,10 +85,5 @@ class XcuDialog(ControlDialog):
 
     @property
     def pannels(self):
-        return list(self.virtualTabs.values())
-
-    @property
-    def virtualTabs(self):
-        return dict(PCM=self.pcmPanel, Gatevalve=self.GVPanel, Interlock=self.interlockPanel,
-                    Turbo=self.turboPanel, Ionpump=self.ionpumpPanel, Gauge=self.gaugePanel, Cooler=self.coolerPanel,
-                    Temps=self.tempsPanel, Heaters=self.heatersPanel, Motors=self.motorsPanel)
+        return [self.pcmPanel, self.motorsPanel, self.GVPanel, self.interlockPanel, self.turboPanel, self.ionpumpPanel,
+                self.gaugePanel, self.coolerPanel, self.tempsPanel, self.heatersPanel]

@@ -5,7 +5,7 @@ from spsGUIActor.widgets import SwitchGB, ValuesRow, ValueGB, CustomedCmd, CmdBu
 
 
 class HeaterState(ValuesRow):
-    heaters = dict(ccd=0, spreader=1, asic=4, shield=5)
+    heaters = dict(asic=0, shield=1, ccd=4, spreader=5)
 
     def __init__(self, moduleRow, name):
         heaterNb = self.heaters[name]
@@ -34,7 +34,7 @@ class HeatersPanel(CamDevice):
 
 
 class HPCmd(SwitchButton):
-    heaters = dict(ccd=0, spreader=1, asic=4, shield=5)
+    heaters = dict(asic=0, shield=1, ccd=4, spreader=5)
 
     def __init__(self, controlPanel, name):
         cmdStrOn = '%s HPheaters on %s' % (controlPanel.actorName, name)
@@ -53,7 +53,7 @@ class HeaterCmd(CustomedCmd):
         self.name = name
         CustomedCmd.__init__(self, controlPanel, buttonLabel='SET %s' % name.upper())
 
-        self.value = DoubleSpinBoxGB('Power(frac)', vmin=0, vmax=1, decimals=2)
+        self.value = DoubleSpinBoxGB('Power(percent)', vmin=0, vmax=100, decimals=2)
         self.addWidget(self.value, 0, 1)
 
     def buildCmd(self):

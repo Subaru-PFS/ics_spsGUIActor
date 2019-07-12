@@ -101,10 +101,5 @@ class CcdDialog(ControlDialog):
         return self.moduleRow.camRow.controlDialog.cmdBuffer
 
     @property
-    def virtualTabs(self):
-        return dict(Fee=self.feePanel,
-                    Ccd=self.ccdPanel)
-
-    @property
     def pannels(self):
-        return list(self.virtualTabs.values())
+        return [self.ccdPanel, self.feePanel]
