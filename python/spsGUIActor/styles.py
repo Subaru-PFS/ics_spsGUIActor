@@ -11,6 +11,8 @@ def colorHtml(r, g, b):
 def colormap(color, colorGrad=0.5):
     if color == 'specialblack':
         return '#dfdfdf', '000000'
+    colorGrad = 0.9 if color == 'window' else colorGrad
+
     color = namedColors[color]
     color = np.array([int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)])
     return colorHtml(*color), colorHtml(*(color * colorGrad))
@@ -165,13 +167,18 @@ namedColors = {'aliceblue': '#F0F8FF',
                'yellowgreen': '#9ACD32',
                'alf2': '#a1e9e9',
                'skyblue': '#6c8ed6',
-               'skyblue2': '#87CEEB', }
+               'skyblue2': '#87CEEB',
+               'window': '#fcf9f6'}
 
-state2color = {"default": ('green', 'white'),
+state2color = {"default": ('window', 'black'),
                "online": ('green', 'white'),
                "idle": ('green', 'white'),
                "on": ('green', 'white'),
+               "ok": ('green', 'white'),
                "off": ('alf2', 'white'),
+               "open": ('green', 'white'),
+               "close": ('alf2', 'white'),
+               "closed": ('alf2', 'white'),
                "operation": ('green', 'white'),
                "simulation": ('plum', 'white'),
 

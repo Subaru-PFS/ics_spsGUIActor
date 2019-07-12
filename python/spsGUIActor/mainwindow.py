@@ -12,7 +12,7 @@ class SpsWidget(QWidget):
         self.mainLayout = VBoxLayout()
         self.mainLayout.addWidget(Aitmodule(self))
         self.mainLayout.addWidget(Specmodule(self, smId=1, ))
-
+        self.mainLayout.addWidget(Specmodule(self, smId=2, enu=False, arms=['r']))
         self.setLayout(self.mainLayout)
 
     @property

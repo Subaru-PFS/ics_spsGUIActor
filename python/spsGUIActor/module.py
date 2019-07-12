@@ -46,16 +46,16 @@ class Aitmodule(Module):
 
 
 class Specmodule(Module):
-    def __init__(self, mwindow, smId, arms=False):
+    def __init__(self, mwindow, smId, enu=True, arms=False):
         Module.__init__(self, mwindow=mwindow, title='Spectrograph Module %i' % smId)
         arms = ['b', 'r'] if not arms else arms
 
         self.smId = smId
-        self.enu = EnuRow(self)
+        self.enu = [EnuRow(self)] if enu else []
         self.cams = [CamRow(self, arm=arm) for arm in arms]
         self.populateLayout()
         self.adjustSize()
 
     @property
     def rows(self):
-        return [self.enu] + self.cams
+        return self.enu + self.cams

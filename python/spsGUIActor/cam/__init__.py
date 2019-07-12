@@ -20,7 +20,7 @@ class CamDevice(ControllerPanel):
 
     def updateIcon(self, a0):
         filename = 'green.png' if a0 else 'orange.png'
-        self.setStyleSheet("CamDevice {font-size: 11pt; font-weight:4000;border: 2px solid #000000;border-radius: 20;;margin-top: 15px;}"
+        self.setStyleSheet("CamDevice {font-size: 10pt; font-weight:2000;border: 1px solid #000000;border-radius: 20;;margin-top: 10px;}"
                            "CamDevice::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 10px;}"
                            "CamDevice::indicator:checked {image: url(%s);} " % os.path.join(imgPath, filename))
 

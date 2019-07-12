@@ -8,6 +8,7 @@ from spsGUIActor.widgets import ValueGB, SwitchButton, CustomedCmd
 
 class Status(ValueGB):
     maxNb = 2
+
     def __init__(self, moduleRow):
         ValueGB.__init__(self, moduleRow, 'turboStatus', 'Status', 1, '{:s}')
 
@@ -17,6 +18,19 @@ class Status(ValueGB):
 
         self.value.setText('\n'.join(chunks))
         self.customize()
+
+
+class Speed(ValueGB):
+    def __init__(self, moduleRow):
+        ValueGB.__init__(self, moduleRow, 'turboSpeed', 'Speed(RPM)', 0, '{:g}')
+
+    def customize(self):
+
+        state = 'on' if float(self.value.text()) > 0 else 'off'
+        background, police = styles.colorWidget(state)
+
+        self.setColor(background=background, police=police)
+        self.setEnabled(self.moduleRow.isOnline)
 
 
 class TurboSwitch(SwitchButton):
@@ -57,7 +71,7 @@ class TurboPanel(CamDevice):
         self.addCommandSet(TurboCommands(self))
 
     def createWidgets(self):
-        self.speed = ValueGB(self.moduleRow, 'turboSpeed', 'Speed(RPM)', 0, '{:g}')
+        self.speed = Speed(self.moduleRow)
         self.status = Status(self.moduleRow)
         self.volt = ValueGB(self.moduleRow, 'turboVAW', 'Voltage(V)', 0, '{:g}')
         self.current = ValueGB(self.moduleRow, 'turboVAW', 'Current(A)', 1, '{:g}')
