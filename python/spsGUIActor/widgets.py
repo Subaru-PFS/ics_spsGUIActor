@@ -198,17 +198,17 @@ class CmdButton(PushButton):
     def getCommand(self):
         if self.isChecked():
             cmdStr = self.buildCmd()
-            if not self.accessGranted():
+            if not self.accessGranted(cmdStr=cmdStr):
                 return
 
             self.controlDialog.addCommand(button=self, cmdStr=cmdStr)
         else:
             self.controlDialog.clearCommand(button=self)
 
-    def accessGranted(self):
+    def accessGranted(self, cmdStr):
         granted = True
         if self.safetyCheck:
-            msg = 'Are you sure you want to send the following command ? \n\r\n %s' % self.cmdStr
+            msg = 'Are you sure you want to send the following command ? \n\r\n %s' % cmdStr
             if QMessageBox.critical(self, 'Warning', msg, QMessageBox.Ok, QMessageBox.Cancel) != QMessageBox.Ok:
                 self.setChecked(False)
                 granted = True
