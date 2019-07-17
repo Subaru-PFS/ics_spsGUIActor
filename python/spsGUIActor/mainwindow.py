@@ -6,18 +6,25 @@ from spsGUIActor.module import Specmodule, Aitmodule
 
 
 class SpsWidget(QWidget):
-    def __init__(self, spsGUIActor):
+    def __init__(self, spsGUI):
         QWidget.__init__(self)
-        self.spsGUIActor = spsGUIActor
+        self.spsGUI = spsGUI
         self.mainLayout = VBoxLayout()
         self.mainLayout.addWidget(Aitmodule(self))
-        self.mainLayout.addWidget(Specmodule(self, smId=1, ))
-        self.mainLayout.addWidget(Specmodule(self, smId=2, enu=False, arms=['r']))
+
+        for smId in range(1, 5):
+            if 'sm%d' % smId not in self.actor.config.sections():
+                continue
+
+            arms = [arm.strip() for arm in self.actor.config.get('sm%d' % smId, 'arms').split(',')]
+            enu = self.actor.config.getboolean('sm%d' % smId, 'enu')
+            self.mainLayout.addWidget(Specmodule(self, smId=smId, enu=enu, arms=arms))
+
         self.setLayout(self.mainLayout)
 
     @property
     def actor(self):
-        return self.spsGUIActor.actor
+        return self.spsGUI.actor
 
     def sendCommand(self, actor, cmdStr, callFunc):
         import opscore.actor.keyvar as keyvar

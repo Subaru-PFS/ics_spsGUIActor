@@ -20,9 +20,10 @@ class CamDevice(ControllerPanel):
 
     def updateIcon(self, a0):
         filename = 'green.png' if a0 else 'orange.png'
-        self.setStyleSheet("CamDevice {font-size: 10pt; font-weight:2000;border: 1px solid #000000;border-radius: 20;;margin-top: 10px;}"
-                           "CamDevice::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 10px;}"
-                           "CamDevice::indicator:checked {image: url(%s);} " % os.path.join(imgPath, filename))
+        self.setStyleSheet(
+            "CamDevice {font-size: 10pt; font-weight:2000;border: 1px solid #000000;border-radius: 20;;margin-top: 10px;}"
+            "CamDevice::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 10px;}"
+            "CamDevice::indicator:checked {image: url(%s);} " % os.path.join(imgPath, filename))
 
 
 from spsGUIActor.cam.ccd import CcdRow
@@ -78,16 +79,17 @@ class CamRow(ModuleRow):
 
 
 class CamDialog(ControlDialog):
-    back = dict(b='8594ff', r='e6a2a2', n='f285ff')
+    back = dict(b=['3a74bc', '0f2949'], r=['bd3946', '4a0f15'], n=['f285ff', 'f285ff'])
 
     def __init__(self, camRow):
         self.moduleRow = camRow
-        QDialog.__init__(self, parent=camRow.mwindow.spsGUIActor)
+        light, dark = CamDialog.back[camRow.arm]
+        QDialog.__init__(self)
         self.setWindowTitle('%s %i' % (camRow.label, camRow.module.smId))
 
         self.setStyleSheet(
-            "QDialog { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #%s, stop: 1 #efefef);}" %
-            CamDialog.back[camRow.arm])
+            "QDialog { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #%s, stop: 1 #%s);}" % (
+                light, dark))
 
         self.vbox = VBoxLayout()
         self.vbox.setSizeConstraint(QLayout.SetMinimumSize)

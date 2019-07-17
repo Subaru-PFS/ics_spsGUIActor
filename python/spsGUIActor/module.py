@@ -32,17 +32,23 @@ class Module(QGroupBox):
 class Aitmodule(Module):
     def __init__(self, mwindow):
         Module.__init__(self, mwindow=mwindow, title='AIT')
+        actors = mwindow.actor.config.get('ait', 'actors')
 
-        self.dcb = DcbRow(self)
-        self.sac = SacRow(self)
-        self.breva = BrevaRow(self)
+        if 'dcb' in actors:
+            dcb = DcbRow(self)
+            self.dcb = dcb.rows
+        else:
+            self.dcb = []
+
+        self.sac = [SacRow(self)] if 'sac' in actors else []
+        self.breva = [BrevaRow(self)] if 'breva' in actors else []
 
         self.populateLayout()
         self.adjustSize()
 
     @property
     def rows(self):
-        return [self.dcb.rowone, self.dcb.rowtwo, self.sac, self.breva]
+        return self.dcb + self.sac + self.breva
 
 
 class Specmodule(Module):

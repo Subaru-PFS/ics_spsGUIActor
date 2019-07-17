@@ -87,15 +87,14 @@ class DcbRow(ModuleRow):
         self.monoshutter = ValueMRow(self, 'monochromator', 'Mono-Shutter', 0, '{:s}', controllerName='mono')
         self.wavelength = ValueMRow(self, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}', controllerName='mono')
 
-        self.rowone = RowOne(self)
-        self.rowtwo = RowTwo(self)
+        self.rows = [RowOne(self),  RowTwo(self)]
 
         self.controllers = Controllers(self)
         self.createDialog(DcbDialog(self))
 
     @property
     def widgets(self):
-        return self.rowone.widgets + self.rowtwo.widgets
+        return sum([row.widgets for row in self.rows], [])
 
 
 class DcbDialog(ControlDialog):

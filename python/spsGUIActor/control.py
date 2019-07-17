@@ -43,7 +43,7 @@ class ControlDialog(QDialog):
     def __init__(self, moduleRow, title=False):
         self.moduleRow = moduleRow
         title = moduleRow.actorLabel if not title else title
-        QDialog.__init__(self, parent=moduleRow.mwindow.spsGUIActor)
+        QDialog.__init__(self)
         self.cmdBuffer = dict()
         self.vbox = VBoxLayout()
 

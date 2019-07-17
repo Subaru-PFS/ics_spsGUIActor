@@ -12,7 +12,7 @@ class MoveCmd(CustomedCmd):
 
         self.comboMotors = ComboBox()
         self.comboMotors.addItems(['piston', 'a', 'b', 'c'])
-        self.distance = DoubleSpinBoxGB('Dist', -300, 300, 3)
+        self.distance = DoubleSpinBoxGB('Dist', -320, 320, 3)
         self.microns = CheckBox('microns')
         self.abs = CheckBox('abs')
 
@@ -26,7 +26,7 @@ class MoveCmd(CustomedCmd):
 
     def buildCmd(self):
         microns = 'microns' if self.microns.isChecked() else ''
-        abs = 'abs' if self.microns.isChecked() else ''
+        abs = 'abs' if self.abs.isChecked() else ''
 
         cmdStr = '%s motors move %s=%.3f %s %s' % (self.controlPanel.actorName,
                                                    self.comboMotors.currentText(),
