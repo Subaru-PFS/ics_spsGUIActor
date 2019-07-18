@@ -32,11 +32,10 @@ class PcmPort(ValuesRow):
 
 class PcmPower(ValuesRow):
     def __init__(self, moduleRow):
-        widgets = [ValueGB(moduleRow, 'pcmPower', 'bus1 (V)', 0, '{:.3f}'),
-                   ValueGB(moduleRow, 'pcmPower', 'bus2 (V)', 1, '{:.3f}')]
+        widgets = [ValueGB(moduleRow, 'pcmPower1', '24V-UPS', 2, '{:.3f}'),
+                   ValueGB(moduleRow, 'pcmPower2', '24V-AUX', 2, '{:.3f}')]
 
         ValuesRow.__init__(self, widgets, title='Inputs')
-
 
 class PcmPanel(ControllerPanel):
     ports = dict(motors=1, gauge=2, cooler=3, temps=4, bee=5, fee=6, interlock=7, heaters=8)
