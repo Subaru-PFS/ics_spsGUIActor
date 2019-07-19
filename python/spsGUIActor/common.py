@@ -70,7 +70,6 @@ class VBoxLayout(QVBoxLayout):
         QVBoxLayout.__init__(self, *args, **kwargs)
         self.setSpacing(spacing)
 
-
 class HBoxLayout(QHBoxLayout):
     def __init__(self, *args, **kwargs):
         QHBoxLayout.__init__(self, *args, **kwargs)

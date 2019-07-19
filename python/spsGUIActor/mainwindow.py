@@ -16,7 +16,7 @@ class SpsWidget(QWidget):
             if 'sm%d' % smId not in self.actor.config.sections():
                 continue
 
-            arms = [arm.strip() for arm in self.actor.config.get('sm%d' % smId, 'arms').split(',')]
+            arms = [arm.strip() for arm in self.actor.config.get('sm%d' % smId, 'arms').split(',') if arm]
             enu = self.actor.config.getboolean('sm%d' % smId, 'enu')
             self.mainLayout.addWidget(Specmodule(self, smId=smId, enu=enu, arms=arms))
 

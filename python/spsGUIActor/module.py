@@ -52,9 +52,9 @@ class Aitmodule(Module):
 
 
 class Specmodule(Module):
-    def __init__(self, mwindow, smId, enu=True, arms=False):
+    def __init__(self, mwindow, smId, enu=True, arms=None):
         Module.__init__(self, mwindow=mwindow, title='Spectrograph Module %i' % smId)
-        arms = ['b', 'r'] if not arms else arms
+        arms = ['b', 'r'] if arms is None else arms
 
         self.smId = smId
         self.enu = [EnuRow(self)] if enu else []

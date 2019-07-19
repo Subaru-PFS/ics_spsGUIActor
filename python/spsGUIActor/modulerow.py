@@ -42,16 +42,10 @@ class ModuleRow(object):
     def widgets(self):
         return []
 
-    @property
-    def actorWidgets(self):
-        return self.widgets + self.controlDialog.widgets
-
     def setOnline(self, isOnline=None):
         isOnline = isOnline if isOnline is not None else self.isOnline
 
-        self.actorStatus.setOnline(isOnline=isOnline)
-
-        for widget in self.actorWidgets:
+        for widget in self.displayed + [self.controlDialog]:
             widget.setEnabled(isOnline)
 
     def heartBeat(self):
@@ -91,7 +85,7 @@ class ActorGB(ValueGB, QGroupBox):
     def newConnection(self, keyvar):
         self.moduleRow.setOnline()
 
-    def setOnline(self, isOnline):
+    def setEnabled(self, isOnline):
         self.setColor(*styles.colorWidget('online' if isOnline else 'offline'))
 
     def setColor(self, background, police='white'):

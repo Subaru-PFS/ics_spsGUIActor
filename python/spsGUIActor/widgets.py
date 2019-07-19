@@ -51,7 +51,7 @@ class ValueGB(QGroupBox):
         self.setStyleSheet(
             "QGroupBox {font-size: %ipt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " % (
                 self.fontSize - 1, bckColor) +
-            "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 1px;}")
+            "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 0px;}")
         return bckColor
 
     def setColor(self, background, police='white'):
