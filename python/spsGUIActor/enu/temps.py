@@ -4,6 +4,7 @@ import spsGUIActor.styles as styles
 from PyQt5.QtWidgets import QGroupBox, QGridLayout
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, CmdButton
+from spsGUIActor.enu import EnuDeviceCmd
 
 
 class Slot(QGroupBox):
@@ -85,14 +86,14 @@ class TempsPanel(ControllerPanel):
             self.grid.addWidget(value, 1 + i % 5, i // 5)
 
 
-class TempsCommands(ControllerCmd):
+class TempsCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
         ControllerCmd.__init__(self, controlPanel)
-        self.getError = CmdButton(controlPanel=controlPanel, label='GET ERROR',
+        self.getError = CmdButton(controlPanel=controlPanel, label='ERROR',
                                   cmdStr='%s temps error' % controlPanel.actorName)
-        self.getInfo = CmdButton(controlPanel=controlPanel, label='GET INFO',
+        self.getInfo = CmdButton(controlPanel=controlPanel, label='INFO',
                                  cmdStr='%s temps info' % controlPanel.actorName)
-        self.getResistance = CmdButton(controlPanel=controlPanel, label='GET RESISTANCES',
+        self.getResistance = CmdButton(controlPanel=controlPanel, label='RESISTANCES',
                                        cmdStr='%s temps resistance' % controlPanel.actorName)
 
         self.grid.addWidget(self.getError, 1, 0)

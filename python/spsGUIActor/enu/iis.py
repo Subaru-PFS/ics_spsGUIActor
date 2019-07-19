@@ -2,7 +2,7 @@ __author__ = 'alefur'
 
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, SwitchButton, SwitchGB
-
+from spsGUIActor.enu import EnuDeviceCmd
 
 class ArcButton(SwitchButton):
     def __init__(self, controlPanel, arc):
@@ -32,7 +32,7 @@ class IisPanel(ControllerPanel):
         self.grid.addWidget(self.hgar, 1, 0)
 
 
-class IisCommands(ControllerCmd):
+class IisCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
-        ControllerCmd.__init__(self, controlPanel)
+        EnuDeviceCmd.__init__(self, controlPanel)
         self.grid.addWidget(ArcButton(controlPanel, 'hgar'), 1, 0)

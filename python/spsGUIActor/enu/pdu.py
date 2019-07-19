@@ -2,6 +2,7 @@ __author__ = 'alefur'
 
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, SwitchGB, ValuesRow, SwitchButton
+from spsGUIActor.enu import EnuDeviceCmd
 
 
 class PduButton(SwitchButton):
@@ -52,8 +53,8 @@ class PduPanel(ControllerPanel):
             self.grid.addWidget(pduPort, 1 + i, 0, 1, 4)
 
 
-class PduCommands(ControllerCmd):
+class PduCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
-        ControllerCmd.__init__(self, controlPanel)
+        EnuDeviceCmd.__init__(self, controlPanel)
         for i, pduPort in enumerate(controlPanel.pduPorts):
             self.grid.addWidget(PduButton(controlPanel, pduPort), 1 + i, 0)

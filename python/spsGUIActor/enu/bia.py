@@ -4,7 +4,7 @@ import spsGUIActor.styles as styles
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.dcb.aten import SwitchButton
 from spsGUIActor.widgets import ValueGB, CustomedCmd, SwitchGB, SpinBoxGB
-
+from spsGUIActor.enu import EnuDeviceCmd
 
 class BiaPeriod(ValueGB):
     def __init__(self, moduleRow):
@@ -94,9 +94,9 @@ class BiaPanel(ControllerPanel):
         self.grid.addWidget(self.photores2, 3, 1)
 
 
-class BiaCommands(ControllerCmd):
+class BiaCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
-        ControllerCmd.__init__(self, controlPanel)
+        EnuDeviceCmd.__init__(self, controlPanel)
         self.switchBia = SwitchBia(controlPanel=controlPanel)
         self.switchStrobe = SwitchButton(controlPanel=controlPanel, key='biaConfig', label='STROBE',
                                          cmdHead='%s bia strobe' % controlPanel.actorName)

@@ -1,7 +1,27 @@
 __author__ = 'alefur'
-import spsGUIActor.styles as styles
 from PyQt5.QtWidgets import QProgressBar
-from spsGUIActor.control import ControlDialog
+
+from spsGUIActor.control import ControllerCmd, ControlDialog
+
+
+class EnuDeviceCmd(ControllerCmd):
+    def __init__(self, controlPanel):
+        ControllerCmd.__init__(self, controlPanel=controlPanel)
+        self.addButtons(controlPanel)
+
+    def addButtons(self, controlPanel):
+        actor, controller = controlPanel.actorName, controlPanel.controllerName
+        self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
+                                      cmdStr='%s %s status' % (actor, controller))
+        self.connectButton = CmdButton(controlPanel=controlPanel, label='START',
+                                       cmdStr='%s %s start' % (actor, controller))
+        self.disconnectButton = CmdButton(controlPanel=controlPanel, label='STOP',
+                                          cmdStr='%s %s STOP' % (actor, controller))
+        self.grid.addWidget(self.statusButton, 0, 0)
+        self.grid.addWidget(self.connectButton, 0, 1)
+        self.grid.addWidget(self.disconnectButton, 0, 1)
+
+
 from spsGUIActor.enu.bia import BiaPanel
 from spsGUIActor.enu.iis import IisPanel
 from spsGUIActor.enu.pdu import PduPanel
@@ -10,7 +30,8 @@ from spsGUIActor.enu.shutters import ShuttersPanel
 from spsGUIActor.enu.slit import SlitPanel
 from spsGUIActor.enu.temps import TempsPanel
 from spsGUIActor.modulerow import ModuleRow
-from spsGUIActor.widgets import ValueMRow, Controllers
+from spsGUIActor.widgets import CmdButton, ValueMRow, Controllers, CustomedCmd
+from spsGUIActor.common import ComboBox, GridLayout
 
 
 class ElapsedTime(QProgressBar):
@@ -87,9 +108,57 @@ class EnuRow(ModuleRow):
         return [self.state, self.substate, self.rexm, self.slit, self.shutters, self.bia]
 
 
+class ConnectButton(CmdButton):
+    def __init__(self, upperCmd, label):
+        self.upperCmd = upperCmd
+        CmdButton.__init__(self, controlPanel=None, controlDialog=upperCmd.controlDialog, label=label)
+
+    def buildCmd(self):
+        return self.upperCmd.buildCmd()
+
+
+class ConnectCmd(CustomedCmd):
+    def __init__(self, controlDialog):
+        GridLayout.__init__(self)
+        self.keyvar = controlDialog.moduleRow.keyVarDict['controllers']
+        self.keyvar.addCallback(self.setButtonLabel, callNow=False)
+        self.controlDialog = controlDialog
+        self.button = ConnectButton(self, label='CONNECT')
+
+        self.combo = ComboBox()
+        self.combo.addItems(['rexm', 'biasha', 'slit', 'temps', 'pdu', 'iis'])
+        self.combo.currentTextChanged.connect(self.setButtonLabel)
+
+        self.addWidget(self.button, 0, 0)
+        self.addWidget(self.combo, 0, 1)
+
+    def setButtonLabel(self, keyvar):
+        keyvar = self.keyvar if isinstance(keyvar, str) else keyvar
+        controllers = keyvar.getValue(doRaise=False)
+        label = 'DISCONNECT' if self.combo.currentText() in controllers else 'CONNECT'
+        self.button.setText(label)
+
+    def buildCmd(self):
+        cmdStr = '%s %s controller=%s ' % (self.controlDialog.moduleRow.actorName, self.button.text().lower(),
+                                           self.combo.currentText())
+        return cmdStr
+
+
 class EnuDialog(ControlDialog):
     def __init__(self, enuRow):
         ControlDialog.__init__(self, moduleRow=enuRow, title='Entrance Unit SM%i' % enuRow.module.smId)
+
+        self.startButton = CmdButton(controlPanel=None, label=' START ', controlDialog=self,
+                                     cmdStr='%s start' % self.moduleRow.actorName)
+
+        self.stopButton = CmdButton(controlPanel=None, label=' STOP ', controlDialog=self,
+                                    cmdStr='%s stop' % self.moduleRow.actorName)
+        self.connectCmd = ConnectCmd(self)
+
+        self.topbar.addWidget(self.startButton)
+        self.topbar.addWidget(self.stopButton)
+
+        self.topbar.addLayout(self.connectCmd)
 
         self.slitPanel = SlitPanel(self)
         self.shuttersPanel = ShuttersPanel(self)

@@ -3,7 +3,7 @@ __author__ = 'alefur'
 from spsGUIActor.common import ComboBox, CheckBox, GridLayout
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import Coordinates, ValueGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, AbortButton
-
+from spsGUIActor.enu import EnuDeviceCmd
 
 class CoordBoxes(GridLayout):
     def __init__(self):
@@ -119,21 +119,28 @@ class SlitPanel(ControllerPanel):
         self.grid.addWidget(self.tool, 4, 0, 1, 6)
 
 
-class SlitCommands(ControllerCmd):
+class SlitCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
-        ControllerCmd.__init__(self, controlPanel)
+        EnuDeviceCmd.__init__(self, controlPanel)
         self.initCmd = InitCmd(controlPanel=controlPanel)
         self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s slit abort' % controlPanel.actorName)
         self.goHomeButton = CmdButton(controlPanel=controlPanel, label='GO HOME',
                                       cmdStr='%s slit move home' % controlPanel.actorName)
+
+        self.enableButton = CmdButton(controlPanel=controlPanel, label='ENABLE',
+                                      cmdStr='%s slit enable' % controlPanel.actorName)
+        self.disableButton = CmdButton(controlPanel=controlPanel, label='DISABLE',
+                                      cmdStr='%s slit disable' % controlPanel.actorName)
         self.coordBoxes = CoordBoxes()
 
         self.moveCmd = MoveCmd(controlPanel=controlPanel)
         self.setRepCmd = SetRepCmd(controlPanel=controlPanel)
 
         self.grid.addLayout(self.initCmd, 1, 0, 1, 2)
-        self.grid.addLayout(self.coordBoxes, 2, 0, 2, 3)
-        self.grid.addLayout(self.moveCmd, 4, 0, 1, 2)
-        self.grid.addWidget(self.abortButton, 4, 2)
-        self.grid.addLayout(self.setRepCmd, 5, 0, 1, 2)
-        self.grid.addWidget(self.goHomeButton, 6, 0, 1, 1)
+        self.grid.addWidget(self.enableButton, 2, 0)
+        self.grid.addWidget(self.disableButton, 2, 1)
+        self.grid.addLayout(self.coordBoxes, 3, 0, 2, 3)
+        self.grid.addLayout(self.moveCmd, 5, 0, 1, 2)
+        self.grid.addWidget(self.abortButton, 5, 2)
+        self.grid.addLayout(self.setRepCmd, 6, 0, 1, 2)
+        self.grid.addWidget(self.goHomeButton, 7, 0, 1, 1)

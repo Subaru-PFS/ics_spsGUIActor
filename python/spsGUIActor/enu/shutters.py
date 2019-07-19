@@ -4,7 +4,7 @@ import spsGUIActor.styles as styles
 from spsGUIActor.common import ComboBox
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, AbortButton, ValuesRow
-
+from spsGUIActor.enu import EnuDeviceCmd
 
 class ShutterCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -94,9 +94,9 @@ class ShuttersPanel(ControllerPanel):
         self.grid.addWidget(self.redShutter, 3, 0, 1, 3)
 
 
-class ShuttersCommands(ControllerCmd):
+class ShuttersCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
-        ControllerCmd.__init__(self, controlPanel)
+        EnuDeviceCmd.__init__(self, controlPanel)
 
         self.abortButton = AbortButton(controlPanel=controlPanel,
                                        cmdStr='%s exposure finish' % controlPanel.actorName)

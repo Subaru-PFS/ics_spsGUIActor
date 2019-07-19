@@ -3,7 +3,7 @@ __author__ = 'alefur'
 from spsGUIActor.common import ComboBox, CheckBox
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, CustomedCmd, AbortButton, DoubleSpinBoxGB
-
+from spsGUIActor.enu import EnuDeviceCmd
 
 class InitCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -23,12 +23,12 @@ class GoCmd(CustomedCmd):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='GOTO')
 
         self.combo = ComboBox()
-        self.combo.addItems(['low', 'mid'])
+        self.combo.addItems(['low', 'med'])
 
         self.addWidget(self.combo, 0, 1)
 
     def buildCmd(self):
-        cmdStr = '%s rexm move %s ' % (self.controlPanel.actorName, self.combo.currentText())
+        cmdStr = '%s rexm %s ' % (self.controlPanel.actorName, self.combo.currentText())
         return cmdStr
 
 
@@ -79,9 +79,9 @@ class RexmPanel(ControllerPanel):
         self.grid.addWidget(self.steps, 2, 3)
 
 
-class RexmCommands(ControllerCmd):
+class RexmCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
-        ControllerCmd.__init__(self, controlPanel)
+        EnuDeviceCmd.__init__(self, controlPanel)
         self.initButton = InitCmd(controlPanel=controlPanel)
         self.abortButton = AbortButton(controlPanel=controlPanel, cmdStr='%s rexm abort' % controlPanel.actorName)
 
