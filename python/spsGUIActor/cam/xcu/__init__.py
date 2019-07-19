@@ -10,7 +10,7 @@ from spsGUIActor.cam.xcu.motors import MotorsPanel
 from spsGUIActor.cam.xcu.pcm import PcmPanel
 from spsGUIActor.cam.xcu.temps import TempsPanel
 from spsGUIActor.cam.xcu.turbo import TurboPanel
-from spsGUIActor.control import ControlDialog, MultiplePanel
+from spsGUIActor.control import ControlDialog, MultiplePanel, Topbar
 from spsGUIActor.modulerow import ModuleRow
 from spsGUIActor.widgets import Controllers, ValueMRow
 
@@ -44,7 +44,7 @@ class XcuDialog(ControlDialog):
         self.moduleRow = xcuRow
         self.tabWidget = tabWidget
 
-        self.topbar = self.createTopbar()
+        self.topbar = Topbar(self)
         self.topbar.insertWidget(0, self.moduleRow.actorStatus)
 
         self.pcmPanel = PcmPanel(self)

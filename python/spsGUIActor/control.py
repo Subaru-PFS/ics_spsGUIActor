@@ -39,6 +39,25 @@ class ButtonBox(GridLayout):
         self.controlDialog.adjustSize()
 
 
+class Topbar(QHBoxLayout):
+    def __init__(self, controlDialog):
+        QHBoxLayout.__init__(self)
+        self.setAlignment(Qt.AlignLeft)
+        self.reload = CmdButton(controlPanel=None, label=' Reload Config ', controlDialog=controlDialog,
+                                cmdStr='%s reloadConfiguration' % controlDialog.moduleRow.actorName)
+        self.statusButton = CmdButton(controlPanel=None, label=' STATUS ', controlDialog=controlDialog,
+                                      cmdStr='%s status' % controlDialog.moduleRow.actorName)
+        self.addWidget(self.reload)
+        self.addWidget(self.statusButton)
+
+    def setEnabled(self, a0: bool):
+        for item in [self.itemAt(i) for i in range(self.count())]:
+            if issubclass(type(item), QLayout):
+                item.setEnabled(a0)
+            else:
+                item.widget().setEnabled(a0)
+
+
 class ControlDialog(QDialog):
     def __init__(self, moduleRow, title=False):
         self.moduleRow = moduleRow
@@ -47,7 +66,7 @@ class ControlDialog(QDialog):
         self.cmdBuffer = dict()
         self.vbox = VBoxLayout()
 
-        self.topbar = self.createTopbar()
+        self.topbar = Topbar(self)
         self.tabWidget = QTabWidget(self)
 
         self.logArea = QTabWidget(self)
@@ -69,27 +88,8 @@ class ControlDialog(QDialog):
         self.setWindowTitle(title)
         self.setVisible(False)
 
-    def createTopbar(self):
-        topbar = QHBoxLayout()
-        topbar.setAlignment(Qt.AlignLeft)
-
-        self.reload = CmdButton(controlPanel=None, label=' Reload Config ', controlDialog=self,
-                                cmdStr='%s reloadConfiguration' % self.moduleRow.actorName)
-        self.statusButton = CmdButton(controlPanel=None, label=' STATUS ', controlDialog=self,
-                                      cmdStr='%s status' % self.moduleRow.actorName)
-
-        topbar.addWidget(self.reload)
-        topbar.addWidget(self.statusButton)
-
-        return topbar
-
     def rawLogArea(self):
         return RawLogArea(self.moduleRow.actorName)
-
-    @property
-    def widgets(self):
-        topbar = [self.topbar.itemAt(i).widget() for i in range(self.topbar.count())]
-        return topbar + self.pannels
 
     @property
     def pannels(self):
@@ -119,6 +119,10 @@ class ControlDialog(QDialog):
     def close(self):
         self.setVisible(False)
 
+    def setEnabled(self, a0: bool):
+        for widget in [self.topbar] + self.pannels:
+            widget.setEnabled(a0)
+
 
 class ControlPanel(QGroupBox):
     def __init__(self, controlDialog):
@@ -140,10 +144,6 @@ class ControlPanel(QGroupBox):
     def actorName(self):
         return self.controlDialog.moduleRow.actorName
 
-    @property
-    def allWidgets(self):
-        return [self.grid.itemAt(i).widget() for i in range(self.grid.count())][:-1]
-
     def createWidgets(self):
         pass
 
@@ -161,10 +161,15 @@ class ControlPanel(QGroupBox):
         icon = Icon('green.png') if a0 else Icon('orange.png')
         self.controlDialog.tabWidget.setTabIcon(self.controlDialog.tabWidget.indexOf(self), icon)
 
-    def setEnabled(self, a0):
+    def setEnabled(self, a0: bool):
         self.updateIcon(a0)
-        for widget in self.allWidgets:
-            widget.setEnabled(a0)
+        for item in [self.grid.itemAt(i) for i in range(self.grid.count())]:
+            if issubclass(type(item), QSpacerItem):
+                continue
+            elif issubclass(type(item), QLayout):
+                item.setEnabled(a0)
+            else:
+                item.widget().setEnabled(a0)
 
 
 class CommandsGB(QGroupBox):
