@@ -61,8 +61,8 @@ class RexmPanel(ControllerPanel):
         self.speed = ValueGB(self.moduleRow, 'rexmInfo', 'Speed', 2, '{:d}')
         self.steps = ValueGB(self.moduleRow, 'rexmInfo', 'Steps', 3, '{:d}')
 
-        self.usrs = ValueGB(self.moduleRow, 'rexmConfig', 'Step Resolution', 0, '{:d}')
-        self.pulseDivisor = ValueGB(self.moduleRow, 'rexmConfig', 'Pulse Divisor', 1, '{:d}')
+        self.usrs = ValueGB(self.moduleRow, 'rexmConfig', 'Step Resolution', 7, '{:d}')
+        self.pulseDivisor = ValueGB(self.moduleRow, 'rexmConfig', 'Pulse Divisor', 10, '{:d}')
 
     def setInLayout(self):
         self.grid.addWidget(self.mode, 0, 0)

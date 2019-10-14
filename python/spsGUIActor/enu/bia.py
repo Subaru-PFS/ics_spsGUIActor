@@ -1,15 +1,15 @@
 __author__ = 'alefur'
 
-import spsGUIActor.styles as styles
-from spsGUIActor.control import ControllerPanel, ControllerCmd
+from spsGUIActor.control import ControllerPanel
 from spsGUIActor.dcb.aten import SwitchButton
-from spsGUIActor.widgets import ValueGB, CustomedCmd, SwitchGB, SpinBoxGB
 from spsGUIActor.enu import EnuDeviceCmd
+from spsGUIActor.widgets import ValueGB, CustomedCmd, SwitchGB, SpinBoxGB
+
 
 class BiaPeriod(ValueGB):
     def __init__(self, moduleRow):
         self.spinbox = SpinBoxGB('Period', 0, 65536)
-        ValueGB.__init__(self, moduleRow, 'biaConfig', '', 0, '{:d}')
+        ValueGB.__init__(self, moduleRow, 'biaConfig', '', 1, '{:d}')
 
     def setText(self, txt):
         if not self.spinbox.locked:
@@ -22,7 +22,7 @@ class BiaPeriod(ValueGB):
 class BiaDuty(ValueGB):
     def __init__(self, moduleRow):
         self.spinbox = SpinBoxGB('Duty', 0, 255)
-        ValueGB.__init__(self, moduleRow, 'biaConfig', '', 1, '{:d}')
+        ValueGB.__init__(self, moduleRow, 'biaConfig', '', 2, '{:d}')
 
     def setText(self, txt):
         if not self.spinbox.locked:
@@ -43,8 +43,8 @@ class SetBiaParamCmd(CustomedCmd):
         self.addWidget(self.duty.spinbox, 0, 2)
 
     def buildCmd(self):
-        cmdStr = '%s bia config period=%i duty=%i ' % (self.controlPanel.actorName, self.period.getValue(),
-                                                       self.duty.getValue())
+        cmdStr = '%s bia period=%i duty=%i ' % (self.controlPanel.actorName, self.period.getValue(),
+                                                self.duty.getValue())
         return cmdStr
 
 
@@ -58,7 +58,6 @@ class SwitchBia(SwitchButton):
 
         self.buttonOn.setVisible(not bool)
         self.buttonOff.setVisible(bool)
-
 
 
 class BiaPanel(ControllerPanel):
