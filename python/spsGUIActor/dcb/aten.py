@@ -22,8 +22,8 @@ class AtenPanel(ControllerPanel):
         self.state = ValueGB(self.moduleRow, 'atenFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'atenFSM', '', 1, '{:s}')
 
-        self.labsphere = SwitchGB(self.moduleRow, 'pow_labsphere', 'Labsphere', 0, '{:g}')
-        self.mono = SwitchGB(self.moduleRow, 'pow_mono', 'Monochromator', 0, '{:g}')
+        self.labsphere = SwitchGB(self.moduleRow, 'labsphere', 'Labsphere', 0, '{:g}')
+        self.mono = SwitchGB(self.moduleRow, 'mono', 'Monochromator', 0, '{:g}')
         self.roughpump = SwitchGB(self.moduleRow, 'roughpump', 'Roughpump', 0, '{:g}')
         self.bakeout = SwitchGB(self.moduleRow, 'bakeout', 'Bakeout', 0, '{:g}')
 
@@ -50,8 +50,8 @@ class AtenCommands(ControllerCmd):
     def __init__(self, controlPanel):
         ControllerCmd.__init__(self, controlPanel)
 
-        self.switchLabsphere = AtenButton(controlPanel=controlPanel, key='pow_labsphere', label='Labsphere')
-        self.switchMono = AtenButton(controlPanel=controlPanel, key='pow_mono', label='Monochromator')
+        self.switchLabsphere = AtenButton(controlPanel=controlPanel, key='labsphere', label='Labsphere')
+        self.switchMono = AtenButton(controlPanel=controlPanel, key='mono', label='Monochromator')
         self.switchRough = AtenButton(controlPanel=controlPanel, key='roughpump', label='RoughPump', safetyCheck=True)
         self.switchBakeout = AtenButton(controlPanel=controlPanel, key='bakeout', label='Bakeout', safetyCheck=True)
 

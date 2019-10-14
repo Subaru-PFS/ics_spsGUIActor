@@ -69,7 +69,7 @@ class DcbRow(ModuleRow):
 
         self.state = ValueMRow(self, 'metaFSM', '', 0, '{:s}')
         self.substate = ValueMRow(self, 'metaFSM', '', 1, '{:s}')
-        self.labsphere = SwitchMRow(self, 'pow_labsphere', 'Labsphere', 0, '{:g}', controllerName='aten')
+        self.labsphere = SwitchMRow(self, 'labsphere', 'Labsphere', 0, '{:g}', controllerName='aten')
 
         self.neon = SwitchMRow(self, 'neon', 'Neon', 0, '{:g}', controllerName='aten')
         self.xenon = SwitchMRow(self, 'xenon', 'Xenon', 0, '{:g}', controllerName='aten')
@@ -82,7 +82,7 @@ class DcbRow(ModuleRow):
         self.photodiode = ValueMRow(self, 'photodiode', 'photodiode', 0, '{:g}', controllerName='labsphere')
         self.attenuator = AttenuatorValue(self, fontSize=styles.bigFont)
 
-        self.mono = SwitchMRow(self, 'pow_mono', 'Monochromator', 0, '{:g}', controllerName='aten')
+        self.mono = SwitchMRow(self, 'mono', 'Monochromator', 0, '{:g}', controllerName='aten')
         self.monoqth = SwitchMRow(self, 'monoqth', 'MonoQTH', 0, '{:g}', controllerName='monoqth')
         self.monoshutter = ValueMRow(self, 'monochromator', 'Mono-Shutter', 0, '{:s}', controllerName='mono')
         self.wavelength = ValueMRow(self, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}', controllerName='mono')
