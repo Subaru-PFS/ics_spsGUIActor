@@ -4,19 +4,42 @@ import os
 
 import spsGUIActor.styles as styles
 from PyQt5.QtWidgets import QDialog, QGroupBox, QGridLayout, QTabWidget, QLayout
-from spsGUIActor.common import PushButton, imgPath, VBoxLayout
-from spsGUIActor.control import ControlDialog, ButtonBox, ControllerPanel
+from spsGUIActor.common import PushButton, imgPath, VBoxLayout, GridLayout
+from spsGUIActor.control import ControlDialog, ButtonBox, ControlPanel, ControllerPanel
 from spsGUIActor.logs import CmdLogArea
 from spsGUIActor.modulerow import ActorGB
 from spsGUIActor.modulerow import ModuleRow
 
 
-class CamDevice(ControllerPanel):
+class CamDevice(QGroupBox):
     def __init__(self, controlDialog, controllerName, title=None):
         title = controllerName.capitalize() if title is None else title
-        ControllerPanel.__init__(self, controlDialog, controllerName)
+        self.controllerName = controllerName
+
+        QGroupBox.__init__(self)
+        self.controlDialog = controlDialog
+        self.grid = GridLayout()
+        self.grid.setSizeConstraint(QLayout.SetMinimumSize)
+        self.grid.setContentsMargins(5, 5, 5, 5)
+        self.setLayout(self.grid)
+
+        self.createWidgets()
+        self.setInLayout()
+
         self.setTitle(title)
         self.setCheckable(True)
+        self.setEnabled(False)
+
+    @property
+    def moduleRow(self):
+        return self.controlDialog.moduleRow
+
+    @property
+    def actorName(self):
+        return self.controlDialog.moduleRow.actorName
+
+    def addCommandSet(self, commands):
+        ControlPanel.addCommandSet(self, commands)
 
     def updateIcon(self, a0):
         filename = 'green.png' if a0 else 'orange.png'
@@ -25,6 +48,8 @@ class CamDevice(ControllerPanel):
             "CamDevice::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 10px;}"
             "CamDevice::indicator:checked {image: url(%s);} " % os.path.join(imgPath, filename))
 
+    def setEnabled(self, a0):
+        ControllerPanel.setEnabled(self, a0)
 
 from spsGUIActor.cam.ccd import CcdRow
 from spsGUIActor.cam.xcu import XcuRow

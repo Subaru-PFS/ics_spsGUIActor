@@ -124,11 +124,12 @@ class ControlDialog(QDialog):
             widget.setEnabled(a0)
 
 
-class ControlPanel(QGroupBox):
+class ControlPanel(QWidget):
     def __init__(self, controlDialog):
-        QGroupBox.__init__(self)
+        QWidget.__init__(self)
         self.controlDialog = controlDialog
         self.grid = GridLayout()
+        self.grid.setContentsMargins(*(4 * (1,)))
         self.grid.setSizeConstraint(QLayout.SetMinimumSize)
         self.setLayout(self.grid)
 
@@ -177,7 +178,7 @@ class CommandsGB(QGroupBox):
         QGroupBox.__init__(self)
         self.controlPanel = controlPanel
         self.grid = GridLayout()
-
+        self.grid.setContentsMargins(1, 7, 1, 1)
         self.setTitle('Commands')
         self.setLayout(self.grid)
         self.setStyleSheet(
@@ -234,7 +235,7 @@ class MultiplePanel(QWidget):
     def __init__(self, parent):
         QWidget.__init__(self)
         self.grid = GridLayout()
-
+        self.grid.setContentsMargins(*(4 * (1,)))
         self.setLayout(self.grid)
 
     def addWidget(self, *args, **kwargs):

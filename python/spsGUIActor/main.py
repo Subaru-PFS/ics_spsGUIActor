@@ -10,15 +10,16 @@ from mainwindow import SpsWidget
 
 
 class Spsgui(QMainWindow):
-    def __init__(self, reactor, actor, d_width, d_height, cmdrName):
+    def __init__(self, reactor, actor, cmdrName):
         QMainWindow.__init__(self)
         self.reactor = reactor
         self.actor = actor
-        self.display = d_width, d_height
         self.setName("%s.%s" % ("spsGUIActor", cmdrName))
 
         self.spsWidget = SpsWidget(self)
         self.setCentralWidget(self.spsWidget)
+
+        self.setMaximumHeight(100)
         self.showMinimized()
 
     def setName(self, name):
@@ -36,11 +37,9 @@ def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--name', default=pwd.getpwuid(os.getuid()).pw_name, type=str, nargs='?', help='cmdr name')
-    parser.add_argument('--stretch', default=0.6, type=float, nargs='?', help='window stretching factor')
 
     args = parser.parse_args()
 
-    geometry = app.desktop().screenGeometry()
     import qt5reactor
 
     qt5reactor.install()
@@ -58,11 +57,7 @@ def main():
     actor = miniActor.connectActor(['hub', 'dcb', 'sac', 'breva', 'seqno'] + enus + ccds + xcus)
 
     try:
-        ex = Spsgui(reactor,
-                    actor,
-                    geometry.width() * args.stretch,
-                    geometry.height() * args.stretch,
-                    args.name)
+        ex = Spsgui(reactor, actor, args.name)
     except:
         actor.disconnectActor()
         raise

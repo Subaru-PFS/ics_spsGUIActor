@@ -35,6 +35,7 @@ class PduPanel(ControllerPanel):
 
     def __init__(self, controlDialog):
         ControllerPanel.__init__(self, controlDialog, 'pdu')
+        self.grid.setSpacing(0)
         self.addCommandSet(PduCommands(self))
 
     def createWidgets(self):
