@@ -5,12 +5,10 @@ from spsGUIActor.widgets import SwitchGB, ValuesRow, ValueGB, CustomedCmd, CmdBu
 
 
 class HeaterState(ValuesRow):
-    heaters = dict(asic=0, shield=1, ccd=4, spreader=5)
-
-    def __init__(self, moduleRow, name):
-        heaterNb = self.heaters[name]
-        widgets = [SwitchGB(moduleRow, 'heaters', 'enabled', heaterNb, '{:g}'),
-                   ValueGB(moduleRow, 'heaters', 'fraction', heaterNb + 2, '{:.2f}')]
+    def __init__(self, controlPanel, name):
+        heaterNb = controlPanel.heaterChannels[name]
+        widgets = [SwitchGB(controlPanel.moduleRow, 'heaters', 'enabled', heaterNb, '{:g}'),
+                   ValueGB(controlPanel.moduleRow, 'heaters', 'fraction', heaterNb + 2, '{:.2f}')]
 
         ValuesRow.__init__(self, widgets, title=name.capitalize())
 
@@ -19,6 +17,7 @@ class HeatersPanel(CamDevice):
     visNames = ['ccd', 'spreader']
     nirNames = ['asic', 'shield']
     heaterNames = dict(b=visNames, r=visNames, n=nirNames)
+    heaterChannels = dict(ccd=4, spreader=5, asic=0, shield=1)
 
     def __init__(self, controlDialog):
         CamDevice.__init__(self, controlDialog, 'temps', 'Heaters')
@@ -26,7 +25,7 @@ class HeatersPanel(CamDevice):
 
     def createWidgets(self):
         heaterNames = self.heaterNames[self.moduleRow.camRow.arm]
-        self.heaters = [HeaterState(self.moduleRow, name) for name in heaterNames]
+        self.heaters = [HeaterState(self, name) for name in heaterNames]
 
     def setInLayout(self):
         for i, value in enumerate(self.heaters):
@@ -34,13 +33,12 @@ class HeatersPanel(CamDevice):
 
 
 class HPCmd(SwitchButton):
-    heaters = dict(asic=0, shield=1, ccd=4, spreader=5)
 
     def __init__(self, controlPanel, name):
         cmdStrOn = '%s HPheaters on %s' % (controlPanel.actorName, name)
         cmdStrOff = '%s HPheaters off %s' % (controlPanel.actorName, name)
         SwitchButton.__init__(self, controlPanel=controlPanel, key='heaters', label=name.capitalize(),
-                              ind=self.heaters[name], cmdHead='', cmdStrOn=cmdStrOn, cmdStrOff=cmdStrOff)
+                              ind=controlPanel.heaterChannels[name], cmdHead='', cmdStrOn=cmdStrOn, cmdStrOff=cmdStrOff)
 
     def setText(self, txt):
         bool = True if txt.strip() in ['0', 'nan', 'off', 'undef'] else False
