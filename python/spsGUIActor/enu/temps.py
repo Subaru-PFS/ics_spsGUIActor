@@ -37,26 +37,26 @@ class Slot(QGroupBox):
 
 
 class TempsPanel(ControllerPanel):
-    probeNames1 = ['MOTOR_RDA',
-                   'MOTOR_SHUTTER_B',
-                   'MOTOR_SHUTTER_R',
-                   'BIA_BOX_UPPER',
-                   'BIA_BOX_LOWER',
-                   'FIBER_UNIT_BENCH_LEVEL',
-                   'FIBER_UNIT_HEXAPOD_TOP',
-                   'FIBER_UNIT_FIBER_FRAME_TOP',
-                   'COLLIMATOR_FRAME_BENCH_LEVEL',
-                   'COLLIMATOR_FRAME_TOP']
-    probeNames2 = ['BENCH_LEFT_TOP',
-                   'BENCH_LEFT_BOTTOM',
-                   'BENCH_RIGHT_TOP',
-                   'BENCH_RIGHT_BOTTOM',
-                   'BENCH_FAR_TOP',
-                   'BENCH_FAR_BOTTOM',
-                   'BENCH_NEAR_TOP',
-                   'BENCH_NEAR_BOTTOM',
-                   'BENCH_CENTRAL_BOTTOM',
-                   'ENU_TEMP_20']
+    probeNames1 = ['Motor RDA',
+                   'Motor Shutter B',
+                   'Motor Shutter R',
+                   'BIA Box Upper',
+                   'BIA Box Lower',
+                   'Fiber Unit Bench Level',
+                   'Fiber Unit Hexapod Top',
+                   'Fiber Unit Fiber Frame Top',
+                   'Collimator Frame Bench Level',
+                   'Collimator Frame Top']
+    probeNames2 = ['Bench Left Top',
+                   'Bench Left Botton',
+                   'Bench Right Top',
+                   'Bench Right Bottom',
+                   'Bench Far Top',
+                   'Bench Far Bottom',
+                   'Bench Near Top',
+                   'Bench Near Bottom',
+                   'Bench Central Bottom',
+                   'Enu Temp 20']
 
     def __init__(self, controlDialog):
         ControllerPanel.__init__(self, controlDialog, 'temps')

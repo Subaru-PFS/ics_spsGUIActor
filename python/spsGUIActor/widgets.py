@@ -90,9 +90,10 @@ class ValuesRow(QGroupBox):
 
         self.setTitle(title)
         self.setLayout(self.grid)
-        self.grid.setContentsMargins(1,4,1,1)
+        self.grid.setContentsMargins(1, 4, 1, 1)
         self.setStyleSheet(
-            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 0.5ex;} " % (fontSize) +
+            "QGroupBox {font-size: %ipt; border: 1px solid #d7d4d1;border-radius: 3px;margin-top: 0.5ex;} " % (
+                fontSize) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 3px;}")
 
     def setEnabled(self, a0: bool):

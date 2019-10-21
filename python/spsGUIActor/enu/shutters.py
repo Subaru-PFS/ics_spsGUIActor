@@ -61,6 +61,7 @@ class Shutter(ValuesRow):
                    ValueGB(moduleRow, shId, 'error', 2, '{:d}')]
 
         ValuesRow.__init__(self, widgets, title=self.shutterName[shId])
+        self.grid.setContentsMargins(1, 6, 1, 1)
 
 
 

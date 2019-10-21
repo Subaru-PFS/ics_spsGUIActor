@@ -22,7 +22,7 @@ class TempsPanel(CamDevice):
 
     def setInLayout(self):
         for i, value in enumerate(self.temps):
-            self.grid.addWidget(value, i // 5, i % 5)
+            self.grid.addWidget(value, i // 4, i % 4)
 
 
 class RawCmd(CustomedCmd):
