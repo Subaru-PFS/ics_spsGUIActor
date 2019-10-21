@@ -2,11 +2,13 @@ __author__ = 'alefur'
 
 import spsGUIActor.styles as styles
 from PyQt5.QtWidgets import QLineEdit
+
 from spsGUIActor.control import ControlDialog
 from spsGUIActor.dcb.aten import AtenPanel
 from spsGUIActor.dcb.labsphere import LabspherePanel, AttenuatorValue
 from spsGUIActor.dcb.mono import MonoPanel
 from spsGUIActor.dcb.monoqth import MonoQthPanel
+from spsGUIActor.enu import ConnectCmd
 from spsGUIActor.modulerow import ModuleRow
 from spsGUIActor.widgets import ValueGB, ValueMRow, SwitchMRow, EnumMRow, Controllers
 
@@ -87,7 +89,7 @@ class DcbRow(ModuleRow):
         self.monoshutter = ValueMRow(self, 'monochromator', 'Mono-Shutter', 0, '{:s}', controllerName='mono')
         self.wavelength = ValueMRow(self, 'monochromator', 'Wavelength(nm)', 2, '{:.3f}', controllerName='mono')
 
-        self.rows = [RowOne(self),  RowTwo(self)]
+        self.rows = [RowOne(self), RowTwo(self)]
 
         self.controllers = Controllers(self)
         self.createDialog(DcbDialog(self))
@@ -101,7 +103,10 @@ class DcbDialog(ControlDialog):
     def __init__(self, dcbRow):
         ControlDialog.__init__(self, moduleRow=dcbRow)
         self.fiberConfig = FiberConfig(self)
+        self.connectCmd = ConnectCmd(self, ['aten', 'labsphere', 'mono', 'monoqth', 'pdu', 'iis'])
+
         self.topbar.addWidget(self.fiberConfig)
+        self.topbar.addLayout(self.connectCmd)
 
         self.atenPanel = AtenPanel(self)
         self.labspherePanel = LabspherePanel(self)

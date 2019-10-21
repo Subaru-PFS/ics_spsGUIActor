@@ -1,13 +1,12 @@
 __author__ = 'alefur'
 import spsGUIActor.styles as styles
 from spsGUIActor.control import ControllerPanel, ControllerCmd
-from spsGUIActor.widgets import ValueGB, SwitchGB, CustomedCmd, SpinBoxGB, SwitchButton
+from spsGUIActor.widgets import ValueGB, SwitchGB, CustomedCmd, SpinBoxGB, SwitchButton, ValueMRow
 from spsGUIActor.enu import EnuDeviceCmd
 
-class AttenuatorValue(ValueGB):
+class AttenuatorValue(ValueMRow):
     def __init__(self, moduleRow, fontSize=styles.smallFont):
-        ValueGB.__init__(self, moduleRow, 'attenuator', 'attenuator', 0, '{:g}', fontSize=fontSize)
-        self.controllerName = 'labsphere'
+        ValueMRow.__init__(self, moduleRow, 'attenuator', 'attenuator', 0, '{:g}', 'labsphere', fontSize=fontSize)
 
     def setText(self, txt):
         if txt == '0':

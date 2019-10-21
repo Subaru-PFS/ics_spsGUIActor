@@ -6,7 +6,7 @@ import spsGUIActor.styles as styles
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QGroupBox, QGridLayout
 from spsGUIActor.common import PushButton
-from spsGUIActor.widgets import ValueGB
+from spsGUIActor.widgets import ValueGB, Controllers
 
 
 class ModuleRow(object):

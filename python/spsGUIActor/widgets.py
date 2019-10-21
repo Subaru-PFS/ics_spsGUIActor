@@ -3,6 +3,7 @@ from functools import partial
 
 import spsGUIActor.styles as styles
 from PyQt5.QtWidgets import QLabel, QGroupBox, QMessageBox
+from PyQt5.QtCore import QTimer
 from spsGUIActor.common import PushButton, DoubleSpinBox, SpinBox, GridLayout, GBoxGrid
 
 convertText = {'on': 'ON', 'off': 'OFF', 'nan': 'nan', 'undef': 'undef', 'pending': 'OFF'}
@@ -317,9 +318,13 @@ class CustomedCmd(GridLayout):
 class Controllers(ValueGB):
     def __init__(self, moduleRow):
         ValueGB.__init__(self, moduleRow, 'controllers', 'Controllers', 0, '{:s}', fontSize=styles.bigFont)
+        QTimer.singleShot(5000, self.updateWidgets)
 
     def updateVals(self, ind, fmt, keyvar):
-        controllers = keyvar.getValue(doRaise=False)
+        self.updateWidgets(keyvar.getValue(doRaise=False))
+
+    def updateWidgets(self, controllers=None):
+        controllers = self.keyvar.getValue(doRaise=False) if controllers is None else controllers
 
         for widget in self.moduleRow.widgets + self.moduleRow.controlDialog.pannels:
             if not widget.controllerName:

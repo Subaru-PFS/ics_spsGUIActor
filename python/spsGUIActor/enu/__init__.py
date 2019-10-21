@@ -118,7 +118,7 @@ class ConnectButton(CmdButton):
 
 
 class ConnectCmd(CustomedCmd):
-    def __init__(self, controlDialog):
+    def __init__(self, controlDialog, controllers):
         GridLayout.__init__(self)
         self.keyvar = controlDialog.moduleRow.keyVarDict['controllers']
         self.keyvar.addCallback(self.setButtonLabel, callNow=False)
@@ -126,7 +126,7 @@ class ConnectCmd(CustomedCmd):
         self.button = ConnectButton(self, label='CONNECT')
 
         self.combo = ComboBox()
-        self.combo.addItems(['rexm', 'biasha', 'slit', 'temps', 'pdu', 'iis'])
+        self.combo.addItems(controllers)
         self.combo.currentTextChanged.connect(self.setButtonLabel)
 
         self.addWidget(self.button, 0, 0)
@@ -153,7 +153,7 @@ class EnuDialog(ControlDialog):
 
         self.stopButton = CmdButton(controlPanel=None, label=' STOP ', controlDialog=self,
                                     cmdStr='%s stop' % self.moduleRow.actorName)
-        self.connectCmd = ConnectCmd(self)
+        self.connectCmd = ConnectCmd(self, ['rexm', 'biasha', 'slit', 'temps', 'pdu', 'iis'])
 
         self.topbar.addWidget(self.startButton)
         self.topbar.addWidget(self.stopButton)
