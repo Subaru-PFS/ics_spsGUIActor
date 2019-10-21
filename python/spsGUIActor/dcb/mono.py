@@ -4,7 +4,7 @@ import spsGUIActor.styles as styles
 from spsGUIActor.common import ComboBox
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, SwitchGB, SwitchButton
-
+from spsGUIActor.enu import EnuDeviceCmd
 
 class Error(ValueGB):
     def __init__(self, moduleRow):
@@ -104,9 +104,9 @@ class MonoPanel(ControllerPanel):
         self.grid.addWidget(self.wavelength, 3, 2)
 
 
-class MonoCommands(ControllerCmd):
+class MonoCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
-        ControllerCmd.__init__(self, controlPanel)
+        EnuDeviceCmd.__init__(self, controlPanel)
         self.gratingCmd = GratingCmd(controlPanel=controlPanel)
         self.shutterCmd = ShutterCmd(controlPanel=controlPanel)
         self.outportCmd = OutportCmd(controlPanel=controlPanel)

@@ -2,7 +2,7 @@ __author__ = 'alefur'
 
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, SwitchGB, SwitchButton
-
+from spsGUIActor.enu import EnuDeviceCmd
 
 class AtenButton(SwitchButton):
     def __init__(self, controlPanel, key, label, safetyCheck=False):
@@ -46,9 +46,9 @@ class AtenPanel(ControllerPanel):
         self.grid.addWidget(self.bakeout, 3, 1)
 
 
-class AtenCommands(ControllerCmd):
+class AtenCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
-        ControllerCmd.__init__(self, controlPanel)
+        EnuDeviceCmd.__init__(self, controlPanel)
 
         self.switchLabsphere = AtenButton(controlPanel=controlPanel, key='labsphere', label='Labsphere')
         self.switchMono = AtenButton(controlPanel=controlPanel, key='mono', label='Monochromator')

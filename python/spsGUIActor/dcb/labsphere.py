@@ -2,7 +2,7 @@ __author__ = 'alefur'
 import spsGUIActor.styles as styles
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, SwitchGB, CustomedCmd, SpinBoxGB, SwitchButton
-
+from spsGUIActor.enu import EnuDeviceCmd
 
 class AttenuatorValue(ValueGB):
     def __init__(self, moduleRow, fontSize=styles.smallFont):
@@ -85,9 +85,9 @@ class LabspherePanel(ControllerPanel):
         self.grid.addWidget(self.deuterium, 3, 2)
 
 
-class LabsphereCommands(ControllerCmd):
+class LabsphereCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
-        ControllerCmd.__init__(self, controlPanel)
+        EnuDeviceCmd.__init__(self, controlPanel)
         self.attenuatorCmd = AttenuatorCmd(controlPanel=controlPanel)
         self.switchHalogen = SwitchArc(controlPanel=controlPanel, key='halogen', label='Halogen')
         self.switchNeon = SwitchArc(controlPanel=controlPanel, key='neon', label='Neon')
