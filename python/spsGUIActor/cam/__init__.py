@@ -97,7 +97,7 @@ class CamRow(ModuleRow):
 
     @property
     def displayed(self):
-        return [self.actorStatus, self.ccd.substate, self.ccd.temperature, self.xcu.pressure]
+        return [self.actorStatus, self.xcu.cryoMode, self.ccd.substate, self.ccd.temperature, self.xcu.pressure]
 
     def setOnline(self):
         self.actorStatus.setStatus(sum([self.ccd.isOnline + self.xcu.isOnline]))

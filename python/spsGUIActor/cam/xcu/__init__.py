@@ -10,9 +10,38 @@ from spsGUIActor.cam.xcu.motors import MotorsPanel
 from spsGUIActor.cam.xcu.pcm import PcmPanel
 from spsGUIActor.cam.xcu.temps import TempsPanel
 from spsGUIActor.cam.xcu.turbo import TurboPanel
+from spsGUIActor.common import ComboBox, GridLayout
 from spsGUIActor.control import ControlDialog, MultiplePanel, Topbar
 from spsGUIActor.modulerow import ModuleRow
-from spsGUIActor.widgets import Controllers, ValueMRow
+from spsGUIActor.widgets import Controllers, ValueMRow, CmdButton, CustomedCmd
+
+
+class SetButton(CmdButton):
+    def __init__(self, upperCmd):
+        self.upperCmd = upperCmd
+        CmdButton.__init__(self, controlPanel=None, controlDialog=upperCmd.controlDialog, label='SET cryoMode')
+
+    def buildCmd(self):
+        return self.upperCmd.buildCmd()
+
+
+class SetCryoMode(CustomedCmd):
+    validModes = ('offline', 'standby', 'pumpdown', 'cooldown', 'operation', 'warmup', 'bakeout')
+
+    def __init__(self, controlDialog):
+        GridLayout.__init__(self)
+        self.controlDialog = controlDialog
+        self.button = SetButton(self)
+
+        self.combo = ComboBox()
+        self.combo.addItems(list(SetCryoMode.validModes))
+
+        self.addWidget(self.button, 0, 0)
+        self.addWidget(self.combo, 0, 1)
+
+    def buildCmd(self):
+        cmdStr = '%s setCryoMode %s ' % (self.controlDialog.moduleRow.actorName, self.combo.currentText())
+        return cmdStr
 
 
 class XcuRow(ModuleRow):
@@ -21,12 +50,13 @@ class XcuRow(ModuleRow):
         ModuleRow.__init__(self, module=camRow.module,
                            actorName='xcu_%s%i' % (camRow.arm, camRow.module.smId), actorLabel='XCU')
 
+        self.cryoMode = ValueMRow(self, 'cryoMode', 'cryoMode', 0, '{:s}', controllerName='')
         self.pressure = ValueMRow(self, 'pressure', 'Pressure(Torr)', 0, '{:g}', controllerName='PCM')
         self.controllers = Controllers(self)
 
     @property
     def widgets(self):
-        return [self.pressure]
+        return [self.cryoMode, self.pressure]
 
     def setOnline(self):
         ModuleRow.setOnline(self)
@@ -45,7 +75,10 @@ class XcuDialog(ControlDialog):
         self.tabWidget = tabWidget
 
         self.topbar = Topbar(self)
+        self.setCryoMode = SetCryoMode(self)
         self.topbar.insertWidget(0, self.moduleRow.actorStatus)
+
+        self.topbar.addLayout(self.setCryoMode)
 
         self.pcmPanel = PcmPanel(self)
         self.motorsPanel = MotorsPanel(self)
