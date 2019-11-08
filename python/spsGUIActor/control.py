@@ -3,9 +3,9 @@ from functools import partial
 
 import spsGUIActor.styles as styles
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QGroupBox, QTabWidget, QLayout, QHBoxLayout, QSpacerItem, \
+from PyQt5.QtWidgets import QDialog, QGroupBox, QLayout, QHBoxLayout, QSpacerItem, \
     QSizePolicy, QWidget
-from spsGUIActor.common import PushButton, Icon, GridLayout, VBoxLayout
+from spsGUIActor.common import PushButton, Icon, GridLayout, VBoxLayout, TabWidget
 from spsGUIActor.logs import CmdLogArea, RawLogArea
 from spsGUIActor.widgets import CmdButton
 
@@ -67,9 +67,9 @@ class ControlDialog(QDialog):
         self.vbox = VBoxLayout()
 
         self.topbar = Topbar(self)
-        self.tabWidget = QTabWidget(self)
+        self.tabWidget = TabWidget(self)
 
-        self.logArea = QTabWidget(self)
+        self.logArea = TabWidget(self)
 
         self.cmdLog = CmdLogArea()
         self.rawLog = self.rawLogArea()

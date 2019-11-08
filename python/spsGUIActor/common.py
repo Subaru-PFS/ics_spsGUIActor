@@ -7,10 +7,15 @@ imgPath = os.path.abspath(os.path.join(os.path.dirname(spsGUIActor.__file__), '.
 import spsGUIActor.styles as styles
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QComboBox, QCheckBox, QLineEdit, QGridLayout, \
-    QVBoxLayout, QHBoxLayout
+    QVBoxLayout, QHBoxLayout, QTabWidget
 
 spacing = 2
 
+
+class TabWidget(QTabWidget):
+    def __init__(self, *args, **kwargs):
+        QTabWidget.__init__(self, *args, **kwargs)
+        self.setStyleSheet("QTabWidget {font: %dpt; }" % (styles.smallFont))
 
 class SpinBox(QSpinBox):
     def __init__(self, *args, **kwargs):

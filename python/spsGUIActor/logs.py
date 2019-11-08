@@ -30,7 +30,7 @@ class CmdLogArea(QPlainTextEdit):
         self.setReadOnly(True)
 
         self.setStyleSheet("background-color: black;color:white;")
-        self.setFont(QFont("Monospace", 8))
+        self.setFont(QFont("Monospace", styles.smallFont))
 
     def newLine(self, newLine, code=None):
         code = 'i' if code is None else code
@@ -75,7 +75,7 @@ class RawLogArea(QPlainTextEdit):
         self.setReadOnly(True)
 
         self.setStyleSheet("background-color: black;color:white;")
-        self.setFont(QFont("Monospace", 8))
+        self.setFont(QFont("Monospace",  styles.smallFont))
 
         self.logs = ''
         self.parseLog(nbline=2000)
