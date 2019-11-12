@@ -5,6 +5,7 @@ from spsGUIActor.breva import BrevaRow
 from spsGUIActor.cam import CamRow
 from spsGUIActor.common import GridLayout
 from spsGUIActor.dcb import DcbRow
+from spsGUIActor.dcb2 import Dcb2Row
 from spsGUIActor.enu import EnuRow
 from spsGUIActor.sac import SacRow
 
@@ -34,7 +35,9 @@ class Aitmodule(Module):
         Module.__init__(self, mwindow=mwindow, title='AIT')
         actors = mwindow.actor.config.get('ait', 'actors')
 
-        if 'dcb' in actors:
+        if 'dcb2' in actors:
+            self.dcb = [Dcb2Row(self)]
+        elif 'dcb' in actors:
             dcb = DcbRow(self)
             self.dcb = dcb.rows
         else:
