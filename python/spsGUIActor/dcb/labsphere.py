@@ -33,7 +33,8 @@ class AttenuatorCmd(CustomedCmd):
 
 
 class SwitchArc(SwitchButton):
-    def __init__(self, controlPanel, key, label, fmt='{:g}'):
+    def __init__(self, controlPanel, key, label=None, fmt='{:g}'):
+        label = key.capitalize() if label is None else label
         cmdStrOn = 'dcb arc on=%s' % key
         cmdStrOff = 'dcb arc off=%s' % key
         SwitchButton.__init__(self, controlPanel=controlPanel, key=key, label=label, fmt=fmt,
