@@ -54,7 +54,7 @@ def main():
     xcus = ['xcu_%s' % cam for cam in allcams]
     enus = ['enu_sm%i' % i for i in specIds]
 
-    actor = miniActor.connectActor(['hub', 'dcb', 'sac', 'breva', 'seqno'] + enus + ccds + xcus)
+    actor = miniActor.connectActor(['hub', 'dcb', 'sac', 'breva', 'seqno', 'rough1'] + enus + ccds + xcus)
 
     try:
         ex = Spsgui(reactor, actor, args.name)

@@ -7,6 +7,7 @@ from spsGUIActor.common import GridLayout
 from spsGUIActor.dcb import DcbRow
 from spsGUIActor.dcb2 import Dcb2Row
 from spsGUIActor.enu import EnuRow
+from spsGUIActor.rough import RoughRow
 from spsGUIActor.sac import SacRow
 
 
@@ -45,13 +46,16 @@ class Aitmodule(Module):
 
         self.sac = [SacRow(self)] if 'sac' in actors else []
         self.breva = [BrevaRow(self)] if 'breva' in actors else []
+        roughs = ['rough1'] if 'rough1' in actors else []
+
+        self.roughs = [RoughRow(self, rough) for rough in roughs]
 
         self.populateLayout()
         self.adjustSize()
 
     @property
     def rows(self):
-        return self.dcb + self.sac + self.breva
+        return self.dcb + self.sac + self.breva + self.roughs
 
 
 class Specmodule(Module):

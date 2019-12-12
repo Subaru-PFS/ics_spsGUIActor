@@ -26,10 +26,13 @@ class RawCmd(CustomedCmd):
 
 
 class GaugePanel(CamDevice):
-    def __init__(self, controlDialog):
-        CamDevice.__init__(self, controlDialog, 'PCM', 'Ion Gauge')
+    def __init__(self, controlDialog, controllerName=None, label=None, maxWidth=390):
+        controllerName = 'PCM' if controllerName is None else controllerName
+        label = 'Ion Gauge' if label is None else label
+        CamDevice.__init__(self, controlDialog, controllerName, label)
         self.addCommandSet(GaugeCommands(self))
-        self.setMaximumWidth(390)
+        if maxWidth:
+            self.setMaximumWidth(maxWidth)
 
     def createWidgets(self):
         self.pressure = ValueGB(self.moduleRow, 'pressure', 'Pressure(Torr)', 0, '{:g}')

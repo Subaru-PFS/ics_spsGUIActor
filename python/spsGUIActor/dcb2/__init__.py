@@ -15,8 +15,8 @@ from spsGUIActor.widgets import ValueGB, ValueMRow, SwitchMRow, EnumMRow, Contro
 
 
 class Dcb2Row(ModuleRow):
-    def __init__(self, aitModule):
-        ModuleRow.__init__(self, module=aitModule, actorName='dcb', actorLabel='DCB')
+    def __init__(self, spsModule):
+        ModuleRow.__init__(self, module=spsModule, actorName='dcb', actorLabel='DCB')
 
         self.state = ValueMRow(self, 'metaFSM', '', 0, '{:s}')
         self.substate = ValueMRow(self, 'metaFSM', '', 1, '{:s}')
