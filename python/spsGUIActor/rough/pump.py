@@ -89,21 +89,21 @@ class PumpPanel(CamDevice):
 
 
     def setInLayout(self):
-        self.grid.addWidget(self.speed, 0, 0)
-        self.grid.addWidget(self.bodyTemp, 1, 0)
-        self.grid.addWidget(self.controllerTemp, 2, 0)
+        self.grid.addWidget(self.speed, 0, 0, 2, 1)
+        self.grid.addWidget(self.bodyTemp, 2, 0)
+        self.grid.addWidget(self.controllerTemp, 3, 0)
 
-        self.grid.addWidget(self.cycleCount, 3, 0)
-        self.grid.addWidget(self.powerOnTime, 4, 0)
-        self.grid.addWidget(self.pumpingTime, 5, 0)
+        self.grid.addWidget(self.cycleCount, 5, 0)
+        self.grid.addWidget(self.powerOnTime, 5, 1)
+        self.grid.addWidget(self.pumpingTime, 5, 2)
 
         self.grid.addWidget(self.controllerLife, 6, 0)
-        self.grid.addWidget(self.tipSealLife, 7, 0)
-        self.grid.addWidget(self.bearingLife, 8, 0)
+        self.grid.addWidget(self.tipSealLife, 6, 1)
+        self.grid.addWidget(self.bearingLife, 6, 2)
 
-        self.grid.addWidget(self.status, 0, 1, 5, 2)
-        self.grid.addWidget(self.warnings, 5, 1, 2, 2)
-        self.grid.addWidget(self.errors, 7, 1, 2, 2)
+        self.grid.addWidget(self.status, 0, 1, 2, 2)
+        self.grid.addWidget(self.warnings, 2, 1, 1, 2)
+        self.grid.addWidget(self.errors, 3, 1, 1, 2)
 
 
 
