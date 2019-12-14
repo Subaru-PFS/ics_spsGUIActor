@@ -8,7 +8,7 @@ from spsGUIActor.widgets import ValueGB
 
 
 class SourcesPanel(ControllerPanel):
-    ports = dict(hgar=1, neon=2, halogen=3)
+    ports = dict(halogen=1, hgar=2, neon=3, krypton=4)
 
     def __init__(self, controlDialog):
         ControllerPanel.__init__(self, controlDialog, 'sources')
@@ -35,4 +35,5 @@ class SourcesCommands(EnuDeviceCmd):
         EnuDeviceCmd.__init__(self, controlPanel)
         self.grid.addWidget(SwitchArc(controlPanel, 'hgar'), 1, 0)
         self.grid.addWidget(SwitchArc(controlPanel, 'neon'), 2, 0)
-        self.grid.addWidget(SwitchArc(controlPanel, 'halogen'), 3, 0)
+        self.grid.addWidget(SwitchArc(controlPanel, 'krypton'), 3, 0)
+        self.grid.addWidget(SwitchArc(controlPanel, 'halogen'), 4, 0)

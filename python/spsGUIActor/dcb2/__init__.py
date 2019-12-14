@@ -23,6 +23,7 @@ class Dcb2Row(ModuleRow):
 
         self.hgar = SwitchMRow(self, 'hgar', 'Hg-Ar', 0, '{:g}', controllerName='sources')
         self.neon = SwitchMRow(self, 'neon', 'Neon', 0, '{:g}', controllerName='sources')
+        self.krypton = SwitchMRow(self, 'krypton', 'Krypton', 0, '{:g}', controllerName='sources')
         self.halogen = SwitchMRow(self, 'halogen', 'Halogen', 0, '{:g}', controllerName='sources')
 
         self.controllers = Controllers(self)
@@ -30,7 +31,7 @@ class Dcb2Row(ModuleRow):
 
     @property
     def widgets(self):
-        return [self.state, self.substate, self.hgar, self.neon, self.halogen]
+        return [self.state, self.substate, self.hgar, self.neon, self.krypton, self.halogen]
 
 
 class DcbDialog(ControlDialog):
