@@ -1,17 +1,11 @@
 __author__ = 'alefur'
 
-import spsGUIActor.styles as styles
-from PyQt5.QtWidgets import QLineEdit
-
 from spsGUIActor.control import ControlDialog
 from spsGUIActor.dcb import FiberConfig
 from spsGUIActor.dcb2.sources import SourcesPanel
-from spsGUIActor.enu.pdu import PduPanel
 from spsGUIActor.enu import ConnectCmd
 from spsGUIActor.modulerow import ModuleRow
-from spsGUIActor.widgets import ValueGB, ValueMRow, SwitchMRow, EnumMRow, Controllers
-
-
+from spsGUIActor.widgets import ValueMRow, SwitchMRow, Controllers
 
 
 class Dcb2Row(ModuleRow):
@@ -31,7 +25,7 @@ class Dcb2Row(ModuleRow):
 
     @property
     def widgets(self):
-        return [self.state, self.substate, self.hgar, self.neon, self.krypton, self.halogen]
+        return [self.state, self.substate, self.halogen, self.hgar, self.neon, self.krypton]
 
 
 class DcbDialog(ControlDialog):

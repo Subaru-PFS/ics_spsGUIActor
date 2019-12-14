@@ -33,7 +33,7 @@ class SourcesPanel(ControllerPanel):
 class SourcesCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
         EnuDeviceCmd.__init__(self, controlPanel)
-        self.grid.addWidget(SwitchArc(controlPanel, 'hgar'), 1, 0)
-        self.grid.addWidget(SwitchArc(controlPanel, 'neon'), 2, 0)
-        self.grid.addWidget(SwitchArc(controlPanel, 'krypton'), 3, 0)
-        self.grid.addWidget(SwitchArc(controlPanel, 'halogen'), 4, 0)
+        self.grid.addWidget(SwitchArc(controlPanel, 'halogen'), 1, 0)
+        self.grid.addWidget(SwitchArc(controlPanel, 'hgar'), 2, 0)
+        self.grid.addWidget(SwitchArc(controlPanel, 'neon'), 3, 0)
+        self.grid.addWidget(SwitchArc(controlPanel, 'krypton'), 4, 0)
