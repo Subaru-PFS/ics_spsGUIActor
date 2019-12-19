@@ -3,12 +3,12 @@ __author__ = 'alefur'
 from spsGUIActor.control import ControllerPanel
 from spsGUIActor.dcb.labsphere import SwitchArc
 from spsGUIActor.enu import EnuDeviceCmd
-from spsGUIActor.enu.pdu import PduPort
+from spsGUIActor.enu.pdu import PduPort, PduButton
 from spsGUIActor.widgets import ValueGB
 
 
 class SourcesPanel(ControllerPanel):
-    ports = dict(halogen=1, hgar=2, neon=3, krypton=4)
+    ports = dict(halogen=1, hgar=2, neon=3, krypton=4, bakeblue=6, bakered=7)
 
     def __init__(self, controlDialog):
         ControllerPanel.__init__(self, controlDialog, 'sources')
@@ -37,3 +37,5 @@ class SourcesCommands(EnuDeviceCmd):
         self.grid.addWidget(SwitchArc(controlPanel, 'hgar'), 2, 0)
         self.grid.addWidget(SwitchArc(controlPanel, 'neon'), 3, 0)
         self.grid.addWidget(SwitchArc(controlPanel, 'krypton'), 4, 0)
+        self.grid.addWidget(PduButton(controlPanel,  controlPanel.pduPorts[4]), 5, 0)
+        self.grid.addWidget(PduButton(controlPanel, controlPanel.pduPorts[5]), 6, 0)
