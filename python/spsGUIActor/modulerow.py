@@ -55,6 +55,7 @@ class ModuleRow(object):
         self.controlDialog = controlDialog
 
     def showDetails(self):
+        self.controlDialog.activateWindow()
         self.controlDialog.setVisible(True)
 
 
