@@ -1,9 +1,10 @@
 __author__ = 'alefur'
+
 from functools import partial
 
 import spsGUIActor.styles as styles
-from PyQt5.QtWidgets import QLabel, QGroupBox, QMessageBox
 from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QLabel, QGroupBox, QMessageBox
 from spsGUIActor.common import PushButton, DoubleSpinBox, SpinBox, GridLayout, GBoxGrid
 
 convertText = {'on': 'ON', 'off': 'OFF', 'nan': 'nan', 'undef': 'undef', 'pending': 'OFF'}
@@ -214,7 +215,7 @@ class CmdButton(PushButton):
             msg = 'Are you sure you want to send the following command ? \n\r\n %s' % cmdStr
             if QMessageBox.critical(self, 'Warning', msg, QMessageBox.Ok, QMessageBox.Cancel) != QMessageBox.Ok:
                 self.setChecked(False)
-                granted = True
+                granted = False
 
         return granted
 
