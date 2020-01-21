@@ -99,8 +99,9 @@ class CamRow(ModuleRow):
     def displayed(self):
         return [self.actorStatus, self.xcu.cryoMode, self.ccd.substate, self.ccd.temperature, self.xcu.pressure]
 
-    def setOnline(self):
-        self.actorStatus.setStatus(sum([self.ccd.isOnline + self.xcu.isOnline]))
+    def setOnline(self, isOnline=None):
+        status = sum([self.ccd.isOnline + self.xcu.isOnline]) if isOnline is None else int(isOnline)
+        self.actorStatus.setStatus(status)
 
 
 class CamDialog(ControlDialog):

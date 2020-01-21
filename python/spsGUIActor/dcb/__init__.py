@@ -9,34 +9,30 @@ from spsGUIActor.dcb.labsphere import LabspherePanel, AttenuatorValue
 from spsGUIActor.dcb.mono import MonoPanel
 from spsGUIActor.dcb.monoqth import MonoQthPanel
 from spsGUIActor.enu import ConnectCmd
-from spsGUIActor.modulerow import ModuleRow
-from spsGUIActor.widgets import ValueGB, ValueMRow, SwitchMRow, EnumMRow, Controllers
+from spsGUIActor.modulerow import ModuleRow, RowWidget
+from spsGUIActor.widgets import ValueGB, ValueMRow, SwitchMRow, Controllers
 
 
-class RowOne:
+class RowOne(RowWidget):
     def __init__(self, dcbRow):
-        self.dcbRow = dcbRow
+        RowWidget.__init__(self, dcbRow)
 
     @property
     def widgets(self):
-        dcbRow = self.dcbRow
-        return [dcbRow.state, dcbRow.substate, dcbRow.labsphere, dcbRow.attenuator,
-                dcbRow.photodiode, dcbRow.halogen, dcbRow.neon, dcbRow.krypton, dcbRow.hgar]
-
-    @property
-    def displayed(self):
-        return [self.dcbRow.actorStatus] + self.widgets
+        dcbRow = self.moduleRow
+        return [dcbRow.state, dcbRow.substate, dcbRow.labsphere, dcbRow.attenuator, dcbRow.photodiode, dcbRow.halogen,
+                dcbRow.neon, dcbRow.krypton, dcbRow.hgar]
 
 
-class RowTwo:
+class RowTwo(RowWidget):
     def __init__(self, dcbRow):
-        self.dcbRow = dcbRow
+        RowWidget.__init__(self, dcbRow)
 
     @property
     def widgets(self):
-        dcbRow = self.dcbRow
-        return [dcbRow.mono, dcbRow.monoqth, dcbRow.monoshutter, dcbRow.wavelength,
-                dcbRow.xenon, dcbRow.deuterium, dcbRow.argon]
+        dcbRow = self.moduleRow
+        return [dcbRow.mono, dcbRow.monoqth, dcbRow.monoshutter, dcbRow.wavelength, dcbRow.xenon, dcbRow.deuterium,
+                dcbRow.argon]
 
     @property
     def displayed(self):
