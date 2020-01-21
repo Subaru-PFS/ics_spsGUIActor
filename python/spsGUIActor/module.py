@@ -18,6 +18,7 @@ class Module(QGroupBox):
         self.setLayout(self.grid)
         self.setTitle(title)
         self.mwindow = mwindow
+        self.setStyleSheet()
 
     @property
     def rows(self):
@@ -29,6 +30,17 @@ class Module(QGroupBox):
                 if widget is None:
                     continue
                 self.grid.addWidget(widget, i, j)
+
+    def setEnabled(self, a0: bool) -> None:
+        for row in self.rows:
+            row.setOnline(a0)
+
+        QGroupBox.setEnabled(self, a0)
+
+    def setStyleSheet(self, styleSheet=None):
+        styleSheet = "QGroupBox {;border: 1px solid lightgray;border-radius: 3px;margin-top: 6px;} " \
+                     "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 0px;}"
+        QGroupBox.setStyleSheet(self, styleSheet)
 
 
 class Aitmodule(Module):

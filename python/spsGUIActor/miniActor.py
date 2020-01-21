@@ -14,12 +14,6 @@ class OurActor(actorcore.ICC.ICC):
                                    modelNames=modelNames)
 
         self.logger.setLevel(logLevel)
-        self.everConnected = False
-
-    def connectionMade(self):
-        if self.everConnected is False:
-            logging.info("alive!!!!")
-            self.everConnected = True
 
     def disconnectActor(self):
         self.shuttingDown = True

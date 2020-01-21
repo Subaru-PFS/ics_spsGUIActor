@@ -14,19 +14,38 @@ class Spsgui(QMainWindow):
         QMainWindow.__init__(self)
         self.reactor = reactor
         self.actor = actor
+        self.actor.connectionMade = self.connectionMade
         self.setName("%s.%s" % ("spsGUIActor", cmdrName))
+        self.isConnected = False
 
         self.spsWidget = SpsWidget(self)
         self.setCentralWidget(self.spsWidget)
 
         self.setMaximumHeight(100)
         self.showMinimized()
+        self.setConnected(False)
+
+    def setConnected(self, isConnected):
+        self.isConnected = isConnected
+        self.spsWidget.setEnabled(isConnected)
+
+    def connectionMade(self):
+        """ For overriding. """
+        self.setConnected(True)
+        self.actor.cmdr.connectionLost = self.connectionLost
+
+    def connectionLost(self, reason):
+        """ For overriding. """
+        self.setConnected(False)
+        if not self.actor.shuttingDown:
+            self.spsWidget.showError("Connection Lost", f"Connection to tron has failed : \n{reason}")
 
     def setName(self, name):
         self.cmdrName = name
         self.setWindowTitle(name)
 
     def closeEvent(self, QCloseEvent):
+        self.actor.disconnectActor()
         self.reactor.callFromThread(self.reactor.stop)
         QCloseEvent.accept()
 

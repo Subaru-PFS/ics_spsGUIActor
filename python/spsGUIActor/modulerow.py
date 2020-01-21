@@ -6,7 +6,7 @@ import spsGUIActor.styles as styles
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QGroupBox, QGridLayout
 from spsGUIActor.common import PushButton
-from spsGUIActor.widgets import ValueGB, Controllers
+from spsGUIActor.widgets import ValueGB
 
 
 class ModuleRow(object):
@@ -32,7 +32,7 @@ class ModuleRow(object):
 
     @property
     def isOnline(self):
-        return self.actorName in self.models['hub'].keyVarDict['actors']
+        return self.mwindow.isConnected and self.actorName in self.models['hub'].keyVarDict['actors']
 
     @property
     def displayed(self):
@@ -96,3 +96,19 @@ class ActorGB(ValueGB, QGroupBox):
 
     def setText(self, txt):
         self.button.setText(txt)
+
+
+class RowWidget:
+    def __init__(self, moduleRow):
+        self.moduleRow = moduleRow
+
+    @property
+    def widgets(self):
+        return []
+
+    @property
+    def displayed(self):
+        return [self.moduleRow.actorStatus] + self.widgets
+
+    def setOnline(self, isOnline):
+        self.moduleRow.setOnline(isOnline)
