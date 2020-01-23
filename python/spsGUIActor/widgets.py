@@ -45,6 +45,7 @@ class ValueGB(QGroupBox):
             strValue = 'nan'
 
         self.setText(strValue)
+        self.moduleRow.mwindow.heartBeat()
 
     def setBackground(self, background):
         col1, col2 = styles.colormap(background)
@@ -63,7 +64,6 @@ class ValueGB(QGroupBox):
 
     def setText(self, txt):
         self.value.setText(txt)
-        self.moduleRow.heartBeat()
         self.customize()
 
     def customize(self):

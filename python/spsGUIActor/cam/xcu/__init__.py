@@ -62,9 +62,6 @@ class XcuRow(ModuleRow):
         ModuleRow.setOnline(self)
         self.camRow.setOnline()
 
-    def heartBeat(self):
-        self.camRow.heartBeat()
-
     def createDialog(self, tabWidget):
         self.controlDialog = XcuDialog(self, tabWidget)
 

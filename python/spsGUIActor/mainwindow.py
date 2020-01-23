@@ -1,10 +1,24 @@
 __author__ = 'alefur'
 
 import spsGUIActor.styles as styles
-from PyQt5.QtWidgets import QWidget, QMessageBox, QGroupBox, QLabel
+from PyQt5.QtWidgets import QWidget, QMessageBox, QGroupBox, QLabel, QDial
 from spsGUIActor.common import GridLayout, HBoxLayout
 from spsGUIActor.module import Aitmodule, Specmodule
 from spsGUIActor.widgets import ValueGB
+
+
+class TronDial(QDial):
+    def __init__(self):
+        QDial.__init__(self)
+        self.setMinimum(0)
+        self.setMaximum(10)
+        self.setValue(0)
+        self.setMaximumSize(30, 30)
+
+    def heartBeat(self):
+        value = self.value() + 1
+        value = 0 if value > self.maximum() else value
+        self.setValue(value)
 
 
 class TronLayout(HBoxLayout):
@@ -26,10 +40,13 @@ class TronStatus(ValueGB):
         self.setTitle('TRON')
 
         self.grid = GridLayout()
-        self.grid.setContentsMargins(*((fontSize - 1,) * 4))
+        self.grid.setContentsMargins(5, 0, 0, 0)
 
         self.value = QLabel()
+        self.dial = TronDial()
+
         self.grid.addWidget(self.value, 0, 0)
+        self.grid.addWidget(self.dial, 0, 1)
         self.setLayout(self.grid)
 
     def setEnabled(self, isOnline):
@@ -43,11 +60,12 @@ class SpsWidget(QWidget):
     def __init__(self, spsGUI):
         QWidget.__init__(self)
         self.spsGUI = spsGUI
+        self.tronLayout = TronLayout()
         self.mainLayout = GridLayout()
         self.mainLayout.setSpacing(1)
         self.mainLayout.setContentsMargins(0, 0, 0, 0)
 
-        self.mainLayout.addLayout(TronLayout(), 0, 0)
+        self.mainLayout.addLayout(self.tronLayout, 0, 0)
         self.mainLayout.addWidget(Aitmodule(self), 1, 0)
 
         for smId in range(1, 5):
@@ -56,7 +74,7 @@ class SpsWidget(QWidget):
 
             arms = [arm.strip() for arm in self.actor.config.get('sm%d' % smId, 'arms').split(',') if arm]
             enu = self.actor.config.getboolean('sm%d' % smId, 'enu')
-            self.mainLayout.addWidget(Specmodule(self, smId=smId, enu=enu, arms=arms), smId+1, 0)
+            self.mainLayout.addWidget(Specmodule(self, smId=smId, enu=enu, arms=arms), smId + 1, 0)
 
         self.setLayout(self.mainLayout)
 
@@ -75,6 +93,9 @@ class SpsWidget(QWidget):
                                       timeLim=1600,
                                       callFunc=callFunc,
                                       callCodes=keyvar.AllCodes))
+
+    def heartBeat(self):
+        self.tronLayout.tronStatus.dial.heartBeat()
 
     def showError(self, title, error):
         reply = QMessageBox.critical(self, title, error, QMessageBox.Ok)
