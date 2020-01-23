@@ -48,9 +48,6 @@ class ModuleRow(object):
         for widget in self.displayed + [self.controlDialog]:
             widget.setEnabled(isOnline)
 
-    def heartBeat(self):
-        pass
-
     def createDialog(self, controlDialog):
         self.controlDialog = controlDialog
 
