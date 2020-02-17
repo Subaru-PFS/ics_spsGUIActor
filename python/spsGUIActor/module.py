@@ -59,6 +59,7 @@ class Aitmodule(Module):
         self.sac = [SacRow(self)] if 'sac' in actors else []
         self.breva = [BrevaRow(self)] if 'breva' in actors else []
         roughs = ['rough1'] if 'rough1' in actors else []
+        roughs += (['rough2'] if 'rough2' in actors else [])
 
         self.roughs = [RoughRow(self, rough) for rough in roughs]
 
