@@ -21,7 +21,7 @@ class ValueGB(QGroupBox):
         self.setTitle('%s' % self.title)
 
         self.grid = GridLayout()
-        self.grid.setContentsMargins(*((fontSize - 1,) * 4))
+        self.grid.setContentsMargins(*[2, fontSize - 2, 2, fontSize - 2])
 
         self.value = QLabel()
         self.grid.addWidget(self.value, 0, 0)
@@ -186,12 +186,27 @@ class SpinBoxGB(QGroupBox):
         return int(self.value.value())
 
 
+class SafetyCheck(QMessageBox):
+    def __init__(self, cmdStr):
+        QMessageBox.__init__(self)
+        title = 'Would you like to confirm the following command ?'
+        self.setWindowTitle(title)
+        self.setStyleSheet("""QMessageBox QLabel {color: rgb(0, 0, 0); font-weight:bold;}""")
+        self.setIcon(QMessageBox.Critical)
+
+        offset = len(title) - len(cmdStr) + 15
+        offset = offset if offset > 0 else 0
+        cntText = f"{cmdStr}{offset * ' '}"
+        self.setText(cntText)
+        self.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+
 class CmdButton(PushButton):
     def __init__(self, controlPanel, label, controlDialog=False, cmdStr=False, safetyCheck=False):
         self.controlDialog = controlPanel.controlDialog if controlPanel is not None else controlDialog
         self.cmdStr = cmdStr
         self.safetyCheck = safetyCheck
-        PushButton.__init__(self, label)
+        PushButton.__init__(self, label, safetyCheck=safetyCheck)
         self.setCheckable(True)
         self.clicked.connect(self.getCommand)
         self.setEnabled(self.controlDialog.moduleRow.isOnline)
@@ -212,8 +227,8 @@ class CmdButton(PushButton):
     def accessGranted(self, cmdStr):
         granted = True
         if self.safetyCheck:
-            msg = 'Are you sure you want to send the following command ? \n\r\n %s' % cmdStr
-            if QMessageBox.critical(self, 'Warning', msg, QMessageBox.Ok, QMessageBox.Cancel) != QMessageBox.Ok:
+            msgBox = SafetyCheck(cmdStr)
+            if msgBox.exec() != QMessageBox.Ok:
                 self.setChecked(False)
                 granted = False
 
