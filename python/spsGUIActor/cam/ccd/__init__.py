@@ -35,7 +35,7 @@ class ReadRows(QProgressBar):
 class CcdState(ValueMRow):
     def __init__(self, moduleRow):
         self.moduleRow = moduleRow
-        ValueMRow.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}', controllerName='fee')
+        ValueMRow.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}', controllerName='ccd')
         self.readRows = ReadRows(moduleRow)
         self.grid.addWidget(self.readRows, 0, 0)
 
@@ -59,13 +59,13 @@ class CcdRow(ModuleRow):
                            actorName='ccd_%s%i' % (camRow.arm, camRow.module.smId), actorLabel='CCD')
 
         self.substate = CcdState(self)
-        self.temperature = ValueMRow(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', controllerName='fee')
-        self.readRows = ReadRows(self)
+        #self.temperature = ValueMRow(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', controllerName='fee')
+        #self.readRows = ReadRows(self)
         self.controllers = Controllers(self)
 
     @property
     def widgets(self):
-        return [self.substate, self.temperature]
+        return [self.substate]
 
     def setOnline(self):
         ModuleRow.setOnline(self)

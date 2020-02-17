@@ -8,12 +8,19 @@ from spsGUIActor.widgets import ValueGB
 
 
 class TronDial(QDial):
+    style = ''' QDial{background-color:QLinearGradient(x1: 0.177, y1: 0.004, x2: 0.831, y2: 0.911,  stop: 0 white,
+    stop: 0.061 white, stop: 0.066 lightgray, stop: 0.5 #242424, stop: 0.505 #000000,stop: 0.827 #040404,
+    stop: 0.966 #292929,stop: 0.983 #2e2e2e); }'''
+
     def __init__(self):
         QDial.__init__(self)
         self.setMinimum(0)
         self.setMaximum(10)
         self.setValue(0)
         self.setMaximumSize(30, 30)
+        self.setWrapping(True)  # Smooth transition from 99 to 0
+        self.setNotchesVisible(True)
+        self.setStyleSheet(self.style)
 
     def heartBeat(self):
         value = self.value() + 1

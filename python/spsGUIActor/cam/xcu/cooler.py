@@ -14,7 +14,7 @@ class TempLoopCmd(CustomedCmd):
         self.addWidget(self.value, 0, 1)
 
     def buildCmd(self):
-        return '%s cooler on setpoint=%d' % (self.controlPanel.actorName, self.value.getValue())
+        return f'{self.controlPanel.actorName} {self.controlPanel.controllerName} on setpoint=%d' % self.value.getValue()
 
 
 class PowerLoopCmd(CustomedCmd):
@@ -25,7 +25,7 @@ class PowerLoopCmd(CustomedCmd):
         self.addWidget(self.value, 0, 1)
 
     def buildCmd(self):
-        return '%s cooler power setpoint=%d' % (self.controlPanel.actorName, self.value.getValue())
+        return f'{self.controlPanel.actorName} {self.controlPanel.controllerName} power setpoint=%d' % self.value.getValue()
 
 
 class RawCmd(CustomedCmd):
@@ -36,13 +36,13 @@ class RawCmd(CustomedCmd):
         self.addWidget(self.rawCmd, 0, 1)
 
     def buildCmd(self):
-        cmdStr = '%s cooler raw=%s' % (self.controlPanel.actorName, self.rawCmd.text())
+        cmdStr = f'{self.controlPanel.actorName} {self.controlPanel.controllerName} raw=%s' % self.rawCmd.text()
         return cmdStr
 
 
 class Status(ValueGB):
-    def __init__(self, moduleRow):
-        ValueGB.__init__(self, moduleRow, 'coolerStatus', 'Status', 2, '{:s}')
+    def __init__(self, moduleRow, cooler):
+        ValueGB.__init__(self, moduleRow, f'{cooler}Status', 'Status', 2, '{:s}')
 
     def setText(self, txt):
         ftext = [stat for stat in txt.split(',') if 'bit ' not in stat]
@@ -51,25 +51,25 @@ class Status(ValueGB):
 
 
 class CoolerPanel(CamDevice):
-    def __init__(self, controlDialog):
-        CamDevice.__init__(self, controlDialog, 'cooler')
+    def __init__(self, controlDialog, coolerName='cooler'):
+        CamDevice.__init__(self, controlDialog, coolerName)
         self.addCommandSet(CoolerCommands(self))
 
     def createWidgets(self):
-        self.status = Status(self.moduleRow)
+        cooler = self.controllerName
+        self.status = Status(self.moduleRow, cooler)
+        self.controlLoop = ValueGB(self.moduleRow, f'{cooler}Loop', 'controlLoop', 0, '{:s}')
+        self.kP = ValueGB(self.moduleRow, f'{cooler}Loop', 'P', 1, '{:g}')
+        self.kI = ValueGB(self.moduleRow, f'{cooler}Loop', 'I', 2, '{:g}')
+        self.kD = ValueGB(self.moduleRow, f'{cooler}Loop', 'D', 3, '{:g}')
 
-        self.controlLoop = ValueGB(self.moduleRow, 'coolerLoop', 'controlLoop', 0, '{:s}')
-        self.kP = ValueGB(self.moduleRow, 'coolerLoop', 'P', 1, '{:g}')
-        self.kI = ValueGB(self.moduleRow, 'coolerLoop', 'I', 2, '{:g}')
-        self.kD = ValueGB(self.moduleRow, 'coolerLoop', 'D', 3, '{:g}')
+        self.setpoint = ValueGB(self.moduleRow, f'{cooler}Temps', 'setPoint(K)', 0, '{:g}')
+        self.tip = ValueGB(self.moduleRow, f'{cooler}Temps', 'Tip(K)', 2, '{:g}')
+        self.reject = ValueGB(self.moduleRow, f'{cooler}Temps', 'Reject(°C)', 1, '{:g}')
 
-        self.setpoint = ValueGB(self.moduleRow, 'coolerTemps', 'setPoint(K)', 0, '{:g}')
-        self.tip = ValueGB(self.moduleRow, 'coolerTemps', 'Tip(K)', 2, '{:g}')
-        self.reject = ValueGB(self.moduleRow, 'coolerTemps', 'Reject(°C)', 1, '{:g}')
-
-        self.minPower = ValueGB(self.moduleRow, 'coolerStatus', 'minPower(W)', 3, '{:g}')
-        self.power = ValueGB(self.moduleRow, 'coolerTemps', 'Power(W)', 3, '{:g}')
-        self.maxPower = ValueGB(self.moduleRow, 'coolerStatus', 'maxPower(W)', 4, '{:g}')
+        self.minPower = ValueGB(self.moduleRow, f'{cooler}Status', 'minPower(W)', 3, '{:g}')
+        self.power = ValueGB(self.moduleRow, f'{cooler}Temps', 'Power(W)', 3, '{:g}')
+        self.maxPower = ValueGB(self.moduleRow, f'{cooler}Status', 'maxPower(W)', 4, '{:g}')
 
     def setInLayout(self):
         self.grid.addWidget(self.status, 0, 0)
@@ -91,10 +91,12 @@ class CoolerPanel(CamDevice):
 class CoolerCommands(ControllerCmd):
     def __init__(self, controlPanel):
         ControllerCmd.__init__(self, controlPanel)
+        self.connectButton.cmdStr = f'{self.controlPanel.actorName} connect controller=cooler name={self.controlPanel.controllerName}'
         self.tempLoop = TempLoopCmd(controlPanel=controlPanel)
         self.powerLoop = PowerLoopCmd(controlPanel=controlPanel)
         self.coolerOff = CmdButton(controlPanel=controlPanel, label='COOLER OFF',
-                                   cmdStr='%s cooler off' % controlPanel.actorName, safetyCheck=True)
+                                   cmdStr=f'{self.controlPanel.actorName} {self.controlPanel.controllerName} off',
+                                   safetyCheck=True)
 
         self.rawCmd = RawCmd(controlPanel=controlPanel)
 

@@ -1,5 +1,6 @@
 __author__ = 'alefur'
 
+import numpy as np
 from spsGUIActor.cam.xcu.cooler import CoolerPanel
 from spsGUIActor.cam.xcu.gatevalve import GVPanel
 from spsGUIActor.cam.xcu.gauge import GaugePanel
@@ -44,6 +45,27 @@ class SetCryoMode(CustomedCmd):
         return cmdStr
 
 
+class DetectorTemp(ValueMRow):
+    def __init__(self, moduleRow):
+        ValueMRow.__init__(self, moduleRow, 'temps', 'Temperature(K)', 10, '{:g}', controllerName='temps')
+
+    def updateVals(self, ind, fmt, keyvar):
+        values = keyvar.getValue(doRaise=False)
+        values = (values,) if not isinstance(values, tuple) else values
+
+        temps = np.array([values[i] for i in [10, 11] if values[i] is not None])
+        temps[temps >= 400] = np.nan
+
+        try:
+            value = np.nanmean(temps)
+            strValue = fmt.format(value)
+        except TypeError:
+            strValue = 'nan'
+
+        self.setText(strValue)
+        self.moduleRow.mwindow.heartBeat()
+
+
 class XcuRow(ModuleRow):
     def __init__(self, camRow):
         self.camRow = camRow
@@ -51,12 +73,13 @@ class XcuRow(ModuleRow):
                            actorName='xcu_%s%i' % (camRow.arm, camRow.module.smId), actorLabel='XCU')
 
         self.cryoMode = ValueMRow(self, 'cryoMode', 'cryoMode', 0, '{:s}', controllerName='')
+        self.temperature = DetectorTemp(self)
         self.pressure = ValueMRow(self, 'pressure', 'Pressure(Torr)', 0, '{:g}', controllerName='PCM')
         self.controllers = Controllers(self)
 
     @property
     def widgets(self):
-        return [self.cryoMode, self.pressure]
+        return [self.cryoMode, self.temperature, self.pressure]
 
     def setOnline(self):
         ModuleRow.setOnline(self)
@@ -86,7 +109,7 @@ class XcuDialog(ControlDialog):
         self.ionpumpPanel = IonpumpPanel(self)
         self.gaugePanel = GaugePanel(self)
 
-        self.coolerPanel = CoolerPanel(self)
+        self.coolerPanels = [CoolerPanel(self), CoolerPanel(self, 'cooler2')] if self.isNir else [CoolerPanel(self)]
         self.tempsPanel = TempsPanel(self)
         self.heatersPanel = HeatersPanel(self)
 
@@ -99,9 +122,11 @@ class XcuDialog(ControlDialog):
         vacuumPanel.addWidget(self.turboPanel, 2, 0, 1, 3)
         vacuumPanel.addWidget(self.ionpumpPanel, 3, 0, 1, 3)
 
-        coolingPanel.addWidget(self.coolerPanel, 0, 0, 1, 1)
-        coolingPanel.addWidget(self.tempsPanel, 1, 0, 1, 1)
-        coolingPanel.addWidget(self.heatersPanel, 2, 0, 1, 1)
+        for i, cooler in enumerate(self.coolerPanels):
+            coolingPanel.addWidget(cooler, i, 0)
+
+        coolingPanel.addWidget(self.tempsPanel, i + 1, 0)
+        coolingPanel.addWidget(self.heatersPanel, i + 2, 0)
 
         self.tabWidget.addTab(self.pcmPanel, 'PCM')
         self.tabWidget.addTab(self.motorsPanel, 'Motors')
@@ -116,4 +141,8 @@ class XcuDialog(ControlDialog):
     @property
     def pannels(self):
         return [self.pcmPanel, self.motorsPanel, self.GVPanel, self.interlockPanel, self.turboPanel, self.ionpumpPanel,
-                self.gaugePanel, self.coolerPanel, self.tempsPanel, self.heatersPanel]
+                self.gaugePanel, self.tempsPanel, self.heatersPanel] + self.coolerPanels
+
+    @property
+    def isNir(self):
+        return self.moduleRow.camRow.arm == 'n'

@@ -1,5 +1,5 @@
 __author__ = 'alefur'
-from spsGUIActor.cam import CamDevice
+from spsGUIActor.cam import CamDevice, ExposureState
 from spsGUIActor.control import CommandsGB
 from spsGUIActor.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, SpinBoxGB
 
@@ -37,15 +37,6 @@ class DarksCmd(CustomedCmd):
         return cmdStr
 
 
-class CcdState(ValueGB):
-    def __init__(self, moduleRow):
-        self.moduleRow = moduleRow
-        ValueGB.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}')
-
-    def setText(self, txt):
-        txt = txt.upper()
-        ValueGB.setText(self, txt)
-
 
 class CcdPanel(CamDevice):
     def __init__(self, controlDialog):
@@ -53,7 +44,7 @@ class CcdPanel(CamDevice):
         self.addCommandSet(CcdCommands(self))
 
     def createWidgets(self):
-        self.state = CcdState(self.moduleRow, )
+        self.state = ExposureState(self.moduleRow)
         self.rootDir = ValueGB(self.moduleRow, 'filepath', 'rootDir', 0, '{:s}')
         self.nightDir = ValueGB(self.moduleRow, 'filepath', 'nightDir', 1, '{:s}')
         self.filename = ValueGB(self.moduleRow, 'filepath', 'filename', 2, '{:s}')
