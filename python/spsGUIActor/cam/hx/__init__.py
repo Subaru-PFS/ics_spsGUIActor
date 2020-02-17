@@ -23,6 +23,7 @@ class HxRow(ModuleRow):
 
         self.controllers = Controllers(self)
         self.substate = ExposureState(self)
+        self.actorStatus.button.setEnabled(False)
 
     @property
     def widgets(self):

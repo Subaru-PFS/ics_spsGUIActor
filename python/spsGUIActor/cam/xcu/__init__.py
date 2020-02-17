@@ -78,6 +78,7 @@ class XcuRow(ModuleRow):
         self.temperature = DetectorTemp(self)
         self.pressure = ValueMRow(self, 'pressure', 'Pressure(Torr)', 0, '{:g}', controllerName='PCM')
         self.controllers = Controllers(self)
+        self.actorStatus.button.setEnabled(False)
 
     @property
     def widgets(self):
