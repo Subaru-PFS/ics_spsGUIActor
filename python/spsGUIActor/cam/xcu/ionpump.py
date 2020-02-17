@@ -5,6 +5,18 @@ from spsGUIActor.control import ControllerCmd
 from spsGUIActor.widgets import SwitchGB, ValuesRow, ValueGB, CustomedCmd
 
 
+class Status(ValueGB):
+    def __init__(self, moduleRow, pumpId):
+        ValueGB.__init__(self, moduleRow, f'ionpump{pumpId}Errors', 'status', 2, '{:s}')
+
+    def setText(self, txt):
+        ftext = '\n'.join([stat for stat in txt.split(',') if 'bit ' not in stat])
+        self.value.setText(ftext)
+        background = 'red' if ftext!='OK' else 'green'
+        self.setColor(background=background, police='white')
+        self.setEnabled(self.moduleRow.isOnline)
+
+
 class Ionpump(ValuesRow):
     def __init__(self, moduleRow, pumpId):
         widgets = [SwitchGB(moduleRow, f'ionpump{pumpId}', 'state', 0, '{:g}'),
@@ -15,11 +27,8 @@ class Ionpump(ValuesRow):
 
         ValuesRow.__init__(self, widgets, title=f'ionpump{pumpId}'.capitalize())
 
-        errors = [ValueGB(moduleRow, f'ionpump{pumpId}Errors', 'errorMask', 0, '{:02X}'),
-                  ValueGB(moduleRow, f'ionpump{pumpId}Errors', 'status', 1, '{:s}')]
-
-        for i, widget in enumerate(errors):
-            self.grid.addWidget(widget, 1, i)
+        self.grid.addWidget(ValueGB(moduleRow, f'ionpump{pumpId}Errors', 'errorMask', 0, '{:02X}'), 1, 0)
+        self.grid.addWidget(Status(moduleRow, pumpId), 1, 1, 1, 4)
 
 
 class IonpumpPanel(CamDevice):

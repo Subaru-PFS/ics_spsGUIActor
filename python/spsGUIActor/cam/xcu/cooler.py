@@ -45,9 +45,11 @@ class Status(ValueGB):
         ValueGB.__init__(self, moduleRow, f'{cooler}Status', 'Status', 2, '{:s}')
 
     def setText(self, txt):
-        ftext = [stat for stat in txt.split(',') if 'bit ' not in stat]
-        self.value.setText('\n'.join(ftext))
-        self.customize()
+        ftext = '\n'.join([stat for stat in txt.split(',') if 'bit ' not in stat])
+        self.value.setText(ftext)
+        background = 'red' if ftext!='OK' else 'green'
+        self.setColor(background=background, police='white')
+        self.setEnabled(self.moduleRow.isOnline)
 
 
 class CoolerPanel(CamDevice):
@@ -72,9 +74,9 @@ class CoolerPanel(CamDevice):
         self.maxPower = ValueGB(self.moduleRow, f'{cooler}Status', 'maxPower(W)', 4, '{:g}')
 
     def setInLayout(self):
-        self.grid.addWidget(self.status, 0, 0)
+        self.grid.addWidget(self.status, 0, 1, 1, 2)
 
-        self.grid.addWidget(self.controlLoop, 0, 1)
+        self.grid.addWidget(self.controlLoop, 0, 0)
         self.grid.addWidget(self.kP, 1, 0)
         self.grid.addWidget(self.kI, 1, 1)
         self.grid.addWidget(self.kD, 1, 2)
