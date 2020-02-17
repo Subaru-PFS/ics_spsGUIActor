@@ -1,12 +1,14 @@
 __author__ = 'alefur'
+
 from spsGUIActor.cam import CamDevice
 from spsGUIActor.control import CommandsGB
 from spsGUIActor.widgets import SwitchGB, ValuesRow, ValueGB, CustomedCmd, CmdButton, DoubleSpinBoxGB, SwitchButton
-
+from spsGUIActor.cam.xcu import addEng
 
 class HeaterState(ValuesRow):
     def __init__(self, controlPanel, name):
         heaterNb = controlPanel.heaterChannels[name]
+        self.name = name
         widgets = [SwitchGB(controlPanel.moduleRow, 'heaters', 'enabled', heaterNb, '{:g}'),
                    ValueGB(controlPanel.moduleRow, 'heaters', 'fraction', heaterNb + 2, '{:.2f}')]
 
@@ -24,7 +26,8 @@ class HeatersPanel(CamDevice):
         self.addCommandSet(HeatersCommands(self))
 
     def createWidgets(self):
-        heaterNames = self.heaterNames[self.moduleRow.camRow.arm]
+        sortedChannels = dict(sorted(self.heaterChannels.items(), key=lambda kv: kv[1])).keys()
+        heaterNames = sortedChannels if addEng else self.heaterNames[self.moduleRow.camRow.arm]
         self.heaters = [HeaterState(self, name) for name in heaterNames]
 
     def setInLayout(self):
@@ -46,7 +49,7 @@ class HPCmd(SwitchButton):
         self.buttonOff.setVisible(not bool)
 
 
-class HeaterCmd(CustomedCmd):
+class FracCmd(CustomedCmd):
     def __init__(self, controlPanel, name):
         self.name = name
         CustomedCmd.__init__(self, controlPanel, buttonLabel='SET %s' % name.upper())
@@ -63,12 +66,11 @@ class HeatersCommands(CommandsGB):
         CommandsGB.__init__(self, controlPanel)
         self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
                                       cmdStr='%s heaters status' % controlPanel.actorName)
-
-        hp, frac = self.controlPanel.heaterNames[self.controlPanel.moduleRow.camRow.arm]
-
-        self.hPCmd = HPCmd(controlPanel, hp)
-        self.heaterCmd = HeaterCmd(controlPanel, frac)
-
         self.grid.addWidget(self.statusButton, 0, 0)
-        self.grid.addWidget(self.hPCmd, 1, 0)
-        self.grid.addLayout(self.heaterCmd, 2, 0)
+
+        for i, heater in enumerate(controlPanel.heaters):
+            name = heater.name
+            if name in ['spreader', 'shield']:
+                self.grid.addWidget(HPCmd(controlPanel, name), 1 + i, 0)
+            else:
+                self.grid.addLayout(FracCmd(controlPanel, name), 1 + i, 0)

@@ -4,11 +4,13 @@ from spsGUIActor.common import LineEdit
 from spsGUIActor.control import ControllerCmd
 from spsGUIActor.widgets import ValueGB, CustomedCmd
 
+from spsGUIActor.cam.xcu import addEng
+
 
 class TempsPanel(CamDevice):
-    visNames = ['Detector Box', 'Mangin', 'Spider', 'Thermal Spreader', 'Front Ring', '', '', '', '', '', 'Detector 1',
-                'Detector 2']
-    nirNames = ['Mirror Cell 1', 'Mangin', 'Mirror Cell 2', 'SiC Spreader', 'Front Ring', 'Spreader Pan', '',
+    visNames = ['Detector Box', 'Mangin', 'Spider', 'Thermal Spreader', 'Front Ring',
+                'Channel06', 'Channel07', 'Channel08', 'Channel09', 'Channel10', 'Detector 1','Detector 2']
+    nirNames = ['Mirror Cell 1', 'Mangin', 'Mirror Cell 2', 'SiC Spreader', 'Front Ring', 'Spreader Pan', 'Channel07',
                 'Radiation Shield 1', 'Radiation Shield 2', 'Sidecar', 'Detector 1', 'Detector 2']
     probeNames = dict(b=visNames, r=visNames, n=nirNames)
 
@@ -18,7 +20,8 @@ class TempsPanel(CamDevice):
 
     def createWidgets(self):
         probeNames = self.probeNames[self.moduleRow.camRow.arm]
-        self.temps = [ValueGB(self.moduleRow, 'temps', name, i, '{:.3f}') for i, name in enumerate(probeNames) if name]
+        add = ['Channel' not in name or addEng for name in probeNames]
+        self.temps = [ValueGB(self.moduleRow, 'temps', name, i, '{:.3f}') for i, name in enumerate(probeNames) if add[i]]
 
     def setInLayout(self):
         for i, value in enumerate(self.temps):

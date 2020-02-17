@@ -1,4 +1,5 @@
 __author__ = 'alefur'
+addEng = False
 
 import numpy as np
 from spsGUIActor.cam.xcu.cooler import CoolerPanel
@@ -15,6 +16,7 @@ from spsGUIActor.common import ComboBox, GridLayout
 from spsGUIActor.control import ControlDialog, MultiplePanel, Topbar
 from spsGUIActor.modulerow import ModuleRow
 from spsGUIActor.widgets import Controllers, ValueMRow, CmdButton, CustomedCmd
+
 
 
 class SetButton(CmdButton):

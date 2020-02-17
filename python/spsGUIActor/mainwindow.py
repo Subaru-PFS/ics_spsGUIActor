@@ -75,7 +75,7 @@ class SpsWidget(QWidget):
         self.mainLayout.addLayout(self.tronLayout, 0, 0)
         self.mainLayout.addWidget(Aitmodule(self), 1, 0)
 
-        for smId in range(1, 5):
+        for smId in range(1, 12):
             if 'sm%d' % smId not in self.actor.config.sections():
                 continue
 
