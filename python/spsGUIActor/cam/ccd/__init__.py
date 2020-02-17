@@ -60,6 +60,7 @@ class CcdRow(ModuleRow):
 
         self.substate = CcdState(self)
         self.controllers = Controllers(self)
+        self.actorStatus.button.setEnabled(False)
 
     @property
     def widgets(self):
