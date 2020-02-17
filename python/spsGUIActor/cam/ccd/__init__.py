@@ -59,8 +59,6 @@ class CcdRow(ModuleRow):
                            actorName='ccd_%s%i' % (camRow.arm, camRow.module.smId), actorLabel='CCD')
 
         self.substate = CcdState(self)
-        #self.temperature = ValueMRow(self, 'ccdTemps', 'Temperature(K)', 1, '{:g}', controllerName='fee')
-        #self.readRows = ReadRows(self)
         self.controllers = Controllers(self)
 
     @property

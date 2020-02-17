@@ -40,12 +40,11 @@ class TurboSwitch(SwitchButton):
                               cmdStrOn='%s start' % cmdHead, cmdStrOff='%s stop' % cmdHead,
                               labelOn='START', labelOff='STOP', safetyCheck=True)
 
-        self.buttonOff.setColor(*styles.colorWidget('abort'))
 
     def setText(self, txt):
         try:
             speed = int(txt)
-            bool = True if speed > 0 else False
+            bool = True if speed > 1000 else False
         except ValueError:
             bool = False
 

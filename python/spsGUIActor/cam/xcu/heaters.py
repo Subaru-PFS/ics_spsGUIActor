@@ -14,8 +14,8 @@ class HeaterState(ValuesRow):
 
 
 class HeatersPanel(CamDevice):
-    visNames = ['ccd', 'spreader']
-    nirNames = ['asic', 'shield']
+    visNames = ['spreader', 'ccd']
+    nirNames = ['shield', 'asic']
     heaterNames = dict(b=visNames, r=visNames, n=nirNames)
     heaterChannels = dict(ccd=4, spreader=5, asic=0, shield=1)
 
@@ -64,7 +64,7 @@ class HeatersCommands(CommandsGB):
         self.statusButton = CmdButton(controlPanel=controlPanel, label='STATUS',
                                       cmdStr='%s heaters status' % controlPanel.actorName)
 
-        frac, hp = self.controlPanel.heaterNames[self.controlPanel.moduleRow.camRow.arm]
+        hp, frac = self.controlPanel.heaterNames[self.controlPanel.moduleRow.camRow.arm]
 
         self.hPCmd = HPCmd(controlPanel, hp)
         self.heaterCmd = HeaterCmd(controlPanel, frac)
