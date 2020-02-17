@@ -66,14 +66,18 @@ def main():
 
     import miniActor
 
-    specIds = [i + 1 for i in range(2)]
-    allcams = ['b%i' % i for i in specIds] + ['r%i' % i for i in specIds] + ['n%i' % i for i in specIds]
+    specIds = [i + 1 for i in range(12)]
+    viscamNames = ['b%i' % i for i in specIds] + ['r%i' % i for i in specIds]
+    nircamNames = ['n%i' % i for i in specIds]
 
-    ccds = ['ccd_%s' % cam for cam in allcams]
-    xcus = ['xcu_%s' % cam for cam in allcams]
+    xcus = ['xcu_%s' % cam for cam in viscamNames + nircamNames]
+    ccds = ['ccd_%s' % cam for cam in viscamNames]
+    hxs = ['hx_%s' % cam for cam in nircamNames]
     enus = ['enu_sm%i' % i for i in specIds]
+    lam = ['sac', 'breva']
+    sps = ['dcb', 'rough1', 'rough2']
 
-    actor = miniActor.connectActor(['hub', 'dcb', 'sac', 'breva', 'seqno', 'rough1'] + enus + ccds + xcus)
+    actor = miniActor.connectActor(['hub'] + lam + sps + enus + xcus + ccds + hxs)
 
     try:
         ex = Spsgui(reactor, actor, args.name)
