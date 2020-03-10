@@ -194,7 +194,7 @@ class SafetyCheck(QMessageBox):
         self.setStyleSheet("""QMessageBox QLabel {color: rgb(0, 0, 0); font-weight:bold;}""")
         self.setIcon(QMessageBox.Critical)
 
-        offset = len(title) - len(cmdStr) + 15
+        offset = len(title) - len(cmdStr) + 20
         offset = offset if offset > 0 else 0
         cntText = f"{cmdStr}{offset * ' '}"
         self.setText(cntText)

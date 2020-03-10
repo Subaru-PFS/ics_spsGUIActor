@@ -1,4 +1,5 @@
 __author__ = 'alefur'
+
 from spsGUIActor.cam import CamDevice
 from spsGUIActor.common import ComboBox, LineEdit
 from spsGUIActor.control import ControllerCmd
@@ -12,7 +13,7 @@ class Status(ValueGB):
     def setText(self, txt):
         ftext = '\n'.join([stat for stat in txt.split(',') if 'bit ' not in stat])
         self.value.setText(ftext)
-        background = 'red' if ftext!='OK' else 'green'
+        background = 'red' if ftext != 'OK' else 'green'
         self.setColor(background=background, police='white')
         self.setEnabled(self.moduleRow.isOnline)
 
@@ -46,6 +47,8 @@ class IonpumpPanel(CamDevice):
 
 
 class PumpCmd(CustomedCmd):
+    pumpName = {0: '', 1: 'pump1', 2: 'pump2'}
+
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='IONPUMP', safetyCheck=True)
 
@@ -53,7 +56,7 @@ class PumpCmd(CustomedCmd):
         self.comboSwitch.addItems(['ON', 'OFF'])
 
         self.comboPump = ComboBox()
-        self.comboPump.addItems(['', 'pump1', 'pump2'])
+        self.comboPump.addItems(['default (1-2)', 'pump1', 'pump2'])
 
         self.addWidget(self.comboSwitch, 0, 1)
         self.addWidget(self.comboPump, 0, 2)
@@ -61,7 +64,7 @@ class PumpCmd(CustomedCmd):
     def buildCmd(self):
         cmdStr = '%s ionpump %s %s' % (self.controlPanel.actorName,
                                        self.comboSwitch.currentText().lower(),
-                                       self.comboPump.currentText())
+                                       self.pumpName[self.comboPump.currentIndex()])
         return cmdStr
 
 
