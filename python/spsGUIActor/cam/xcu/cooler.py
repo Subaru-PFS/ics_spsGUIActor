@@ -3,18 +3,18 @@ __author__ = 'alefur'
 from spsGUIActor.cam import CamDevice
 from spsGUIActor.common import LineEdit
 from spsGUIActor.control import ControllerCmd
-from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd, SpinBoxGB
+from spsGUIActor.widgets import ValueGB, CmdButton, CustomedCmd, SpinBoxGB, DoubleSpinBoxGB
 
 
 class TempLoopCmd(CustomedCmd):
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel, buttonLabel='SET Temperature', safetyCheck=True)
 
-        self.value = SpinBoxGB('setpoint(K)', 50, 250)
+        self.value = DoubleSpinBoxGB('setpoint(K)', 50, 250, 2)
         self.addWidget(self.value, 0, 1)
 
     def buildCmd(self):
-        return f'{self.controlPanel.actorName} {self.controlPanel.controllerName} on setpoint=%d' % self.value.getValue()
+        return f'{self.controlPanel.actorName} {self.controlPanel.controllerName} on setpoint=%g' % self.value.getValue()
 
 
 class PowerLoopCmd(CustomedCmd):
