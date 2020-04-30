@@ -75,7 +75,7 @@ class Substate(ValueMRow):
     def setText(self, txt):
 
         txt = txt.upper()
-        if txt == 'EXPOSING':
+        if txt in ['EXPOSING', 'OPENRED', 'OPENBLUE']:
             self.value.hide()
             self.elapsedTime.show()
             self.setMaximumSize(self.sizeHint())
