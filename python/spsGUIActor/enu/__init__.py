@@ -71,14 +71,14 @@ class Substate(ValueMRow):
         ValueMRow.__init__(self, moduleRow, 'metaFSM', '', 1, '{:s}')
         self.elapsedTime = ElapsedTime(moduleRow)
         self.grid.addWidget(self.elapsedTime, 0, 0)
+        self.setContentsMargins(0, 0, 0, 0)
 
     def setText(self, txt):
 
         txt = txt.upper()
-        if txt == 'EXPOSING':
+        if txt in ['EXPOSING', 'OPENRED', 'OPENBLUE']:
             self.value.hide()
             self.elapsedTime.show()
-            self.setMaximumSize(self.sizeHint())
         else:
             self.value.show()
             self.elapsedTime.resetValue()
