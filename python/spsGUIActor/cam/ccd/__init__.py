@@ -16,7 +16,7 @@ class ReadRows(QProgressBar):
         self.setFormat('READING \r\n' + '%p%')
 
         self.ccdRow.keyVarDict['readRows'].addCallback(self.updateBar, callNow=False)
-        self.setFixedSize(80, 30)
+        self.setFixedSize(90, 30)
         self.resetValue()
 
     def updateBar(self, keyvar):
@@ -38,13 +38,13 @@ class CcdState(ValueMRow):
         ValueMRow.__init__(self, moduleRow, 'exposureState', '', 0, '{:s}', controllerName='ccd')
         self.readRows = ReadRows(moduleRow)
         self.grid.addWidget(self.readRows, 0, 0)
+        self.setContentsMargins(0, 0, 0, 0)
 
     def setText(self, txt):
         txt = txt.upper()
         if txt == 'READING':
             self.value.hide()
             self.readRows.show()
-            self.setMaximumSize(self.sizeHint())
         else:
             self.value.show()
             self.readRows.resetValue()
