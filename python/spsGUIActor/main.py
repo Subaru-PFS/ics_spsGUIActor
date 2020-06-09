@@ -21,8 +21,8 @@ class Spsgui(QMainWindow):
         self.spsWidget = SpsWidget(self)
         self.setCentralWidget(self.spsWidget)
 
-        self.setMaximumHeight(100)
-        self.showMinimized()
+        #self.setMaximumHeight(100)
+        self.show()
         self.setConnected(False)
 
     def setConnected(self, isConnected):
