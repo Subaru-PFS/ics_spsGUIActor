@@ -102,7 +102,7 @@ class GotoCmd(CustomedCmd):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='GO TO')
 
         self.comboFiber = ComboBox()
-        self.comboFiber.addItems(['engtopend', 'engtopmid', 'engbotmid', 'engbotend',
+        self.comboFiber.addItems(['center', 'engtopend', 'engtopmid', 'engbotmid', 'engbotend',
                                   'scitopend', 'scitopmid', 'scibotmid', 'scibotend'])
 
         self.addWidget(self.comboFiber, 0, 1)
