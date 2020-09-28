@@ -3,6 +3,7 @@ __author__ = 'alefur'
 from spsGUIActor.control import ControlDialog
 from spsGUIActor.dcb import FiberConfig
 from spsGUIActor.dcb2.sources import SourcesPanel
+from spsGUIActor.dcb2.filterwheel import FilterwheelPanel
 from spsGUIActor.enu import ConnectCmd
 from spsGUIActor.modulerow import ModuleRow
 from spsGUIActor.widgets import ValueMRow, SwitchMRow, Controllers
@@ -33,11 +34,13 @@ class DcbDialog(ControlDialog):
     def __init__(self, dcbRow):
         ControlDialog.__init__(self, moduleRow=dcbRow)
         self.fiberConfig = FiberConfig(self)
-        self.connectCmd = ConnectCmd(self, ['pdu', 'sources'])
+        self.connectCmd = ConnectCmd(self, ['pdu', 'sources', 'filterwheel'])
 
         self.topbar.addWidget(self.fiberConfig)
         self.topbar.addLayout(self.connectCmd)
 
         self.sourcesPanel = SourcesPanel(self)
+        self.filterwheelPanel = FilterwheelPanel(self)
 
         self.tabWidget.addTab(self.sourcesPanel, 'Sources')
+        self.tabWidget.addTab(self.filterwheelPanel, 'Filterwheels')
