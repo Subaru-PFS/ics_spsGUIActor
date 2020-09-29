@@ -49,8 +49,8 @@ class FilterwheelPanel(ControllerPanel):
 
         self.linewheel = ValueGB(self.moduleRow, 'linewheel', 'Line Wheel', 0, '{:d}')
         self.qthwheel = ValueGB(self.moduleRow, 'qthwheel', 'QTH Wheel', 0, '{:d}')
-        self.adc1 = ValueGB(self.moduleRow, 'adc', 'ADC channel 1', 0, '{:.3f}')
-        self.adc2 = ValueGB(self.moduleRow, 'adc', 'ADC channel 2', 1, '{:.3f}')
+        self.adc1 = ValueGB(self.moduleRow, 'adc', 'ADC channel 1', 0, '{:.4f}')
+        self.adc2 = ValueGB(self.moduleRow, 'adc', 'ADC channel 2', 1, '{:.4f}')
 
     def setInLayout(self):
         self.grid.addWidget(self.mode, 0, 0)
