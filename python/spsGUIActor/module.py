@@ -46,15 +46,16 @@ class Module(QGroupBox):
 class Aitmodule(Module):
     def __init__(self, mwindow):
         Module.__init__(self, mwindow=mwindow, title='AIT')
-        actors = mwindow.actor.config.get('ait', 'actors')
+        actors = [actor.strip() for actor in mwindow.actor.config.get('ait', 'actors').split(',')]
+
+        self.dcb = []
+        self.dcb2 = []
+
+        if 'dcb' in actors:
+            self.dcb = DcbRow(self).rows
 
         if 'dcb2' in actors:
-            self.dcb = [Dcb2Row(self)]
-        elif 'dcb' in actors:
-            dcb = DcbRow(self)
-            self.dcb = dcb.rows
-        else:
-            self.dcb = []
+            self.dcb2 = Dcb2Row(self).rows
 
         self.sac = [SacRow(self)] if 'sac' in actors else []
         self.breva = [BrevaRow(self)] if 'breva' in actors else []
@@ -68,7 +69,7 @@ class Aitmodule(Module):
 
     @property
     def rows(self):
-        return self.dcb + self.sac + self.breva + self.roughs
+        return self.dcb + self.dcb2 + self.sac + self.breva + self.roughs
 
 
 class Specmodule(Module):

@@ -3,10 +3,33 @@ __author__ = 'alefur'
 from spsGUIActor.control import ControlDialog
 from spsGUIActor.dcb import FiberConfig
 from spsGUIActor.dcb2.sources import SourcesPanel
+from spsGUIActor.dcb2.filterwheel import FilterwheelPanel
 from spsGUIActor.enu import ConnectCmd
-from spsGUIActor.modulerow import ModuleRow
+from spsGUIActor.modulerow import ModuleRow, RowWidget
 from spsGUIActor.widgets import ValueMRow, SwitchMRow, Controllers
 
+class RowOne(RowWidget):
+    def __init__(self, dcbRow):
+        RowWidget.__init__(self, dcbRow)
+
+    @property
+    def widgets(self):
+        dcbRow = self.moduleRow
+        return [dcbRow.state, dcbRow.substate, dcbRow.hgar, dcbRow.neon, dcbRow.krypton, dcbRow.argon]
+
+
+class RowTwo(RowWidget):
+    def __init__(self, dcbRow):
+        RowWidget.__init__(self, dcbRow)
+
+    @property
+    def widgets(self):
+        dcbRow = self.moduleRow
+        return [dcbRow.halogen, dcbRow.linewheel, dcbRow.qthwheel, dcbRow.adc2]
+
+    @property
+    def displayed(self):
+        return [None, None, None] + self.widgets
 
 class Dcb2Row(ModuleRow):
     def __init__(self, spsModule):
@@ -21,23 +44,31 @@ class Dcb2Row(ModuleRow):
         self.argon = SwitchMRow(self, 'argon', 'Argon', 0, '{:g}', controllerName='sources')
         self.halogen = SwitchMRow(self, 'halogen', 'Halogen', 0, '{:g}', controllerName='sources')
 
+        self.linewheel = ValueMRow(self, 'linewheel', 'Line Wheel', 0, '{:d}')
+        self.qthwheel = ValueMRow(self, 'qthwheel', 'QTH Wheel', 0, '{:d}')
+        self.adc2 = ValueMRow(self, 'adc', 'ADC 2', 1, '{:4f}')
+
+        self.rows = [RowOne(self), RowTwo(self)]
+
         self.controllers = Controllers(self)
         self.createDialog(DcbDialog(self))
 
     @property
     def widgets(self):
-        return [self.state, self.substate, self.halogen, self.hgar, self.neon, self.krypton, self.argon]
+        return sum([row.widgets for row in self.rows], [])
 
 
 class DcbDialog(ControlDialog):
     def __init__(self, dcbRow):
         ControlDialog.__init__(self, moduleRow=dcbRow)
         self.fiberConfig = FiberConfig(self)
-        self.connectCmd = ConnectCmd(self, ['pdu', 'sources'])
+        self.connectCmd = ConnectCmd(self, ['pdu', 'sources', 'filterwheel'])
 
         self.topbar.addWidget(self.fiberConfig)
         self.topbar.addLayout(self.connectCmd)
 
         self.sourcesPanel = SourcesPanel(self)
+        self.filterwheelPanel = FilterwheelPanel(self)
 
         self.tabWidget.addTab(self.sourcesPanel, 'Sources')
+        self.tabWidget.addTab(self.filterwheelPanel, 'Filterwheels')
