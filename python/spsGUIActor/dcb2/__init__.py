@@ -25,7 +25,7 @@ class RowTwo(RowWidget):
     @property
     def widgets(self):
         dcbRow = self.moduleRow
-        return [dcbRow.halogen, dcbRow.linewheel, dcbRow.qthwheel, dcbRow.adc2]
+        return [dcbRow.halogen, dcbRow.linewheel, dcbRow.qthwheel, dcbRow.adc1]
 
     @property
     def displayed(self):
@@ -46,6 +46,7 @@ class Dcb2Row(ModuleRow):
 
         self.linewheel = ValueMRow(self, 'linewheel', 'Line Wheel', 0, '{:d}')
         self.qthwheel = ValueMRow(self, 'qthwheel', 'QTH Wheel', 0, '{:d}')
+        self.adc1 = ValueMRow(self, 'adc', 'ADC 1', 0, '{:4f}')
         self.adc2 = ValueMRow(self, 'adc', 'ADC 2', 1, '{:4f}')
 
         self.rows = [RowOne(self), RowTwo(self)]
