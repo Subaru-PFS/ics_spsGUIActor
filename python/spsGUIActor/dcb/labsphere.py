@@ -29,15 +29,15 @@ class AttenuatorCmd(CustomedCmd):
         self.addWidget(self.value, 0, 1)
 
     def buildCmd(self):
-        cmdStr = 'dcb labsphere attenuator=%i' % self.value.getValue()
+        cmdStr = f'{self.controlPanel.actorName} labsphere attenuator={self.value.getValue()}'
         return cmdStr
 
 
 class SwitchArc(SwitchButton):
     def __init__(self, controlPanel, key, label=None, fmt='{:g}'):
         label = key.capitalize() if label is None else label
-        cmdStrOn = 'dcb arc on=%s' % key
-        cmdStrOff = 'dcb arc off=%s' % key
+        cmdStrOn = f'{controlPanel.actorName} arc on={key}'
+        cmdStrOff = f'{controlPanel.actorName} arc off={key}'
         SwitchButton.__init__(self, controlPanel=controlPanel, key=key, label=label, fmt=fmt,
                               cmdHead='', cmdStrOn=cmdStrOn, cmdStrOff=cmdStrOff)
 

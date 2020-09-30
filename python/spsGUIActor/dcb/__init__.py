@@ -56,7 +56,7 @@ class FiberConfig(ValueGB):
 
     def newConfig(self):
         cmdStr = 'config fibers=%s' % ','.join([fib.strip() for fib in self.fibers.text().split(',')])
-        self.controlDialog.moduleRow.mwindow.sendCommand(actor='dcb',
+        self.controlDialog.moduleRow.mwindow.sendCommand(actor=self.controlDialog.moduleRow.actorName,
                                                          cmdStr=cmdStr,
                                                          callFunc=self.controlDialog.cmdLog.printResponse)
 

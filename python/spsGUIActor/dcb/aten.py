@@ -6,8 +6,8 @@ from spsGUIActor.enu import EnuDeviceCmd
 
 class AtenButton(SwitchButton):
     def __init__(self, controlPanel, key, label, safetyCheck=False):
-        cmdStrOn = 'dcb power on=%s' % key
-        cmdStrOff = 'dcb power off=%s' % key
+        cmdStrOn = f'{controlPanel.actorName} power on={key}'
+        cmdStrOff = f'{controlPanel.actorName} power off={key}'
         SwitchButton.__init__(self, controlPanel=controlPanel, key=key, label=label, cmdHead='', cmdStrOn=cmdStrOn,
                               cmdStrOff=cmdStrOff, safetyCheck=safetyCheck)
 
