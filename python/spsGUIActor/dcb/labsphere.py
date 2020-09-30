@@ -3,6 +3,7 @@ import spsGUIActor.styles as styles
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, SwitchGB, CustomedCmd, SpinBoxGB, SwitchButton, ValueMRow
 from spsGUIActor.enu import EnuDeviceCmd
+from spsGUIActor.dcb.aten import AtenButton
 
 class AttenuatorValue(ValueMRow):
     def __init__(self, moduleRow, fontSize=styles.smallFont):
@@ -95,7 +96,7 @@ class LabsphereCommands(EnuDeviceCmd):
         self.switchHgar = SwitchArc(controlPanel=controlPanel, key='hgar', label='HgAr')
         self.switchKrypton = SwitchArc(controlPanel=controlPanel, key='krypton', label='Krypton')
         self.switchArgon = SwitchArc(controlPanel=controlPanel, key='argon', label='Argon')
-        self.switchDeuterium = SwitchArc(controlPanel=controlPanel, key='deuterium', label='Deuterium')
+        self.switchDeuterium = AtenButton(controlPanel=controlPanel, key='deuterium', label='Deuterium')
 
         self.grid.addLayout(self.attenuatorCmd, 1, 0, 1, 2)
         self.grid.addWidget(self.switchHalogen, 2, 0)
