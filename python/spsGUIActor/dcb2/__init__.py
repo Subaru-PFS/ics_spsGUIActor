@@ -33,7 +33,7 @@ class RowTwo(RowWidget):
 
 class Dcb2Row(ModuleRow):
     def __init__(self, spsModule):
-        ModuleRow.__init__(self, module=spsModule, actorName='dcb2', actorLabel='DCB2')
+        ModuleRow.__init__(self, module=spsModule, actorName='dcb', actorLabel='DCB')
 
         self.state = ValueMRow(self, 'metaFSM', '', 0, '{:s}')
         self.substate = ValueMRow(self, 'metaFSM', '', 1, '{:s}')
