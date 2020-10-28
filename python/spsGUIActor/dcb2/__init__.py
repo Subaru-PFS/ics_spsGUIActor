@@ -44,8 +44,8 @@ class Dcb2Row(ModuleRow):
         self.argon = SwitchMRow(self, 'argon', 'Argon', 0, '{:g}', controllerName='sources')
         self.halogen = SwitchMRow(self, 'halogen', 'Halogen', 0, '{:g}', controllerName='sources')
 
-        self.linewheel = ValueMRow(self, 'linewheel', 'Line Wheel', 0, '{:d}')
-        self.qthwheel = ValueMRow(self, 'qthwheel', 'QTH Wheel', 0, '{:d}')
+        self.linewheel = ValueMRow(self, 'linewheel', 'Line Wheel', 1, '{:s}')
+        self.qthwheel = ValueMRow(self, 'qthwheel', 'QTH Wheel', 1, '{:s}')
         self.adc1 = ValueMRow(self, 'adc', 'ADC 1', 0, '{:4f}')
         self.adc2 = ValueMRow(self, 'adc', 'ADC 2', 1, '{:4f}')
 
