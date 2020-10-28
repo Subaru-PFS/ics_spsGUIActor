@@ -25,7 +25,7 @@ class ShutterCmd(CustomedCmd):
         self.addWidget(self.comboMove, 0, 1)
 
     def buildCmd(self):
-        cmdStr = 'dcb mono shutter %s' % self.comboMove.currentText()
+        cmdStr = f'{self.controlPanel.actorName} mono shutter %s' % self.comboMove.currentText()
         return cmdStr
 
 
@@ -49,7 +49,7 @@ class OutportCmd(CustomedCmd):
         self.addWidget(self.combo, 0, 1)
 
     def buildCmd(self):
-        cmdStr = 'dcb mono set outport=%s' % self.combo.currentText()
+        cmdStr = f'{self.controlPanel.actorName} mono set outport=%s' % self.combo.currentText()
         return cmdStr
 
 
@@ -62,7 +62,7 @@ class WaveCmd(CustomedCmd):
         self.addWidget(self.value, 0, 1)
 
     def buildCmd(self):
-        cmdStr = 'dcb mono set wave=%.3f' % self.value.getValue()
+        cmdStr = f'{self.controlPanel.actorName} mono set wave=%.3f' % self.value.getValue()
         return cmdStr
 
 
@@ -113,7 +113,7 @@ class MonoCommands(EnuDeviceCmd):
         self.waveCmd = WaveCmd(controlPanel=controlPanel)
 
         self.switchQth = SwitchButton(controlPanel=controlPanel, key='monoqth', label='QTH',
-                                      cmdHead='dcb monoqth')
+                                      cmdHead=f'{controlPanel.actorName} monoqth')
 
         self.grid.addLayout(self.gratingCmd, 1, 0, 1, 2)
         self.grid.addLayout(self.shutterCmd, 2, 0, 1, 2)

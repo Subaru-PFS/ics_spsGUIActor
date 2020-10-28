@@ -63,7 +63,7 @@ class FiberConfig(ValueGB):
 
 class DcbRow(ModuleRow):
     def __init__(self, aitModule):
-        ModuleRow.__init__(self, module=aitModule, actorName='dcb', actorLabel='DCB')
+        ModuleRow.__init__(self, module=aitModule, actorName='dcb_old', actorLabel='DCB_OLD')
 
         self.state = ValueMRow(self, 'metaFSM', '', 0, '{:s}')
         self.substate = ValueMRow(self, 'metaFSM', '', 1, '{:s}')
