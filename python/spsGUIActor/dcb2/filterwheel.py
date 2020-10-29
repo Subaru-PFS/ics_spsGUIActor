@@ -15,7 +15,7 @@ class Wheel(ValuesRow):
 
 class SetFilterwheel(CustomedCmd):
     lineHoles = 0.5, 1.0, 2.0, 4.0, 12.7
-    qthHoles = 0.5, 0.7, 1.0, 2.0, 4.0
+    qthHoles =  'none',0.7,1.0,2.0,4.0
 
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SET')
