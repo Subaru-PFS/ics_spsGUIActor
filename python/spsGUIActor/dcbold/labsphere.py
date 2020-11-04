@@ -3,7 +3,8 @@ import spsGUIActor.styles as styles
 from spsGUIActor.control import ControllerPanel, ControllerCmd
 from spsGUIActor.widgets import ValueGB, SwitchGB, CustomedCmd, SpinBoxGB, SwitchButton, ValueMRow
 from spsGUIActor.enu import EnuDeviceCmd
-from spsGUIActor.dcb.aten import AtenButton
+from spsGUIActor.dcbold.aten import AtenButton
+from spsGUIActor.dcb.sources import SwitchLamp
 
 class AttenuatorValue(ValueMRow):
     def __init__(self, moduleRow, fontSize=styles.smallFont):
@@ -33,18 +34,7 @@ class AttenuatorCmd(CustomedCmd):
         return cmdStr
 
 
-class SwitchArc(SwitchButton):
-    def __init__(self, controlPanel, key, label=None, fmt='{:g}'):
-        label = key.capitalize() if label is None else label
-        cmdStrOn = f'{controlPanel.actorName} arc on={key}'
-        cmdStrOff = f'{controlPanel.actorName} arc off={key}'
-        SwitchButton.__init__(self, controlPanel=controlPanel, key=key, label=label, fmt=fmt,
-                              cmdHead='', cmdStrOn=cmdStrOn, cmdStrOff=cmdStrOff)
 
-    def setText(self, txt):
-        bool = True if txt.strip() in ['0', 'nan', 'off', 'undef'] else False
-        self.buttonOn.setVisible(bool)
-        self.buttonOff.setVisible(not bool)
 
 
 class LabspherePanel(ControllerPanel):
@@ -57,7 +47,7 @@ class LabspherePanel(ControllerPanel):
         self.state = ValueGB(self.moduleRow, 'labsphereFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'labsphereFSM', '', 1, '{:s}')
 
-        self.halogen = SwitchGB(self.moduleRow, 'halogen', 'Halogen', 0, '{:g}')
+        self.qth = SwitchGB(self.moduleRow, 'halogen', 'QTH', 0, '{:g}')
         self.photodiode = ValueGB(self.moduleRow, 'photodiode', 'photodiode', 0, '{:g}')
         self.attenuator = AttenuatorValue(self.moduleRow)
 
@@ -73,7 +63,7 @@ class LabspherePanel(ControllerPanel):
         self.grid.addWidget(self.state, 0, 1)
         self.grid.addWidget(self.substate, 0, 2)
 
-        self.grid.addWidget(self.halogen, 1, 0)
+        self.grid.addWidget(self.qth, 1, 0)
         self.grid.addWidget(self.photodiode, 1, 1)
         self.grid.addWidget(self.attenuator, 1, 2)
 
@@ -90,16 +80,16 @@ class LabsphereCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
         EnuDeviceCmd.__init__(self, controlPanel)
         self.attenuatorCmd = AttenuatorCmd(controlPanel=controlPanel)
-        self.switchHalogen = SwitchArc(controlPanel=controlPanel, key='halogen', label='Halogen')
-        self.switchNeon = SwitchArc(controlPanel=controlPanel, key='neon', label='Neon')
-        self.switchXenon = SwitchArc(controlPanel=controlPanel, key='xenon', label='Xenon')
-        self.switchHgar = SwitchArc(controlPanel=controlPanel, key='hgar', label='HgAr')
-        self.switchKrypton = SwitchArc(controlPanel=controlPanel, key='krypton', label='Krypton')
-        self.switchArgon = SwitchArc(controlPanel=controlPanel, key='argon', label='Argon')
+        self.switchQth = SwitchLamp(controlPanel=controlPanel, key='halogen', label='QTH')
+        self.switchNeon = SwitchLamp(controlPanel=controlPanel, key='neon', label='Neon')
+        self.switchXenon = SwitchLamp(controlPanel=controlPanel, key='xenon', label='Xenon')
+        self.switchHgar = SwitchLamp(controlPanel=controlPanel, key='hgar', label='HgAr')
+        self.switchKrypton = SwitchLamp(controlPanel=controlPanel, key='krypton', label='Krypton')
+        self.switchArgon = SwitchLamp(controlPanel=controlPanel, key='argon', label='Argon')
         self.switchDeuterium = AtenButton(controlPanel=controlPanel, key='deuterium', label='Deuterium')
 
         self.grid.addLayout(self.attenuatorCmd, 1, 0, 1, 2)
-        self.grid.addWidget(self.switchHalogen, 2, 0)
+        self.grid.addWidget(self.switchQth, 2, 0)
 
         self.grid.addWidget(self.switchNeon, 3, 0)
         self.grid.addWidget(self.switchXenon, 3, 1)

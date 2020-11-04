@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 
 from spsGUIActor.control import ControllerPanel
-from spsGUIActor.dcb.labsphere import SwitchArc
+from spsGUIActor.dcb.sources import SwitchLamp
 from spsGUIActor.enu import EnuDeviceCmd
 from spsGUIActor.enu.pdu import PduPort, PduButton
 from spsGUIActor.widgets import ValueGB
@@ -33,7 +33,7 @@ class SourcesCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
         EnuDeviceCmd.__init__(self, controlPanel)
         for i, (nOutlet, source) in enumerate(sorted([(v, k) for k, v in controlPanel.ports.items()], key=lambda l: l[0])):
-            self.grid.addWidget(SwitchArc(controlPanel, source), i+1, 0)
+            self.grid.addWidget(SwitchLamp(controlPanel, source), i+1, 0)
 
         #self.grid.addWidget(PduButton(controlPanel,  controlPanel.pduPorts[5]), 6, 0)
         #self.grid.addWidget(PduButton(controlPanel, controlPanel.pduPorts[6]), 7, 0)

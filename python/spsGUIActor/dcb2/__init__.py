@@ -3,7 +3,7 @@ __author__ = 'alefur'
 from spsGUIActor.control import ControlDialog
 from spsGUIActor.dcb import FiberConfig
 from spsGUIActor.dcb2.sources import SourcesPanel
-from spsGUIActor.dcb2.filterwheel import FilterwheelPanel
+from spsGUIActor.dcb.filterwheel import FilterwheelPanel
 from spsGUIActor.enu import ConnectCmd
 from spsGUIActor.modulerow import ModuleRow, RowWidget
 from spsGUIActor.widgets import ValueMRow, SwitchMRow, Controllers
@@ -25,13 +25,13 @@ class RowTwo(RowWidget):
     @property
     def widgets(self):
         dcbRow = self.moduleRow
-        return [dcbRow.halogen, dcbRow.linewheel, dcbRow.qthwheel, dcbRow.adc1]
+        return [dcbRow.qth, dcbRow.linewheel, dcbRow.qthwheel, dcbRow.adc1]
 
     @property
     def displayed(self):
         return [None, None, None] + self.widgets
 
-class Dcb2Row(ModuleRow):
+class DcbRow(ModuleRow):
     def __init__(self, spsModule):
         ModuleRow.__init__(self, module=spsModule, actorName='dcb', actorLabel='DCB')
 
@@ -42,7 +42,7 @@ class Dcb2Row(ModuleRow):
         self.neon = SwitchMRow(self, 'neon', 'Neon', 0, '{:g}', controllerName='sources')
         self.krypton = SwitchMRow(self, 'krypton', 'Krypton', 0, '{:g}', controllerName='sources')
         self.argon = SwitchMRow(self, 'argon', 'Argon', 0, '{:g}', controllerName='sources')
-        self.halogen = SwitchMRow(self, 'halogen', 'Halogen', 0, '{:g}', controllerName='sources')
+        self.qth = SwitchMRow(self, 'halogen', 'QTH', 0, '{:g}', controllerName='sources')
 
         self.linewheel = ValueMRow(self, 'linewheel', 'Line Wheel', 1, '{:s}')
         self.qthwheel = ValueMRow(self, 'qthwheel', 'QTH Wheel', 1, '{:s}')

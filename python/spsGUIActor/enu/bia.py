@@ -1,9 +1,8 @@
 __author__ = 'alefur'
 
 from spsGUIActor.control import ControllerPanel
-from spsGUIActor.dcb.aten import SwitchButton
 from spsGUIActor.enu import EnuDeviceCmd
-from spsGUIActor.widgets import ValueGB, CustomedCmd, SwitchGB, SpinBoxGB
+from spsGUIActor.widgets import ValueGB, CustomedCmd, SwitchGB, SpinBoxGB, SwitchButton
 
 
 class BiaPeriod(ValueGB):
