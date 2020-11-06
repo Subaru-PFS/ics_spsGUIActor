@@ -1,11 +1,12 @@
 __author__ = 'alefur'
 
+import spsGUIActor.dcb as dcb
+import spsGUIActor.dcb2 as dcb2
+import spsGUIActor.dcbold as dcbold
 from PyQt5.QtWidgets import QGroupBox
 from spsGUIActor.breva import BrevaRow
 from spsGUIActor.cam import CamRow
 from spsGUIActor.common import GridLayout
-from spsGUIActor.dcb import DcbRow
-from spsGUIActor.dcb2 import Dcb2Row
 from spsGUIActor.enu import EnuRow
 from spsGUIActor.rough import RoughRow
 from spsGUIActor.sac import SacRow
@@ -48,14 +49,14 @@ class Aitmodule(Module):
         Module.__init__(self, mwindow=mwindow, title='AIT')
         actors = [actor.strip() for actor in mwindow.actor.config.get('ait', 'actors').split(',')]
 
-        self.dcb = []
-        self.dcb2 = []
+        self.dcbs = []
 
+        if 'dcbold' in actors:
+            self.dcbs += dcbold.DcbRow(self).rows
         if 'dcb' in actors:
-            self.dcb = DcbRow(self).rows
-
+            self.dcbs += dcb.DcbRow(self).rows
         if 'dcb2' in actors:
-            self.dcb2 = Dcb2Row(self).rows
+            self.dcbs += dcb2.DcbRow(self).rows
 
         self.sac = [SacRow(self)] if 'sac' in actors else []
         self.breva = [BrevaRow(self)] if 'breva' in actors else []
@@ -69,7 +70,7 @@ class Aitmodule(Module):
 
     @property
     def rows(self):
-        return self.dcb + self.dcb2 + self.sac + self.breva + self.roughs
+        return self.dcbs + self.sac + self.breva + self.roughs
 
 
 class Specmodule(Module):

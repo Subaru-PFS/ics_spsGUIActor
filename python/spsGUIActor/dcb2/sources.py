@@ -1,15 +1,14 @@
 __author__ = 'alefur'
 
 from spsGUIActor.control import ControllerPanel
-from spsGUIActor.dcb.labsphere import SwitchArc
+from spsGUIActor.dcb.sources import SwitchLamp
 from spsGUIActor.enu import EnuDeviceCmd
 from spsGUIActor.enu.pdu import PduPort, PduButton
 from spsGUIActor.widgets import ValueGB
 
 
 class SourcesPanel(ControllerPanel):
-    ports = dict(halogen=1, hgar=2, neon=3, krypton=4, argon=5, bakeblue=6, bakered=7)
-
+    ports = dict(hgar=2, neon=3, xenon=4, krypton=5, argon=6, halogen=8)
     def __init__(self, controlDialog):
         ControllerPanel.__init__(self, controlDialog, 'sources')
         self.addCommandSet(SourcesCommands(self))
@@ -33,10 +32,8 @@ class SourcesPanel(ControllerPanel):
 class SourcesCommands(EnuDeviceCmd):
     def __init__(self, controlPanel):
         EnuDeviceCmd.__init__(self, controlPanel)
-        self.grid.addWidget(SwitchArc(controlPanel, 'halogen'), 1, 0)
-        self.grid.addWidget(SwitchArc(controlPanel, 'hgar'), 2, 0)
-        self.grid.addWidget(SwitchArc(controlPanel, 'neon'), 3, 0)
-        self.grid.addWidget(SwitchArc(controlPanel, 'krypton'), 4, 0)
-        self.grid.addWidget(SwitchArc(controlPanel, 'argon'), 5, 0)
-        self.grid.addWidget(PduButton(controlPanel,  controlPanel.pduPorts[5]), 6, 0)
-        self.grid.addWidget(PduButton(controlPanel, controlPanel.pduPorts[6]), 7, 0)
+        for i, (nOutlet, source) in enumerate(sorted([(v, k) for k, v in controlPanel.ports.items()], key=lambda l: l[0])):
+            self.grid.addWidget(SwitchLamp(controlPanel, source), i+1, 0)
+
+        #self.grid.addWidget(PduButton(controlPanel,  controlPanel.pduPorts[5]), 6, 0)
+        #self.grid.addWidget(PduButton(controlPanel, controlPanel.pduPorts[6]), 7, 0)
