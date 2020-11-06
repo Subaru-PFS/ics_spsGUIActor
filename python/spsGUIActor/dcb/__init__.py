@@ -1,12 +1,12 @@
 __author__ = 'alefur'
 
 from spsGUIActor.control import ControlDialog
-from spsGUIActor.dcbold import FiberConfig
 from spsGUIActor.dcb.sources import SourcesPanel
-from spsGUIActor.dcb.filterwheel import FilterwheelPanel
+from spsGUIActor.dcbold import FiberConfig
 from spsGUIActor.enu import ConnectCmd
 from spsGUIActor.modulerow import ModuleRow, RowWidget
 from spsGUIActor.widgets import ValueMRow, SwitchMRow, Controllers
+
 
 class RowOne(RowWidget):
     def __init__(self, dcbRow):
@@ -31,6 +31,7 @@ class RowTwo(RowWidget):
     def displayed(self):
         return [None, None, None] + self.widgets
 
+
 class DcbRow(ModuleRow):
     def __init__(self, spsModule):
         ModuleRow.__init__(self, module=spsModule, actorName='dcb', actorLabel='DCB')
@@ -44,10 +45,10 @@ class DcbRow(ModuleRow):
         self.argon = SwitchMRow(self, 'argon', 'Argon', 0, '{:g}', controllerName='sources')
         self.qth = SwitchMRow(self, 'halogen', 'QTH', 0, '{:g}', controllerName='sources')
 
-        self.linewheel = ValueMRow(self, 'linewheel', 'Line Wheel', 1, '{:s}')
-        self.qthwheel = ValueMRow(self, 'qthwheel', 'QTH Wheel', 1, '{:s}')
-        self.adc1 = ValueMRow(self, 'adc', 'ADC 1', 0, '{:4f}')
-        self.adc2 = ValueMRow(self, 'adc', 'ADC 2', 1, '{:4f}')
+        # self.linewheel = ValueMRow(self, 'linewheel', 'Line Wheel', 1, '{:s}')
+        # self.qthwheel = ValueMRow(self, 'qthwheel', 'QTH Wheel', 1, '{:s}')
+        # self.adc1 = ValueMRow(self, 'adc', 'ADC 1', 0, '{:4f}')
+        # self.adc2 = ValueMRow(self, 'adc', 'ADC 2', 1, '{:4f}')
 
         self.rows = [RowOne(self), RowTwo(self)]
 
@@ -63,13 +64,13 @@ class DcbDialog(ControlDialog):
     def __init__(self, dcbRow):
         ControlDialog.__init__(self, moduleRow=dcbRow)
         self.fiberConfig = FiberConfig(self)
-        self.connectCmd = ConnectCmd(self, ['pdu', 'sources', 'filterwheel'])
+        self.connectCmd = ConnectCmd(self, ['sources'])
 
         self.topbar.addWidget(self.fiberConfig)
         self.topbar.addLayout(self.connectCmd)
 
         self.sourcesPanel = SourcesPanel(self)
-        self.filterwheelPanel = FilterwheelPanel(self)
+        # self.filterwheelPanel = FilterwheelPanel(self)
 
         self.tabWidget.addTab(self.sourcesPanel, 'Sources')
-        #self.tabWidget.addTab(self.filterwheelPanel, 'Filterwheels')
+        # self.tabWidget.addTab(self.filterwheelPanel, 'Filterwheels')
