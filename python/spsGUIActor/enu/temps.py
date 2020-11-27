@@ -40,12 +40,12 @@ class TempsPanel(ControllerPanel):
     probeNames1 = ['Motor RDA',
                    'Motor Shutter B',
                    'Motor Shutter R',
-                   'BIA Box Upper',
-                   'BIA Box Lower',
-                   'Fiber Unit Bench Level',
+                   'BIA Box Top',
+                   'BIA Box Bottom',
+                   'Fiber Unit Hexapod Bottom',
                    'Fiber Unit Hexapod Top',
                    'Fiber Unit Fiber Frame Top',
-                   'Collimator Frame Bench Level',
+                   'Collimator Frame Bottom',
                    'Collimator Frame Top']
     probeNames2 = ['Bench Left Top',
                    'Bench Left Botton',
@@ -55,7 +55,7 @@ class TempsPanel(ControllerPanel):
                    'Bench Far Bottom',
                    'Bench Near Top',
                    'Bench Near Bottom',
-                   'Bench Central Bottom',
+                   'Bench Central Top',
                    'Enu Temp 20']
 
     def __init__(self, controlDialog):
