@@ -67,15 +67,18 @@ class ValueGB(QGroupBox):
         self.customize()
 
     def customize(self):
-        text = self.value.text()
+        background, police = self.getStyles(self.value.text())
 
+        self.setColor(background=background, police=police)
+        self.setEnabled(self.moduleRow.isOnline)
+
+    def getStyles(self, text):
         try:
             background, police = styles.colorWidget(text)
         except KeyError:
             background, police = styles.colorWidget('default')
 
-        self.setColor(background=background, police=police)
-        self.setEnabled(self.moduleRow.isOnline)
+        return background, police
 
     def setEnabled(self, isOnline):
         if not isOnline:
@@ -271,6 +274,16 @@ class SwitchGB(ValueGB):
 
         self.value.setText(txt)
         self.customize()
+
+
+class CriticalSwitchGB(SwitchGB):
+    def __init__(self, *args, **kwargs):
+        SwitchGB.__init__(self, *args, **kwargs)
+
+    def getStyles(self, text):
+        background, police = SwitchGB.getStyles(self, text)
+        background = 'red' if text.lower() == 'off' else background
+        return background, police
 
 
 class SwitchButton(SwitchGB):
