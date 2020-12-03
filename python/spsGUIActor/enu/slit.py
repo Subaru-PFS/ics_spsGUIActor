@@ -2,7 +2,7 @@ __author__ = 'alefur'
 
 from spsGUIActor.common import ComboBox, CheckBox, GridLayout
 from spsGUIActor.control import ControllerPanel, ControllerCmd
-from spsGUIActor.widgets import Coordinates, ValueGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, AbortButton
+from spsGUIActor.widgets import Coordinates, ValueGB, CmdButton, DoubleSpinBoxGB, CustomedCmd, AbortButton, CriticalSwitchGB
 from spsGUIActor.enu import EnuDeviceCmd
 
 class CoordBoxes(GridLayout):
@@ -103,6 +103,8 @@ class SlitPanel(ControllerPanel):
         self.info = ValueGB(self.moduleRow, 'hxpStatus', 'Info', 1, '{:s}')
         self.position = ValueGB(self.moduleRow, 'slitPosition', 'Position', 0, '{:s}')
 
+        self.softwareLimitsActivated = CriticalSwitchGB(self.moduleRow, 'hxpSoftwareLimits', 'SW Limits', 0, '{:g}')
+
         self.coordinates = Coordinates(self.moduleRow, 'slit', title='Position')
         self.work = Coordinates(self.moduleRow, 'slitWork', title='Work')
         self.tool = Coordinates(self.moduleRow, 'slitTool', title='Tool')
@@ -112,6 +114,7 @@ class SlitPanel(ControllerPanel):
         self.grid.addWidget(self.state, 0, 1)
         self.grid.addWidget(self.substate, 0, 2)
         self.grid.addWidget(self.position, 0, 3)
+        self.grid.addWidget(self.softwareLimitsActivated, 0, 4)
 
         self.grid.addWidget(self.info, 1, 0, 1, 6)
         self.grid.addWidget(self.coordinates, 2, 0, 1, 6)
