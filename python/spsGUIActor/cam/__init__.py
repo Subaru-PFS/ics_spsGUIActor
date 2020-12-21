@@ -107,7 +107,7 @@ class CamRow(ModuleRow):
 
     @property
     def displayed(self):
-        return [self.actorStatus, self.xcu.cryoMode, self.detector.substate, self.xcu.temperature, self.xcu.pressure]
+        return [self.actorStatus, self.xcu.cryoMode, self.detector.substate, self.xcu.temperature, self.xcu.pressure, self.xcu.twoIonPumps]
 
     def setOnline(self, isOnline=None):
         status = sum([self.detector.isOnline + self.xcu.isOnline]) if isOnline is None else int(isOnline)

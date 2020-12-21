@@ -15,8 +15,7 @@ from spsGUIActor.cam.xcu.turbo import TurboPanel
 from spsGUIActor.common import ComboBox, GridLayout
 from spsGUIActor.control import ControlDialog, MultiplePanel, Topbar
 from spsGUIActor.modulerow import ModuleRow
-from spsGUIActor.widgets import Controllers, ValueMRow, CmdButton, CustomedCmd
-
+from spsGUIActor.widgets import Controllers, ValueMRow, CmdButton, CustomedCmd, ValueGB, SwitchMRow, SwitchGB
 
 
 class SetButton(CmdButton):
@@ -68,6 +67,43 @@ class DetectorTemp(ValueMRow):
         self.moduleRow.mwindow.heartBeat()
 
 
+class SingleIonPump(SwitchGB):
+    def __init__(self, twoIonPumps, *args, **kwargs):
+        self.twoIonPumps = twoIonPumps
+        SwitchGB.__init__(self, twoIonPumps.moduleRow, *args, **kwargs)
+
+    def setText(self, txt):
+        SwitchGB.setText(self, txt)
+        self.twoIonPumps.setText(txt)
+
+
+class TwoIonPumps(SwitchMRow):
+    def __init__(self, moduleRow):
+        SwitchMRow.__init__(self, moduleRow, 'ionpump1', 'Ion Pumps', 0, '{:g}')
+        self.ionpump1 = SingleIonPump(self, 'ionpump1', 'state', 0, '{:g}')
+        self.ionpump2 = SingleIonPump(self, 'ionpump2', 'state', 0, '{:g}')
+
+    def setText(self, txt):
+        try:
+            ionpump1 = self.ionpump1.value.text()
+            ionpump2 = self.ionpump2.value.text()
+
+            if ionpump1 == 'nan' or ionpump2 == 'nan':
+                raise ValueError
+            sums = int(ionpump1 == 'OFF') + int(ionpump2 == 'OFF')
+            if sums == 0:
+                txt = "ON"
+            elif sums == 2:
+                txt = "OFF"
+            else:
+                raise ValueError
+        except ValueError:
+            txt = "undef"
+
+        self.value.setText(txt)
+        self.customize()
+
+
 class XcuRow(ModuleRow):
     def __init__(self, camRow):
         self.camRow = camRow
@@ -77,12 +113,13 @@ class XcuRow(ModuleRow):
         self.cryoMode = ValueMRow(self, 'cryoMode', 'cryoMode', 0, '{:s}', controllerName='')
         self.temperature = DetectorTemp(self)
         self.pressure = ValueMRow(self, 'pressure', 'Pressure(Torr)', 0, '{:g}', controllerName='PCM')
+        self.twoIonPumps = TwoIonPumps(self)
         self.controllers = Controllers(self)
         self.actorStatus.button.setEnabled(False)
 
     @property
     def widgets(self):
-        return [self.cryoMode, self.temperature, self.pressure]
+        return [self.cryoMode, self.temperature, self.pressure, self.twoIonPumps]
 
     def setOnline(self):
         ModuleRow.setOnline(self)
