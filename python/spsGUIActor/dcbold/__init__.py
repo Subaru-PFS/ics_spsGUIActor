@@ -45,7 +45,7 @@ class FiberConfig(ValueGB):
         ValueGB.__init__(self, controlDialog.moduleRow, key=key, title=title, ind=0, fmt=fmt, fontSize=fontSize)
 
         self.fibers = QLineEdit()
-        self.fibers.editingFinished.connect(self.newConfig)
+        #self.fibers.editingFinished.connect(self.newConfig)
         self.grid.removeWidget(self.value)
 
         self.grid.addWidget(self.fibers, 0, 0)
