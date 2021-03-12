@@ -10,7 +10,7 @@ from spsGUIActor.common import GridLayout
 from spsGUIActor.enu import EnuRow
 from spsGUIActor.rough import RoughRow
 from spsGUIActor.sac import SacRow
-
+import spsGUIActor.styles as styles
 
 class Module(QGroupBox):
     def __init__(self, mwindow, title):
@@ -39,8 +39,8 @@ class Module(QGroupBox):
         QGroupBox.setEnabled(self, a0)
 
     def setStyleSheet(self, styleSheet=None):
-        styleSheet = "QGroupBox {;border: 1px solid lightgray;border-radius: 3px;margin-top: 6px;} " \
-                     "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 0px;}"
+        styleSheet = "QGroupBox {font-size: %ipt;border: 1px solid lightgray;border-radius: 3px;margin-top: 6px;} "%styles.bigFont \
+                     + "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 0px;}"
         QGroupBox.setStyleSheet(self, styleSheet)
 
 
