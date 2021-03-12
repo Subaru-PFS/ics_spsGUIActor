@@ -12,7 +12,7 @@ class MoveCmd(CustomedCmd):
 
         self.comboMotors = ComboBox()
         self.comboMotors.addItems(['piston', 'a', 'b', 'c'])
-        self.distance = DoubleSpinBoxGB('Dist', -320, 320, 3)
+        self.distance = DoubleSpinBoxGB('Dist', -350, 350, 3)
         self.microns = CheckBox('microns')
         self.abs = CheckBox('abs')
 
