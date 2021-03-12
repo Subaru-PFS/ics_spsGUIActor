@@ -51,11 +51,19 @@ class DetectorTemp(ValueMRow):
         ValueMRow.__init__(self, moduleRow, 'temps', 'Temperature(K)', 10, '{:g}', controllerName='temps')
 
     def updateVals(self, ind, fmt, keyvar):
-        values = keyvar.getValue(doRaise=False)
-        values = (values,) if not isinstance(values, tuple) else values
+        def checkInvalid(value):
+            try:
+                value = float(value)
+                if value >= 400:
+                    raise
+            except:
+                value = np.nan
 
-        temps = np.array([values[i] for i in [10, 11] if values[i] is not None])
-        temps[temps >= 400] = np.nan
+            return value
+
+        values = keyvar.getValue(doRaise=False)
+
+        temps = np.array([checkInvalid(values[i]) for i in [10, 11]])
 
         try:
             value = np.nanmean(temps)
