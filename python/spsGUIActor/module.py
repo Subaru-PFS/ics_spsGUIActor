@@ -39,7 +39,7 @@ class Module(QGroupBox):
         QGroupBox.setEnabled(self, a0)
 
     def setStyleSheet(self, styleSheet=None):
-        styleSheet = "QGroupBox {font-size: %ipt;border: 1px solid lightgray;border-radius: 3px;margin-top: 6px;} "%styles.bigFont \
+        styleSheet = "QGroupBox {font-size: %ipt;border: 1px solid lightgray;border-radius: 3px;margin-top: 6px;} "% round(0.9*styles.bigFont)\
                      + "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 0px;}"
         QGroupBox.setStyleSheet(self, styleSheet)
 

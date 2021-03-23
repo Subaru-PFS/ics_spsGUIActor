@@ -16,7 +16,7 @@ class ReadRows(QProgressBar):
         self.setFormat('READING \r\n' + '%p%')
 
         self.ccdRow.keyVarDict['readRows'].addCallback(self.updateBar, callNow=False)
-        self.setFixedSize(90, 30)
+        self.setStyleSheet("QProgressBar {background-color: rgba(0, 0, 0, 0);color:white;text-align: center; }")
         self.resetValue()
 
     def updateBar(self, keyvar):

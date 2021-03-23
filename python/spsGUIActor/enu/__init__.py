@@ -1,4 +1,5 @@
 __author__ = 'alefur'
+
 from PyQt5.QtWidgets import QProgressBar
 
 from spsGUIActor.control import ControllerCmd, ControlDialog
@@ -37,12 +38,12 @@ from spsGUIActor.common import ComboBox, GridLayout
 class ElapsedTime(QProgressBar):
     def __init__(self, enuRow):
         QProgressBar.__init__(self)
-        self.setFormat('INTEGRATING \r\n' + '%p%')
         self.enuRow = enuRow
         self.enuRow.keyVarDict['elapsedTime'].addCallback(self.updateBar, callNow=False)
         self.enuRow.keyVarDict['integratingTime'].addCallback(self.setExptime, callNow=False)
+        self.setStyleSheet("QProgressBar {background-color: rgba(0, 0, 0, 0);color:white;text-align: center; }")
+        self.setFormat('EXPOSING \r\n' + '%v / %m secs')
 
-        self.setFixedSize(90, 30)
 
     def setExptime(self, keyvar):
         try:
@@ -50,7 +51,7 @@ class ElapsedTime(QProgressBar):
         except ValueError:
             return
 
-        self.setRange(0, exptime * 100)
+        self.setRange(0, exptime)
 
     def updateBar(self, keyvar):
         try:
@@ -58,7 +59,7 @@ class ElapsedTime(QProgressBar):
         except ValueError:
             val = 0
 
-        self.setValue(val * 100)
+        self.setValue(val)
 
     def resetValue(self):
         self.hide()
@@ -98,7 +99,6 @@ class EnuRow(ModuleRow):
         self.shutters = ValueMRow(self, 'shutters', 'Shutters', 0, '{:s}', controllerName='biasha')
         self.bia = ValueMRow(self, 'bia', 'BIA', 0, '{:s}', controllerName='biasha')
 
-        self.elapsedTime = ElapsedTime(self)
         self.controllers = Controllers(self)
 
         self.createDialog(EnuDialog(self))
