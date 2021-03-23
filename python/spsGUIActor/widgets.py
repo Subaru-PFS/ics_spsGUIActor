@@ -21,8 +21,7 @@ class ValueGB(QGroupBox):
         self.setTitle('%s' % self.title)
 
         self.grid = GridLayout()
-        self.grid.setContentsMargins(*[2, fontSize - 2, 2, fontSize - 2])
-
+        self.grid.setContentsMargins(*[2, 4, 2, 4])
         self.value = QLabel()
         self.grid.addWidget(self.value, 0, 0)
         self.setLayout(self.grid)
@@ -53,7 +52,7 @@ class ValueGB(QGroupBox):
 
         self.setStyleSheet(
             "QGroupBox {font-size: %ipt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " % (
-                self.fontSize - 1, bckColor) +
+                0.85*self.fontSize, bckColor) +
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 0px;}")
         return bckColor
 

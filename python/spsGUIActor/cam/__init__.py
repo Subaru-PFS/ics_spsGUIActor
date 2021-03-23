@@ -43,7 +43,7 @@ class CamDevice(QGroupBox):
     def updateIcon(self, a0):
         filename = 'green.png' if a0 else 'orange.png'
         self.setStyleSheet(
-            "CamDevice {font-size: %dpt; font-weight:2000;border: 1px solid #000000;border-radius: 20;;margin-top: 10px;}"
+            "CamDevice {font-size: %dpt; font-weight:bold;border: 1px solid #000000;border-radius: 20;;margin-top: 10px;}"
             "CamDevice::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 10px;}"
             "CamDevice::indicator:checked {image: url(%s);} " % (styles.smallFont, os.path.join(imgPath, filename)))
 
