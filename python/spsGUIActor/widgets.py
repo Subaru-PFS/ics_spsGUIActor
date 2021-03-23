@@ -49,10 +49,9 @@ class ValueGB(QGroupBox):
     def setBackground(self, background):
         col1, col2 = styles.colormap(background)
         bckColor = 'qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  %s, stop: 1 %s)' % (col1, col2)
-
+        fontSize = max(8, round(0.85 * self.fontSize))
         self.setStyleSheet(
-            "QGroupBox {font-size: %ipt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} " % (
-                0.85*self.fontSize, bckColor) +
+            "QGroupBox {font-size: %ipt; background-color: %s ;border: 1px solid gray;border-radius: 3px;margin-top: 1ex;} "%(fontSize, bckColor)+
             "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top center; padding: 0 0px;}")
         return bckColor
 

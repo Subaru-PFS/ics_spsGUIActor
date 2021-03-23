@@ -1,8 +1,9 @@
 __author__ = 'alefur'
+
 from functools import partial
 
 import spsGUIActor.styles as styles
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import QDialog, QGroupBox, QLayout, QHBoxLayout, QSpacerItem, \
     QSizePolicy, QWidget
 from spsGUIActor.common import PushButton, Icon, GridLayout, VBoxLayout, TabWidget
@@ -161,6 +162,7 @@ class ControlPanel(QWidget):
     def updateIcon(self, a0):
         icon = Icon('green.png') if a0 else Icon('orange.png')
         self.controlDialog.tabWidget.setTabIcon(self.controlDialog.tabWidget.indexOf(self), icon)
+        self.controlDialog.tabWidget.setIconSize(QSize(styles.bigFont + 2, styles.bigFont + 2))
 
     def setEnabled(self, a0: bool):
         self.updateIcon(a0)

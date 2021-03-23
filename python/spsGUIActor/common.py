@@ -44,7 +44,7 @@ class PushButton(QPushButton):
 
     def setPixmap(self, pixmap):
 
-        pixmap = pixmap.scaledToHeight(self.sizeHint().height() - 5, mode=Qt.SmoothTransformation)
+        pixmap = pixmap.scaledToHeight(self.sizeHint().height() - 7, mode=Qt.SmoothTransformation)
         self.mPixmap = pixmap
 
     def sizeHint(self):

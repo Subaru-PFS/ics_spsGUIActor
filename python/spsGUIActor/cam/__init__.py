@@ -45,7 +45,8 @@ class CamDevice(QGroupBox):
         self.setStyleSheet(
             "CamDevice {font-size: %dpt; font-weight:bold;border: 1px solid #000000;border-radius: 20;;margin-top: 10px;}"
             "CamDevice::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 10px;}"
-            "CamDevice::indicator:checked {image: url(%s);} " % (styles.smallFont, os.path.join(imgPath, filename)))
+            "CamDevice::indicator { width:%ipx; height: %ipx;}"
+            "CamDevice::indicator:checked {image: url(%s);} " % (styles.smallFont, styles.bigFont + 2, styles.bigFont + 2, os.path.join(imgPath, filename)))
 
     def setEnabled(self, a0):
         ControllerPanel.setEnabled(self, a0)
