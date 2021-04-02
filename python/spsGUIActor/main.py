@@ -74,7 +74,7 @@ def main():
     ccds = ['ccd_%s' % cam for cam in viscamNames]
     hxs = ['hx_%s' % cam for cam in nircamNames]
     enus = ['enu_sm%i' % i for i in specIds]
-    lam = ['sac', 'breva']
+    lam = ['aten', 'sac', 'breva']
     sps = ['dcb', 'dcb_old', 'rough1', 'rough2']
 
     actor = miniActor.connectActor(['hub'] + lam + sps + enus + xcus + ccds + hxs)

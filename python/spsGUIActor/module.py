@@ -2,8 +2,9 @@ __author__ = 'alefur'
 
 import spsGUIActor.dcb as dcb
 import spsGUIActor.dcb2 as dcb2
-import spsGUIActor.dcbold as dcbold
+
 from PyQt5.QtWidgets import QGroupBox
+from spsGUIActor.aten import AtenRow
 from spsGUIActor.breva import BrevaRow
 from spsGUIActor.cam import CamRow
 from spsGUIActor.common import GridLayout
@@ -11,6 +12,7 @@ from spsGUIActor.enu import EnuRow
 from spsGUIActor.rough import RoughRow
 from spsGUIActor.sac import SacRow
 import spsGUIActor.styles as styles
+
 
 class Module(QGroupBox):
     def __init__(self, mwindow, title):
@@ -39,7 +41,8 @@ class Module(QGroupBox):
         QGroupBox.setEnabled(self, a0)
 
     def setStyleSheet(self, styleSheet=None):
-        styleSheet = "QGroupBox {font-size: %ipt;border: 1px solid lightgray;border-radius: 3px;margin-top: 6px;} "% round(0.9*styles.bigFont)\
+        styleSheet = "QGroupBox {font-size: %ipt;border: 1px solid lightgray;border-radius: 3px;margin-top: 6px;} " % round(
+            0.9 * styles.bigFont) \
                      + "QGroupBox::title {subcontrol-origin: margin;subcontrol-position: top left; padding: 0 0px;}"
         QGroupBox.setStyleSheet(self, styleSheet)
 
@@ -51,13 +54,13 @@ class Aitmodule(Module):
 
         self.dcbs = []
 
-        if 'dcbold' in actors:
-            self.dcbs += dcbold.DcbRow(self).rows
         if 'dcb' in actors:
             self.dcbs += dcb.DcbRow(self).rows
         if 'dcb2' in actors:
             self.dcbs += dcb2.DcbRow(self).rows
 
+        if 'aten' in actors:
+            self.aten =  AtenRow(self).rows if 'aten' in actors else []
         self.sac = [SacRow(self)] if 'sac' in actors else []
         self.breva = [BrevaRow(self)] if 'breva' in actors else []
         roughs = ['rough1'] if 'rough1' in actors else []
@@ -70,7 +73,7 @@ class Aitmodule(Module):
 
     @property
     def rows(self):
-        return self.dcbs + self.sac + self.breva + self.roughs
+        return self.dcbs + self.aten + self.sac + self.breva + self.roughs
 
 
 class Specmodule(Module):

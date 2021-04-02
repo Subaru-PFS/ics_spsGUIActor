@@ -1,11 +1,34 @@
 __author__ = 'alefur'
 
+import spsGUIActor.styles as styles
+from spsGUIActor.widgets import ValueMRow, SwitchMRow, Controllers, ValueGB
 from spsGUIActor.control import ControlDialog
 from spsGUIActor.dcb.sources import SourcesPanel
-from spsGUIActor.dcbold import FiberConfig
 from spsGUIActor.enu import ConnectCmd
 from spsGUIActor.modulerow import ModuleRow, RowWidget
-from spsGUIActor.widgets import ValueMRow, SwitchMRow, Controllers
+from spsGUIActor.common import LineEdit
+
+
+class FiberConfig(ValueGB):
+    def __init__(self, controlDialog, key='fiberConfig', title='fiberConfig', fmt='{:s}', fontSize=styles.smallFont):
+        self.controlDialog = controlDialog
+        ValueGB.__init__(self, controlDialog.moduleRow, key=key, title=title, ind=0, fmt=fmt, fontSize=fontSize)
+
+        self.fibers = LineEdit()
+        # self.fibers.editingFinished.connect(self.newConfig)
+        self.grid.removeWidget(self.value)
+
+        self.grid.addWidget(self.fibers, 0, 0)
+
+    def setText(self, txt):
+        txt = ','.join(txt.split(';'))
+        self.fibers.setText(txt)
+
+    def newConfig(self):
+        cmdStr = 'config fibers=%s' % ','.join([fib.strip() for fib in self.fibers.text().split(',')])
+        self.controlDialog.moduleRow.mwindow.sendCommand(actor=self.controlDialog.moduleRow.actorName,
+                                                         cmdStr=cmdStr,
+                                                         callFunc=self.controlDialog.cmdLog.printResponse)
 
 
 class RowOne(RowWidget):
