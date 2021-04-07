@@ -16,7 +16,8 @@ class RowOne(RowWidget):
     @property
     def widgets(self):
         atenRow = self.moduleRow
-        return [atenRow.state, atenRow.substate, atenRow.labsphere, atenRow.attenuator, atenRow.photodiode, atenRow.qth]
+        return [atenRow.state, atenRow.substate, atenRow.roughpump, atenRow.labsphere,  atenRow.qth,
+                atenRow.neon, atenRow.krypton, atenRow.hgar]
 
 
 class RowTwo(RowWidget):
@@ -26,7 +27,7 @@ class RowTwo(RowWidget):
     @property
     def widgets(self):
         atenRow = self.moduleRow
-        return []
+        return [atenRow.bakeout, atenRow.attenuator, atenRow.photodiode, atenRow.xenon, atenRow.deuterium, atenRow.argon]
 
     @property
     def displayed(self):
@@ -39,7 +40,16 @@ class AtenRow(ModuleRow):
 
         self.state = ValueMRow(self, 'metaFSM', '', 0, '{:s}')
         self.substate = ValueMRow(self, 'metaFSM', '', 1, '{:s}')
+
         self.labsphere = SwitchMRow(self, 'labsphere', 'Labsphere', 0, '{:g}', controllerName='pdu')
+        self.roughpump = SwitchMRow(self, 'roughpump', 'Rough pump', 0, '{:g}', controllerName='pdu')
+        self.bakeout = SwitchMRow(self, 'bakeout', 'Bakeout', 0, '{:g}', controllerName='pdu')
+        self.neon = SwitchMRow(self, 'neon', 'Neon', 0, '{:g}', controllerName='aten')
+        self.xenon = SwitchMRow(self, 'xenon', 'Xenon', 0, '{:g}', controllerName='aten')
+        self.hgar = SwitchMRow(self, 'hgar', 'Hg-Ar', 0, '{:g}', controllerName='aten')
+        self.krypton = SwitchMRow(self, 'krypton', 'Krypton', 0, '{:g}', controllerName='aten')
+        self.argon = SwitchMRow(self, 'argon', 'Argon', 0, '{:g}', controllerName='aten')
+        self.deuterium = SwitchMRow(self, 'deuterium', 'Deuterium', 0, '{:g}', controllerName='aten')
 
         self.qth = SwitchMRow(self, 'halogen', 'QTH', 0, '{:g}', controllerName='labsphere')
         self.photodiode = ValueMRow(self, 'photodiode', 'photodiode', 0, '{:g}', controllerName='labsphere')
