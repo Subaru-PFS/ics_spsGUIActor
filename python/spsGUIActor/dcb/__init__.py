@@ -1,12 +1,13 @@
 __author__ = 'alefur'
 
 import spsGUIActor.styles as styles
-from spsGUIActor.widgets import ValueMRow, SwitchMRow, Controllers, ValueGB
+from spsGUIActor.common import LineEdit
 from spsGUIActor.control import ControlDialog
+from spsGUIActor.dcb.filterwheel import FilterwheelPanel
 from spsGUIActor.dcb.sources import SourcesPanel
 from spsGUIActor.enu import ConnectCmd
 from spsGUIActor.modulerow import ModuleRow, RowWidget
-from spsGUIActor.common import LineEdit
+from spsGUIActor.widgets import ValueMRow, SwitchMRow, Controllers, ValueGB
 
 
 class FiberConfig(ValueGB):
@@ -15,7 +16,7 @@ class FiberConfig(ValueGB):
         ValueGB.__init__(self, controlDialog.moduleRow, key=key, title=title, ind=0, fmt=fmt, fontSize=fontSize)
 
         self.fibers = LineEdit()
-        # self.fibers.editingFinished.connect(self.newConfig)
+        self.fibers.editingFinished.connect(self.newConfig)
         self.grid.removeWidget(self.value)
 
         self.grid.addWidget(self.fibers, 0, 0)
@@ -48,7 +49,8 @@ class RowTwo(RowWidget):
     @property
     def widgets(self):
         dcbRow = self.moduleRow
-        return []
+        widgets = [dcbRow.linewheel, dcbRow.qthwheel, dcbRow.adc1] if dcbRow.actorName == 'dcb2' else []
+        return widgets
 
     @property
     def displayed(self):
@@ -56,8 +58,8 @@ class RowTwo(RowWidget):
 
 
 class DcbRow(ModuleRow):
-    def __init__(self, spsModule):
-        ModuleRow.__init__(self, module=spsModule, actorName='dcb', actorLabel='DCB')
+    def __init__(self, spsModule, name='dcb'):
+        ModuleRow.__init__(self, module=spsModule, actorName=name, actorLabel=name.upper())
 
         self.state = ValueMRow(self, 'metaFSM', '', 0, '{:s}')
         self.substate = ValueMRow(self, 'metaFSM', '', 1, '{:s}')
@@ -68,10 +70,10 @@ class DcbRow(ModuleRow):
         self.argon = SwitchMRow(self, 'argon', 'Argon', 0, '{:g}', controllerName='sources')
         self.qth = SwitchMRow(self, 'halogen', 'QTH', 0, '{:g}', controllerName='sources')
 
-        # self.linewheel = ValueMRow(self, 'linewheel', 'Line Wheel', 1, '{:s}')
-        # self.qthwheel = ValueMRow(self, 'qthwheel', 'QTH Wheel', 1, '{:s}')
-        # self.adc1 = ValueMRow(self, 'adc', 'ADC 1', 0, '{:4f}')
-        # self.adc2 = ValueMRow(self, 'adc', 'ADC 2', 1, '{:4f}')
+        self.linewheel = ValueMRow(self, 'linewheel', 'Line Wheel', 1, '{:s}')
+        self.qthwheel = ValueMRow(self, 'qthwheel', 'QTH Wheel', 1, '{:s}')
+        self.adc1 = ValueMRow(self, 'adc', 'ADC 1', 0, '{:4f}')
+        self.adc2 = ValueMRow(self, 'adc', 'ADC 2', 1, '{:4f}')
 
         self.rows = [RowOne(self), RowTwo(self)]
 
@@ -93,7 +95,7 @@ class DcbDialog(ControlDialog):
         self.topbar.addLayout(self.connectCmd)
 
         self.sourcesPanel = SourcesPanel(self)
-        # self.filterwheelPanel = FilterwheelPanel(self)
+        self.filterwheelPanel = FilterwheelPanel(self)
 
         self.tabWidget.addTab(self.sourcesPanel, 'Sources')
-        # self.tabWidget.addTab(self.filterwheelPanel, 'Filterwheels')
+        self.tabWidget.addTab(self.filterwheelPanel, 'Filterwheels')

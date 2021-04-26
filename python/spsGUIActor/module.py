@@ -1,7 +1,6 @@
 __author__ = 'alefur'
 
 import spsGUIActor.dcb as dcb
-import spsGUIActor.dcb2 as dcb2
 
 from PyQt5.QtWidgets import QGroupBox
 from spsGUIActor.aten import AtenRow
@@ -57,10 +56,10 @@ class Aitmodule(Module):
         if 'dcb' in actors:
             self.dcbs += dcb.DcbRow(self).rows
         if 'dcb2' in actors:
-            self.dcbs += dcb2.DcbRow(self).rows
+            self.dcbs += dcb.DcbRow(self, 'dcb2').rows
 
-        if 'aten' in actors:
-            self.aten =  AtenRow(self).rows if 'aten' in actors else []
+        self.aten =  AtenRow(self).rows if 'aten' in actors else []
+
         self.sac = [SacRow(self)] if 'sac' in actors else []
         self.breva = [BrevaRow(self)] if 'breva' in actors else []
         roughs = ['rough1'] if 'rough1' in actors else []
@@ -73,7 +72,7 @@ class Aitmodule(Module):
 
     @property
     def rows(self):
-        return self.dcbs + self.aten + self.sac + self.breva + self.roughs
+        return self.dcbs + self.sac + self.breva + self.roughs
 
 
 class Specmodule(Module):
