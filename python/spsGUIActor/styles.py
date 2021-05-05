@@ -212,6 +212,7 @@ state2color = {"default": ('window', 'black'),
                "regular": ('white', 'black'),
                "success": ('chartreuse', 'white'),
                "warning": ('orange', 'white'),
+               "orangered": ('orangered', 'white'),
                }
 
 

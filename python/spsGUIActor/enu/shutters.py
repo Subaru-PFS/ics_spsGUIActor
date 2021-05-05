@@ -3,8 +3,13 @@ __author__ = 'alefur'
 import spsGUIActor.styles as styles
 from spsGUIActor.common import ComboBox
 from spsGUIActor.control import ControllerPanel, ControllerCmd
-from spsGUIActor.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, AbortButton, ValuesRow
+from spsGUIActor.widgets import ValueGB, CustomedCmd, DoubleSpinBoxGB, AbortButton, ValuesRow, CmdButton
 from spsGUIActor.enu import EnuDeviceCmd
+
+class RebootButton(CmdButton):
+    def __init__(self, controlPanel):
+        CmdButton.__init__(self, controlPanel=controlPanel, label='REBOOT', cmdStr=f'')
+        self.setColor(*styles.colorWidget('abort'))
 
 class ShutterCmd(CustomedCmd):
     def __init__(self, controlPanel):
@@ -102,9 +107,14 @@ class ShuttersCommands(EnuDeviceCmd):
         self.abortButton = AbortButton(controlPanel=controlPanel,
                                        cmdStr='%s exposure finish' % controlPanel.actorName)
 
+        self.rebootButton = CmdButton(controlPanel=controlPanel, label='REBOOT',
+                                      cmdStr=f'{controlPanel.actorName} biasha reboot')
+        self.rebootButton.setColor(*styles.colorWidget('orangered'))
+
         self.shutterCmd = ShutterCmd(controlPanel=controlPanel)
         self.exposeCmd = ExposeCmd(controlPanel=controlPanel)
 
+        self.grid.addWidget(self.rebootButton, 0, 2)
         self.grid.addWidget(self.abortButton, 1, 0)
         self.grid.addLayout(self.shutterCmd, 2, 0, 1, 3)
         self.grid.addLayout(self.exposeCmd, 3, 0, 1, 3)
