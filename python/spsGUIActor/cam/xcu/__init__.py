@@ -174,13 +174,14 @@ class XcuDialog(ControlDialog):
             coolingPanel.addWidget(cooler, i, 0)
 
         coolingPanel.addWidget(self.tempsPanel, i + 1, 0)
-        coolingPanel.addWidget(self.heatersPanel, i + 2, 0)
+        #coolingPanel.addWidget(self.heatersPanel, i + 2, 0)
 
         self.tabWidget.addTab(self.pcmPanel, 'PCM')
         self.tabWidget.addTab(self.motorsPanel, 'Motors')
 
         self.tabWidget.addTab(vacuumPanel, 'Pumping / Vacuum')
         self.tabWidget.addTab(coolingPanel, 'Cooling')
+        self.tabWidget.addTab(self.heatersPanel, 'Heaters')
 
     @property
     def cmdBuffer(self):

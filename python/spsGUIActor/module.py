@@ -1,7 +1,7 @@
 __author__ = 'alefur'
 
 import spsGUIActor.dcb as dcb
-
+import spsGUIActor.styles as styles
 from PyQt5.QtWidgets import QGroupBox
 from spsGUIActor.aten import AtenRow
 from spsGUIActor.breva import BrevaRow
@@ -10,7 +10,7 @@ from spsGUIActor.common import GridLayout
 from spsGUIActor.enu import EnuRow
 from spsGUIActor.rough import RoughRow
 from spsGUIActor.sac import SacRow
-import spsGUIActor.styles as styles
+from spsGUIActor.sps import SpecModuleRow
 
 
 class Module(QGroupBox):
@@ -58,7 +58,7 @@ class Aitmodule(Module):
         if 'dcb2' in actors:
             self.dcbs += dcb.DcbRow(self, 'dcb2').rows
 
-        self.aten =  AtenRow(self).rows if 'aten' in actors else []
+        self.aten = AtenRow(self).rows if 'aten' in actors else []
 
         self.sac = [SacRow(self)] if 'sac' in actors else []
         self.breva = [BrevaRow(self)] if 'breva' in actors else []
@@ -81,11 +81,12 @@ class Specmodule(Module):
         arms = ['b', 'r', 'n'] if arms is None else arms
 
         self.smId = smId
-        self.enu = [EnuRow(self)] if enu else []
+        self.spec = [SpecModuleRow(self, smId), EnuRow(self)] if enu else []
         self.cams = [CamRow(self, arm=arm) for arm in arms]
+
         self.populateLayout()
         self.adjustSize()
 
     @property
     def rows(self):
-        return self.enu + self.cams
+        return self.spec + self.cams
