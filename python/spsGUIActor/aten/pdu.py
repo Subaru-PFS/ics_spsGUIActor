@@ -21,8 +21,9 @@ class PduPanel(ControllerPanel):
                          channel05="breva",
                          channel06="deuterium",
                          channel07="argon",
+                         channel08="regenheater",
                          channel09="roughpump",
-                         channel10="bakeout",
+                         channel10="roughpump2",
                          channel11="moxa",
                          channel12="matlamp",
                          channel13="sac",
@@ -60,7 +61,7 @@ class PduPanel(ControllerPanel):
 
 
 class PduCommands(EnuDeviceCmd):
-    safetyCheck = ['roughpump', 'bakeout', 'sac', 'breva', 'moxa']
+    safetyCheck = ['roughpump', 'roughpump2', 'regenheater', 'sac', 'breva', 'moxa']
 
     def __init__(self, controlPanel):
         EnuDeviceCmd.__init__(self, controlPanel)

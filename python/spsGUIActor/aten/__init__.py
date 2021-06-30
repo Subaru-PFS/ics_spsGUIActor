@@ -16,8 +16,8 @@ class RowOne(RowWidget):
     @property
     def widgets(self):
         atenRow = self.moduleRow
-        return [atenRow.state, atenRow.substate, atenRow.roughpump, atenRow.labsphere,  atenRow.qth,
-                atenRow.neon, atenRow.krypton, atenRow.hgar]
+        return [atenRow.state, atenRow.substate, atenRow.roughpump, atenRow.labsphere, atenRow.photodiode, atenRow.qth,
+                atenRow.neon, atenRow.krypton]
 
 
 class RowTwo(RowWidget):
@@ -27,7 +27,8 @@ class RowTwo(RowWidget):
     @property
     def widgets(self):
         atenRow = self.moduleRow
-        return [atenRow.bakeout, atenRow.attenuator, atenRow.photodiode, atenRow.xenon, atenRow.deuterium, atenRow.argon]
+        return [atenRow.roughpump2, atenRow.regenheater, atenRow.attenuator, atenRow.deuterium, atenRow.argon,
+                atenRow.hgar]
 
     @property
     def displayed(self):
@@ -43,7 +44,8 @@ class AtenRow(ModuleRow):
 
         self.labsphere = SwitchMRow(self, 'labsphere', 'Labsphere', 0, '{:g}', controllerName='pdu')
         self.roughpump = SwitchMRow(self, 'roughpump', 'Rough pump', 0, '{:g}', controllerName='pdu')
-        self.bakeout = SwitchMRow(self, 'bakeout', 'Bakeout', 0, '{:g}', controllerName='pdu')
+        self.roughpump2 = SwitchMRow(self, 'roughpump2', 'Rough pump 2', 0, '{:g}', controllerName='pdu')
+        self.regenheater = SwitchMRow(self, 'regenheater', 'Regen-Heater', 0, '{:g}', controllerName='pdu')
         self.neon = SwitchMRow(self, 'neon', 'Neon', 0, '{:g}', controllerName='aten')
         self.xenon = SwitchMRow(self, 'xenon', 'Xenon', 0, '{:g}', controllerName='aten')
         self.hgar = SwitchMRow(self, 'hgar', 'Hg-Ar', 0, '{:g}', controllerName='aten')

@@ -72,7 +72,7 @@ class Aitmodule(Module):
 
     @property
     def rows(self):
-        return self.dcbs + self.sac + self.breva + self.roughs
+        return self.dcbs + self.aten + self.sac + self.breva + self.roughs
 
 
 class Specmodule(Module):
