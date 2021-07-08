@@ -5,6 +5,7 @@ from spsGUIActor.control import ControllerPanel
 from spsGUIActor.enu import EnuDeviceCmd
 from spsGUIActor.widgets import ValueGB, CustomedCmd, CmdButton, ValuesRow
 
+
 class Wheel(ValuesRow):
     def __init__(self, moduleRow, name):
         widgets = [ValueGB(moduleRow, f'{name}wheel', 'Position', 0, '{:d}'),
@@ -13,9 +14,10 @@ class Wheel(ValuesRow):
         ValuesRow.__init__(self, widgets, title=f'{name.capitalize()} Wheel')
         self.grid.setContentsMargins(1, 6, 1, 1)
 
+
 class SetFilterwheel(CustomedCmd):
     lineHoles = 0.5, 1.0, 2.0, 4.0, 12.7
-    qthHoles =  'none',0.7,1.0,2.0,4.0
+    qthHoles = 'none', 0.7, 1.0, 2.0, 4.0
 
     def __init__(self, controlPanel):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='SET')
@@ -39,10 +41,10 @@ class SetFilterwheel(CustomedCmd):
 
     @property
     def comboPosition(self):
-        return self.comboLinePosition if self.comboWheel.currentIndex()==0 else self.comboQthPosition
+        return self.comboLinePosition if self.comboWheel.currentIndex() == 0 else self.comboQthPosition
 
     def displayComboPosition(self, index):
-        line, qth = (True, False) if index==0 else (False, True)
+        line, qth = (True, False) if index == 0 else (False, True)
         self.comboLinePosition.setVisible(line)
         self.comboQthPosition.setVisible(qth)
 
@@ -55,12 +57,15 @@ class InitFilterwheel(CustomedCmd):
         CustomedCmd.__init__(self, controlPanel=controlPanel, buttonLabel='INIT')
 
         self.comboWheel = ComboBox()
-        self.comboWheel.addItems(['LINEWHEEL', 'QTHWHEEL'])
+        self.comboWheel.addItems(['default (both)', 'LINEWHEEL', 'QTHWHEEL'])
 
         self.addWidget(self.comboWheel, 0, 1)
 
     def buildCmd(self):
-        return f'{self.controlPanel.actorName} init {self.comboWheel.currentText().lower()}'
+        if self.comboWheel.currentIndex() == 0:
+            return f'{self.controlPanel.actorName} filterwheel init'
+        else:
+            return f'{self.controlPanel.actorName} init {self.comboWheel.currentText().lower()}'
 
 
 class FilterwheelPanel(ControllerPanel):
@@ -74,7 +79,7 @@ class FilterwheelPanel(ControllerPanel):
         self.state = ValueGB(self.moduleRow, 'filterwheelFSM', '', 0, '{:s}')
         self.substate = ValueGB(self.moduleRow, 'filterwheelFSM', '', 1, '{:s}')
 
-        self.linewheel =  Wheel(self.moduleRow, 'line')
+        self.linewheel = Wheel(self.moduleRow, 'line')
         self.qthwheel = Wheel(self.moduleRow, 'qth')
 
         self.adc1 = ValueGB(self.moduleRow, 'adc', 'ADC channel 1', 0, '{:.4f}')
@@ -102,4 +107,4 @@ class FilterwheelCommands(EnuDeviceCmd):
 
         self.grid.addLayout(self.initFilterwheel, 1, 0, 1, 2)
         self.grid.addLayout(self.setFilterwheel, 2, 0, 1, 3)
-        self.grid.addWidget(self.adcCalib, 3, 0,)
+        self.grid.addWidget(self.adcCalib, 3, 0, )
