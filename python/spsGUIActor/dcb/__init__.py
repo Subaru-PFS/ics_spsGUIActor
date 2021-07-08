@@ -16,7 +16,7 @@ class FiberConfig(ValueGB):
         ValueGB.__init__(self, controlDialog.moduleRow, key=key, title=title, ind=0, fmt=fmt, fontSize=fontSize)
 
         self.fibers = LineEdit()
-        self.fibers.editingFinished.connect(self.newConfig)
+        #self.fibers.editingFinished.connect(self.newConfig)
         self.grid.removeWidget(self.value)
 
         self.grid.addWidget(self.fibers, 0, 0)
@@ -49,7 +49,7 @@ class RowTwo(RowWidget):
     @property
     def widgets(self):
         dcbRow = self.moduleRow
-        widgets = [dcbRow.linewheel, dcbRow.qthwheel, dcbRow.adc1] if dcbRow.actorName == 'dcb2' else []
+        widgets = [dcbRow.linewheel, dcbRow.qthwheel, dcbRow.adc1] if dcbRow.actorName == 'dcb' else []
         return widgets
 
     @property
@@ -89,7 +89,7 @@ class DcbDialog(ControlDialog):
     def __init__(self, dcbRow):
         ControlDialog.__init__(self, moduleRow=dcbRow)
         self.fiberConfig = FiberConfig(self)
-        self.connectCmd = ConnectCmd(self, ['sources'])
+        self.connectCmd = ConnectCmd(self, ['sources', 'filterwheel'])
 
         self.topbar.addWidget(self.fiberConfig)
         self.topbar.addLayout(self.connectCmd)
